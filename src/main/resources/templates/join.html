@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/join.js}"></script>
+    <link th:href="@{/css/join.css}" rel="stylesheet">
+    <title>회원가입</title>
+</head>
+<body>
+<form id="signupForm" style="display:none;">
+    <input type="email" id="email" name="email" th:value="${email}" readonly><br>
+    <input type="text" id="provider" name="provider" th:value="${provider}" readonly><br>
+
+    <button class="btn btn-primary role-button" type="button" data-role="ROLE_SELLER">판매자</button>
+    <button class="btn btn-primary role-button" type="button" data-role="ROLE_CUSTOMER">구매자</button><br>
+    <input type="hidden" id="role" name="role">
+
+    <div id="sellerContainer" style="display:none;">
+        <input type="text" id="businessNumber" name="businessNumber" placeholder="사업자번호를 입력하세요">
+        <button class="join-button" type="button" id="dupliBusinessNum">중복확인</button><br>
+        <input type="hidden" id="valBusNum" name="valBusNum">
+
+        <input type="text" id="shopName" name="shopName" placeholder="상점명을 입력하세요">
+        <button class="join-button" type="button" id="dupliShop">중복확인</button><br>
+
+        <input type="text" id="sellerPhone" name="sellerPhone" placeholder="전화번호 입력하세요">
+        <button class="join-button" type="button" id="dupliSellerPhone">중복확인</button><br>
+    </div>
+
+    <div id="customerContainer" style="display:none;">
+        <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요">
+        <button class="join-button" type="button" id="dupliNick">중복확인</button><br>
+
+        <input type="text" id="customerPhone" name="customerPhone" placeholder="전화번호 입력하세요">
+        <button class="join-button" type="button" id="dupliCustomerPhone">중복확인</button><br>
+    </div>
+
+    <button class="join-button" type="button" id="signup">가입하기</button>
+    <button class="join-button" type="button" id="cancelButton">취소</button>
+</form>
+</body>
+</html>
