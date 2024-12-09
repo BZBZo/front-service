@@ -1,0 +1,13 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: bz-front-service
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+bzbzo:
+  bz-auth-service-url: ${AUTH_SERVICE_URL:http://localhost:8085}/auths
+
