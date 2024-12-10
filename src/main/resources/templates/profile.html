@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>회원 정보 수정</title>
+    <script th:src="@{/js/profile.js}"></script>
+    <link th:href="@{/css/profile.css}" rel="stylesheet">
+</head>
+<body>
+<header>
+    <div class="logo">BZ#</div>
+    <nav>
+        <ul>
+            <li><a href="#">HOME</a></li>
+            <li><a href="#">STYLE</a></li>
+            <li><a href="#">SHOP</a></li>
+        </ul>
+    </nav>
+    <button class="menu-btn">☰</button>
+</header>
+
+<main>
+    <h2>회원 정보 수정</h2>
+    <form class="edit-form">
+        <section class="form-section">
+            <h3>내 계정</h3>
+            <div class="input-group">
+                <label>비밀번호</label>
+                <div class="input-with-button">
+                    <input type="password" id="password">
+                    <button type="button" onclick="updatePassword()">변경</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- USER_CUSTOMER 섹션 -->
+        <section class="form-section customer-section">
+            <h3>개인 정보</h3>
+            <!-- USER_CUSTOMER 섹션 -->
+            <div class="input-group">
+                <label>닉네임</label>
+                <div class="input-with-buttons">
+                    <input type="text" id="nickname">
+                    <button type="button" onclick="checkNickname()">중복확인</button>
+                    <button type="button" onclick="updateNickname()">변경</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>전화번호</label>
+                <div class="input-with-buttons">
+                    <input type="tel" id="phone">
+                    <button type="button" onclick="checkPhone()">중복확인</button>
+                    <button type="button" onclick="updatePhone()">변경</button>
+                </div>
+            </div>
+
+            <!-- USER_SELLER 섹션 -->
+            <div class="input-group">
+                <label>상점명</label>
+                <div class="input-with-buttons">
+                    <input type="text" id="shopName">
+                    <button type="button" onclick="checkShopName()">중복확인</button>
+                    <button type="button" onclick="updateShopName()">변경</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>전화번호</label>
+                <div class="input-with-buttons">
+                    <input type="tel" id="shopPhone">
+                    <button type="button" onclick="checkShopPhone()">중복확인</button>
+                    <button type="button" onclick="updateShopPhone()">변경</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>사업자 번호</label>
+                <div class="input-with-buttons">
+                    <input type="text" id="businessNumber">
+                    <button type="button" onclick="checkBusinessNumber()">중복확인</button>
+                    <button type="button" onclick="updateBusinessNumber()">변경</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>상점 이미지</label>
+                <div class="input-with-button">
+                    <input type="file" id="shopImage" accept="image/*">
+                    <button type="button" onclick="updateShopImage()">변경</button>
+                </div>
+            </div>
+        </section>
+
+        <div class="form-footer">
+            <button type="button" class="withdraw-btn" onclick="withdrawMembership()">회원탈퇴</button>
+        </div>
+    </form>
+</main>
+</body>
+</html>
