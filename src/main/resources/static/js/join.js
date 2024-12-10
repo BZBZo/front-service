@@ -145,6 +145,32 @@ $(document).ready(() => {
             });
         });
 
+        // 입력 필드 변경 시 해당 검증 상태를 초기화
+        $('#businessNumber').on('input', function() {
+            validationStates.businessNumberValid = false;
+            updateSignupButtonState();
+        });
+
+        $('#shopName').on('input', function() {
+            validationStates.shopNameValid = false;
+            updateSignupButtonState();
+        });
+
+        $('#nickname').on('input', function() {
+            validationStates.nicknameValid = false;
+            updateSignupButtonState();
+        });
+
+        $('#sellerPhone').on('input', function() {
+            validationStates.sellerPhoneValid = false;
+            updateSignupButtonState();
+        });
+
+        $('#customerPhone').on('input', function() {
+            validationStates.customerPhoneValid = false;
+            updateSignupButtonState();
+        });
+
         $('#signup').click(() => {
             let formData = {
                 email: email,
