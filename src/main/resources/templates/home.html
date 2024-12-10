@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/home.js}"></script>
+    <link th:href="@{/css/home.css}" rel="stylesheet">
     <title>Title</title>
 </head>
-<body>
-환영해요
-</body>
+    <body>
+        환영해요<br>
+        <button class="profile-edit-button" type="button" id="profileEdit">회원 정보 수정</button>
+    </body>
 </html>
