@@ -11,27 +11,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 공통 클릭 핸들러 함수
     function handleLogin(event) {
+        event.preventDefault(); // 기본 동작 방지 (선택사항)
         console.log("handleLogin");
-        const provider = event.target.getAttribute('data-provider');
-        console.log(provider);
+
+        // event.currentTarget 또는 this를 사용하여 버튼 요소를 참조
+        const provider = event.currentTarget.getAttribute('data-provider');
+        // 또는 const provider = this.getAttribute('data-provider');
+        console.log('Provider:', provider);
+
+        if (!provider) {
+            console.error('Provider 정보가 없습니다.');
+            return;
+        }
 
         // 동적으로 폼 생성
         const form = document.createElement('form');
         form.method = 'GET';
         form.action = `http://localhost:8085/oauth2/authorization/${provider}`;
-
-        // @RequestParam 'provider'가 필요하다면, 추가 (필요 시)
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'provider';
-        input.value = provider;
-        form.appendChild(input);
-
         document.body.appendChild(form);
         form.submit();
     }
 
-    // 각 버튼에 클릭 이벤트 리스너 추가 (요소이 존재할 경우에만)
+    // 각 버튼에 클릭 이벤트 리스너 추가 (요소가 존재할 경우에만)
     if (googleButton) {
         googleButton.addEventListener('click', handleLogin);
     } else {
