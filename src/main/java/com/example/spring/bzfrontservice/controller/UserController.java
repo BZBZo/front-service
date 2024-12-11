@@ -28,11 +28,6 @@ public class UserController {
         return "join";
     }
 
-    @GetMapping("/fail")
-    public String fail(){
-        return "fail";
-    }
-
     @GetMapping("/profile")
     public String profile(){
 

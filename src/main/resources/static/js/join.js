@@ -117,7 +117,7 @@ $(document).ready(() => {
             $.ajax({
                 url: '/webs/check/sellerPhone',
                 type: 'POST',
-                data: { phone: sellerPhone },
+                data: { sellerPhone: sellerPhone },
                 success: function(response) {
                     alert(response.message);
                     validationStates.sellerPhoneValid = response.status === "available";
@@ -132,7 +132,7 @@ $(document).ready(() => {
             $.ajax({
                 url: '/webs/check/customerPhone',
                 type: 'POST',
-                data: { phone: customerPhone },
+                data: { customerPhone: customerPhone },
                 success: function(response) {
                     alert(response.message);
                     validationStates.customerPhoneValid = response.status === 'available';
@@ -168,6 +168,7 @@ $(document).ready(() => {
         });
 
         $('#signup').click(() => {
+            console.log("가입 버튼이 클릭되었습니다.");  // 테스트 로그 추가
             let formData = {
                 email: email,
                 provider: provider,
@@ -206,8 +207,8 @@ $(document).ready(() => {
         window.location.href = '/webs/signin';
     }
     function updateSignupButtonState() {
-        // 모든 검사 상태가 true인지 확인
         let allValid = Object.values(validationStates).every(status => status);
+        console.log("Validation States:", validationStates, "All Valid:", allValid);
         $('#signup').prop('disabled', !allValid);
     }
 
