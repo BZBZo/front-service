@@ -1,0 +1,87 @@
+/* 전체 컨테이너 스타일 */
+.login-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+}
+
+/* 제목 스타일 */
+.login-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* 구분선 스타일 */
+.divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+/* 로그인 버튼 컨테이너 */
+.login-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 버튼 공통 스타일 */
+.login-button {
+    display: flex;
+    align-items: center;
+    justify-content: start; /* 아이콘과 텍스트를 왼쪽 정렬 */
+    gap: 15px;
+    width: 100%;
+    max-width: 360px;
+    height: 50px;
+    padding: 0 20px;
+    border-radius: 8px; /* 둥근 모서리 */
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    color: white; /* 기본 텍스트 색상 */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 기본 그림자 */
+}
+
+.login-button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 호버 그림자 */
+}
+
+/* 아이콘 스타일 */
+.icon {
+    width: 40px; /* 아이콘 크기 */
+    height: 40px;
+}
+
+/* 텍스트 스타일 */
+.text {
+    font-size: 16px;
+    text-align: center;
+    width: 200px;
+}
+
+/* 네이버 버튼 */
+.naver-login {
+    background-color: #03c75a; /* 네이버 초록색 */
+    color: white; /* 텍스트 색상 */
+}
+
+/* 카카오 버튼 */
+.kakao-login {
+    background-color: #fee500; /* 카카오 노란색 */
+    color: #381e1f; /* 텍스트 색상 */
+}
+
+/* 구글 버튼 */
+.google-login {
+    background-color: white; /* 구글 흰색 */
+    color: #757575; /* 텍스트 색상 */
+    border: 1px solid #ddd; /* 흰색 버튼 테두리 */
+}

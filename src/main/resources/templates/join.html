@@ -6,39 +6,74 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/join.js}"></script>
     <link th:href="@{/css/join.css}" rel="stylesheet">
+    <script th:src="@{/js/layout.js}" defer></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
     <title>회원가입</title>
 </head>
 <body>
-<form id="signupForm" style="display:none;">
-    <input type="email" id="email" name="email" th:value="${email}" readonly><br>
-    <input type="text" id="provider" name="provider" th:value="${provider}" readonly><br>
+<div th:replace="fragments/header :: header"></div>
+<section class="signup-section">
+<form id="signupForm" class="form-container">
 
-    <button class="btn btn-primary role-button" type="button" data-role="ROLE_SELLER">판매자</button>
-    <button class="btn btn-primary role-button" type="button" data-role="ROLE_CUSTOMER">구매자</button><br>
+    <input type="text" id="provider" name="provider" th:value="${provider}" class="hidden" readonly><br>
+    <div class="social-buttons">
+        <img src="/images/google-icon.png" alt="Google" class="social-icon" id="google-icon">
+        <img src="/images/naver-icon.png" alt="Naver" class="social-icon" id="naver-icon">
+        <img src="/images/kakao-icon.png" alt="KakaoTalk" class="social-icon" id="kakao-icon">
+    </div>
+    <hr class="divider">
+
+    <div class="tabs">
+        <div class="tab business-tab active role-button" data-role="ROLE_SELLER">
+            <span class="check-icon">✔</span>
+            사업자회원<br>
+            <span>사업자 번호가 있고 <br>판매하려는 가입자</span>
+        </div>
+        <div class="tab general-tab role-button" data-role="ROLE_CUSTOMER">
+            <span class="check-icon hidden">✔</span>
+            일반회원<br>
+            <span>상품 구매 및 <br>공구참여 가입자</span>
+        </div>
+    </div>
+
     <input type="hidden" id="role" name="role">
+    <div class="input-container">
+        <input type="email" id="email" name="email" th:value="${email}" readonly class="input-field"><br>
+    </div>
+    <div id="sellerContainer">
 
-    <div id="sellerContainer" style="display:none;">
-        <input type="text" id="businessNumber" name="businessNumber" placeholder="사업자번호를 입력하세요">
-        <button class="join-button" type="button" id="dupliBusinessNum">중복확인</button><br>
-        <input type="hidden" id="valBusNum" name="valBusNum">
 
-        <input type="text" id="shopName" name="shopName" placeholder="상점명을 입력하세요">
-        <button class="join-button" type="button" id="dupliShop">중복확인</button><br>
-
-        <input type="text" id="sellerPhone" name="sellerPhone" placeholder="전화번호 입력하세요">
-        <button class="join-button" type="button" id="dupliSellerPhone">중복확인</button><br>
+        <div class="input-container">
+            <input type="text" id="businessNumber" name="businessNumber" placeholder="사업자번호를 입력하세요" class="input-field">
+            <button type="button" id="dupliBusinessNum" class="check-button">중복확인</button>
+        </div>
+        <div class="input-container">
+            <input type="text" id="shopName" name="shopName" placeholder="상점명을 입력하세요" class="input-field">
+            <button type="button" id="dupliShop" class="check-button">중복확인</button>
+        </div>
+        <div class="input-container">
+            <input type="text" id="sellerPhone" name="sellerPhone" placeholder="전화번호 입력하세요" class="input-field">
+            <button type="button" id="dupliSellerPhone" class="check-button">중복확인</button>
+        </div>
     </div>
 
-    <div id="customerContainer" style="display:none;">
-        <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요">
-        <button class="join-button" type="button" id="dupliNick">중복확인</button><br>
+    <div id="customerContainer" class="hidden">
 
-        <input type="text" id="customerPhone" name="customerPhone" placeholder="전화번호 입력하세요">
-        <button class="join-button" type="button" id="dupliCustomerPhone">중복확인</button><br>
+        <div class="input-container">
+            <input type="text" id="nickname" name="nickname" placeholder="닉네임을 입력하세요" class="input-field">
+            <button type="button" id="dupliNick" class="check-button">중복확인</button>
+        </div>
+        <div class="input-container">
+            <input type="text" id="customerPhone" name="customerPhone" placeholder="전화번호 입력하세요" class="input-field">
+            <button type="button" id="dupliCustomerPhone" class="check-button">중복확인</button>
+        </div>
     </div>
 
-    <button class="join-button" type="button" id="signup">가입하기</button>
-    <button class="join-button" type="button" id="cancelButton">취소</button>
+
+    <button type="button" id="signup" class="submit-button">가입하기</button>
+    <button  type="button" id="cancelButton" class="cancle-button">취소</button>
 </form>
+</section>
+<div th:replace="fragments/header :: header"></div>
 </body>
 </html>

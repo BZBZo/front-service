@@ -1,4 +1,5 @@
 $(document).ready(() => {
+
     $('#signup').prop('disabled', true);  // 초기에 가입 버튼 비활성화
     let email = $('#email').val();
     let provider = $('#provider').val();
@@ -32,11 +33,6 @@ $(document).ready(() => {
         resetValidationStates();
     }
 
-    function updateSignupButtonState() {
-        // 모든 검사 상태가 true인지 확인
-        let allValid = Object.values(validationStates).every(status => status);
-        $('#signup').prop('disabled', !allValid);
-    }
 
     let confirmMessage = `${email}로 가입된 회원이 없습니다.\n${provider} 간편 가입을 진행하시겠습니까?`;
     if (confirm(confirmMessage)) {
@@ -209,8 +205,63 @@ $(document).ready(() => {
     } else {
         window.location.href = '/webs/signin';
     }
+    function updateSignupButtonState() {
+        // 모든 검사 상태가 true인지 확인
+        let allValid = Object.values(validationStates).every(status => status);
+        $('#signup').prop('disabled', !allValid);
+    }
 
     $('#cancelButton').click(function() {
         window.location.href = '/webs/signin';
     });
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const tabs = document.querySelectorAll(".tab");
+    const sellerContainer = document.getElementById("sellerContainer");
+    const customerContainer = document.getElementById("customerContainer");
+    const roleInput = document.getElementById("role");
+
+    // 탭 클릭 이벤트
+    tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+            // 모든 탭에서 active 클래스 제거
+            tabs.forEach((t) => t.classList.remove("active"));
+            tab.classList.add("active");
+
+            // 선택된 역할 가져오기
+            const selectedRole = tab.dataset.role;
+            roleInput.value = selectedRole;
+
+            // 폼 전환 처리
+            if (selectedRole === "ROLE_SELLER") {
+                sellerContainer.classList.remove("hidden");
+                customerContainer.classList.add("hidden");
+            } else if (selectedRole === "ROLE_CUSTOMER") {
+                customerContainer.classList.remove("hidden");
+                sellerContainer.classList.add("hidden");
+            }
+        });
+    });
+
+    // 불러온 provider 값에 따라 아이콘 강조
+    const provider = document.getElementById("provider").value;
+    const googleIcon = document.getElementById("google-icon");
+    const naverIcon = document.getElementById("naver-icon");
+    const kakaoIcon = document.getElementById("kakao-icon");
+
+    // 모든 아이콘 기본 색상 회색 처리
+    [googleIcon, naverIcon, kakaoIcon].forEach((icon) =>
+        icon.classList.remove("color")
+    );
+
+    // provider 값에 따라 해당 아이콘에 색상 복원
+    if (provider === "google") {
+        googleIcon.classList.add("color");
+    } else if (provider === "naver") {
+        naverIcon.classList.add("color");
+    } else if (provider === "kakao") {
+        kakaoIcon.classList.add("color");
+    }
+});
+
