@@ -1,13 +1,368 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/home.js}"></script>
-    <title>비지홈</title>
+    <script th:src="@{/js/layout.js}"></script>
+    <link th:href="@{/css/home.css}" rel="stylesheet">
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+    <title>home</title>
 </head>
 <body>
-환영해요
+<div th:replace="fragments/header :: header"></div>
+<section class="main-slider">
+    <div class="slider-track">
+        <div class="slide"><img th:src="@{/images/main_bn_01.jpg}" alt="슬라이드 1"></div>
+        <div class="slide"><img th:src="@{/images/main_bn_02.jpg}" alt="슬라이드 2"></div>
+        <div class="slide"><img th:src="@{/images/main_bn_03.jpg}" alt="슬라이드 3"></div>
+        <div class="slide"><img th:src="@{/images/main_bn_04.jpg}" alt="슬라이드 4"></div>
+        <div class="slide"><img th:src="@{/images/main_bn_05.jpg}" alt="슬라이드 5"></div>
+    </div>
+</section>
+
+
+<section class="titles-section">
+    <div class="title-wrapper">
+        <div class="title-large">지금 공구중 제품이에요</div>
+        <div class="title-small">바로 참여해보세요</div>
+    </div>
+    <div class="more-link">
+        <a href="#">더보기 &nbsp; →</a>
+    </div>
+</section>
+<section class="related-products">
+    <div class="related-products__carousel">
+
+        <div class="related-products__track-container">
+            <ul class="related-products__track">
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_00.jpg}" alt="리스트 이미지 1">
+                        </div>
+                        <span class="related-products__badge related-products__badge--ongoing">
+                            <img th:src="@{/images/group_ing.png}" alt="공구중 아이콘">
+                        </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_01.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                            <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                        </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_02.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                          <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                      </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_03.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                        <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                    </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_04.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                      <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                  </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <!-- 추가적인 슬라이드 -->
+            </ul>
+        </div>
+
+    </div>
+</section>
+<section>
+    <div class="mid_ad">
+        <img th:src="@{/images/mid_ad.jpg}"></div>
+</section>
+
+<section class="titles-section">
+    <div class="title-wrapper">
+        <div class="title-large">공구 가능 제품이에요</div>
+        <div class="title-small">가장 참여해보세요</div>
+    </div>
+    <div class="more-link">
+        <a href="#">더보기 &nbsp; →</a>
+    </div>
+</section>
+
+<section class="related-products">
+    <div class="related-products__carousel">
+        <div class="related-products__track-container">
+            <ul class="related-products__track">
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_00.jpg}" alt="리스트 이미지 1">
+                        </div>
+                        <span class="related-products__badge related-products__badge--ongoing">
+                                <img th:src="@{/images/group_ing.png}" alt="공구중 아이콘">
+                            </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_01.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                                <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                            </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_02.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                              <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                          </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_03.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                            <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                        </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_04.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                          <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                      </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <!-- 추가적인 슬라이드 -->
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="titles-section">
+    <div class="title-wrapper">
+        <div class="title-large">OOTD</div>
+        <div class="title-small">고객들이 구매하고 추천하는 제품</div>
+    </div>
+    <div class="more-link">
+        <a href="#">더보기 &nbsp; →</a>
+    </div>
+</section>
+<section class="ootd-slider">
+
+    <div class="ootd-slider-track-container">
+        <div class="ootd-slider-track">
+            <div class="ootd-slide"><img th:src="@{/images/ootd_list01.jpg}" alt="슬라이드 1"></div>
+            <div class="ootd-slide"><img th:src="@{/images/ootd_list02.jpg}" alt="슬라이드 2"></div>
+            <div class="ootd-slide"><img th:src="@{/images/ootd_list03.jpg}" alt="슬라이드 3"></div>
+            <div class="ootd-slide"><img th:src="@{/images/ootd_list04.jpg}" alt="슬라이드 4"></div>
+            <div class="ootd-slide"><img th:src="@{/images/ootd_list05.jpg}" alt="슬라이드 5"></div>
+        </div>
+    </div>
+
+</section>
+
+
+<section class="titles-section">
+    <div class="title-wrapper">
+        <div class="title-large">전체상품</div>
+        <div class="title-small">비지샵 다양한 상품 한눈에 보기</div>
+    </div>
+    <div class="more-link">
+        <a href="#">더보기 &nbsp; →</a>
+    </div>
+</section>
+<section class="related-products">
+    <div class="related-products__carousel">
+        <div class="related-products__track-container">
+            <ul class="related-products__track">
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_00.jpg}" alt="리스트 이미지 1">
+                        </div>
+                        <span class="related-products__badge related-products__badge--ongoing">
+                                <img th:src="@{/images/group_ing.png}" alt="공구중 아이콘">
+                            </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_01.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                                <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                            </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_02.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                              <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                          </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_03.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                            <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                        </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_04.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                          <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                      </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <!-- 추가적인 슬라이드 -->
+            </ul>
+        </div>
+    </div>
+</section>
+
+
+<section class="related-products">
+    <div class="related-products__carousel">
+        <button class="related-products__button related-products__button--prev">&lt;</button>
+        <div class="related-products__track-container">
+            <ul class="related-products__track">
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_05.jpg}" alt="리스트 이미지 1">
+                        </div>
+                        <span class="related-products__badge related-products__badge--ongoing">
+                                <img th:src="@{/images/group_ing.png}" alt="공구중 아이콘">
+                            </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_06.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                                <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                            </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_07.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                              <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                          </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_08.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                            <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                        </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <li class="related-products__slide">
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            <img th:src="@{/images/list_09.jpg}" alt="리스트 이미지 2">
+                        </div>
+                        <span class="related-products__badge related-products__badge--available">
+                          <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
+                      </span>
+                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
+                        <p class="related-products__price">1,980 원</p>
+                    </div>
+                </li>
+                <!-- 추가적인 슬라이드 -->
+            </ul>
+        </div>
+        <button class="related-products__button related-products__button--next">&gt;</button>
+    </div>
+</section>
+<div th:replace="fragments/footer :: footer"></div>
 </body>
 </html>
