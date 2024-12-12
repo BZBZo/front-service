@@ -22,28 +22,29 @@ public class UserApiController {
     @PostMapping("/check/businessNumber")
     public ResponseEntity<?> checkBusinessNumber(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader,
-            @RequestBody String businessNumber) {
+            @RequestParam String businessNumber) {
         return userService.checkBusinessNumber(authorizationHeader, businessNumber);
     }
 
     @PostMapping("/check/nickname")
     public ResponseEntity<?> checkNickname(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader,
-            @RequestBody String nickname) {
+            @RequestParam String nickname) {
+        System.out.println(nickname);
         return userService.checkNickname(authorizationHeader, nickname);
     }
 
     @PostMapping("/check/sellerPhone")
     public ResponseEntity<?> checkSellerPhone(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader,
-            @RequestBody String sellerPhone) {
+            @RequestParam String sellerPhone) {
         return userService.checkSellerPhone(authorizationHeader, sellerPhone);
     }
 
     @PostMapping("/check/customerPhone")
     public ResponseEntity<?> checkCustomerPhone(
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader,
-            @RequestBody String customerPhone) {
+            @RequestParam String customerPhone) {
         return userService.checkCustomerPhone(authorizationHeader, customerPhone);
     }
 
