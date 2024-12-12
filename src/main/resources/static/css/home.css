@@ -1,0 +1,264 @@
+/*메인3열 배너 */
+.slider {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    overflow: hidden; /* 영역 밖 슬라이드 숨김 */
+    position: relative;
+}
+
+.slider-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+}
+
+.slide {
+    flex: 0 0 700px; /* 슬라이드 너비 */
+    margin-right: 20px; /* 간격 */
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.slide img {
+    width: 100%;
+    height: 100%;
+}
+
+.slider::before,
+.slider::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: calc(50% - 360px); /* 반쪽만 보이도록 가림 */
+    background-color: white; /* 배경색 */
+    z-index: 10;
+}
+
+.slider::before {
+    left: 0;
+}
+
+.slider::after {
+    right: 0;
+}
+
+
+.ootd-slider {
+    position: relative;
+    max-width: 1060px; /* 배너 3개 + 간격 */
+    margin: 20px auto;
+    overflow: hidden;
+}
+
+.ootd-slider-track-container {
+    overflow: hidden;
+    width: 100%;
+}
+
+.ootd-slider-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.ootd-slide {
+    flex: 0 0 auto;
+    width: 344px; /* 배너 너비 */
+    margin-right: 10px; /* 배너 간 간격 */
+    list-style: none;
+}
+
+.ootd-slide img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* 화살표 버튼 */
+.ootd-slider__button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+}
+
+.ootd-slider__button img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.ootd-slider__button--prev {
+    left: -50px; /* 왼쪽 버튼 위치 */
+}
+
+.ootd-slider__button--next {
+    right: -50px; /* 오른쪽 버튼 위치 */
+}
+
+
+
+.titles-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1020px;
+    margin: 0 auto;
+    padding: 70px 40px 0 0px;
+    width: 100%;
+}
+section.main-slider {
+    margin: 20px;
+}
+/* 제목 래퍼 */
+.title-wrapper {
+    display: flex;
+    align-items: center; /* 세로 가운데 정렬 */
+    gap: 15px; /* 두 텍스트 사이 간격 */
+}
+
+/* 큰 제목 스타일 */
+.title-large {
+    font-size: 24px; /* 큰 글자 크기 */
+    font-weight: 700; /* 굵은 글씨 */
+    color: #000; /* 글자 색상 */
+}
+
+/* 작은 제목 스타일 */
+.title-small {
+    font-size: 16px; /* 작은 글자 크기 */
+    font-weight: 400; /* 얇은 글씨 */
+    color: #666; /* 글자 색상 */
+}
+
+/* 더보기 링크 */
+.more-link a {
+    text-decoration: none; /* 밑줄 제거 */
+    font-size: 18px; /* 글자 크기 */
+    font-weight: 600; /* 중간 굵기 */
+    color: #000; /* 링크 색상 */
+    transition: color 0.3s ease; /* 호버 전환 효과 */
+}
+
+.more-link a:hover {
+    color: #555; /* 호버 시 색상 변경 */
+}
+/*제목 텍스트 여기까지*/
+
+/* 관련상품 시작이라고 쓰고 재활용 슬라이드*/
+.related-products {
+    max-width: 1000px; /* 전체 슬라이더 너비 */
+    margin: 0 auto;
+    overflow: hidden; /* 양옆 잘린 부분 가리기 */
+    position: relative;
+}
+
+.related-products__title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Carousel */
+.related-products__carousel {
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.related-products__track-container {
+    overflow: hidden;
+
+    width: 100%;
+}
+
+.related-products__track {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+    will-change: transform;
+    justify-content: flex-end;
+}
+.related-products__slide {
+    flex: 0 0 185px;
+    margin-right: 15px;
+    list-style: none;
+}
+
+.related-products__card {
+    text-align: left;
+    border-radius: 10px;
+
+}
+
+.related-products__image {
+    width: 100%;
+
+
+    border-radius: 10px;
+}
+
+.related-products__image img {
+    width: 100%; /* 간격에 맞게 이미지 크기 조정 */
+    border-radius: 10px;
+}
+
+.related-products__badge {
+    display: inline-block;
+    line-height: 0;
+}
+
+.related-products__badge img {
+    height: 24px;
+    width: auto;
+    display: block;
+}
+
+.related-products__name {
+    font-size: 16px;
+    font-weight: normal;
+    margin: 5px 0;
+}
+
+.related-products__price {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* Carousel Button */
+.related-products__button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    color: #333;
+}
+
+.related-products__button--prev {
+    left: -20px;
+}
+
+.related-products__button--next {
+    right: -20px;
+}
+
+
+.mid_ad img {
+    width: 100%;
+    padding-left: 10px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: block;
+}

@@ -3,36 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Header</title>
+    <title>Header Fragment</title>
 </head>
 <body>
 <header class="b2-header" th:fragment="header">
-    <!-- 로고 영역 -->
     <div class="b2-logo">
         <a th:href="@{/}">
             <img src="/images/logo.png" alt="B2샵 로고">
         </a>
     </div>
-
-    <!-- 네비게이션 메뉴 -->
     <nav class="b2-nav-menu">
         <ul>
-            <li><a th:href="@{/home}">HOME</a></li>
+            <li><a th:href="@{/webs/loginSuccess}">HOME</a></li>
             <li><a th:href="@{/purchase}">콩동구매</a></li>
             <li><a th:href="@{/community}">콩떡찰떡</a></li>
             <li><a th:href="@{/products}">콩나물</a></li>
         </ul>
     </nav>
-
-    <!-- 유저 메뉴 -->
-    <div class="b2-user-menu">
-        <span th:if="${userName != null}" th:text="'안녕하세요, ' + ${userName} + ' 님!'"></span>
-        <a th:href="@{/logout}">로그아웃</a>
-        <a th:href="@{/ad/write}">광고등록</a>
-        <a th:href="@{/ad/list}">광고리스트</a>
-    </div>
-
-    <!-- 아이콘 메뉴 -->
     <div class="b2-icons">
         <a th:href="@{/cart}" class="b2-cart-icon">
             <img src="/images/cart_icon.png" alt="장바구니">
@@ -40,12 +27,29 @@
         <a th:href="@{/profile}" class="b2-profile-icon">
             <img src="/images/my_icon.png" alt="프로필">
         </a>
-        <a th:href="@{/menu}" class="b2-menu-icon">
+        <a href="javascript:void(0);" class="b2-menu-icon" id="megaMenuButton">
             <img src="/images/mega_menu.png" alt="메뉴">
         </a>
     </div>
-
-
 </header>
+
+<div id="megaMenu" class="mega-menu hidden">
+    <div class="menu-overlay">
+        <button class="close-button" id="closeMegaMenu">&times;</button>
+        <div class="menu-content">
+            <h2>내 정보</h2>
+            <ul>
+                <li><a th:href="@{/profile}">회원 정보 수정</a></li>
+                <li><a th:href="@{/myMarket}">MY MARKET</a></li>
+            </ul>
+            <h2>판매 정보</h2>
+            <ul>
+                <li><a th:href="@{/salesStatus}">판매현황</a></li>
+                <li><a th:href="@{/ad/status}">광고현황</a></li>
+                <li><a th:href="@{/inquiries}">문의현황</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 </body>
 </html>
