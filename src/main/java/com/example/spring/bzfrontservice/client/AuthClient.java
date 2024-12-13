@@ -4,13 +4,15 @@ import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @FeignClient(name="authClient", url="${bzbzo.bz-auth-service-url}")
 public interface AuthClient {
+
+    Logger logger = LoggerFactory.getLogger(AuthClient.class);
+
     @PostMapping("/join")
     ResponseEntity<JoinResponseDTO> join(@RequestBody JoinRequestDTO joinRequestDTO);
 
@@ -25,6 +27,9 @@ public interface AuthClient {
 
     @PostMapping("/check/customerPhone")
     ResponseEntity<?> checkCustomerPhone(@RequestHeader("Authorization") String authorizationHeader, @RequestParam String customerPhone);
+
+    @GetMapping("/user/info")
+    ResponseEntity<?> loadUserInfo(@RequestHeader("Authorization") String authorizationHeader);
 
     //
 //    @PostMapping("/refresh")
