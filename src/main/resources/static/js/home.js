@@ -1,25 +1,31 @@
-// token을 localStorage에 저장하기 위한 코드
-document.addEventListener('DOMContentLoaded', async function() {
-    try {
-        const response = await fetch('http://localhost:8085/auths/token', {
-            method: 'GET',
-            credentials: 'include' // 쿠키를 포함하여 요청
-        });
+// $(document).ready(() => {
+//     setupAjax();
+//     checkToken();
+// });
 
-        if (response.ok) {
-            const data = await response.json();
-            if (data.token) {
-                localStorage.setItem('accessToken', data.token);
-                console.log('Token stored in localStorage');
-            }
-            // 홈 페이지로 이동하거나 성공 메시지 표시
-        } else {
-            console.error('Failed to retrieve token');
+$(document).ready(function() {
+    $.ajax({
+        type: 'POST',
+        url: '/get-token', // 쿠키에서 accessToken을 받아오는 엔드포인트
+        contentType: 'application/json; charset=utf-8', // 전송 데이터의 타입
+        dataType: 'json', // 서버에서 받을 데이터의 타입
+        xhrFields: {
+            withCredentials: true // 쿠키를 포함한 요청을 보냄
+        },
+        success: function(response) {
+            // 성공적으로 응답을 받은 경우
+            console.log('Access토큰을 성공적으로 받았습니다:', response);
+            localStorage.setItem('accessToken', response.accessToken);
+            setupAjax();
+            checkToken();
+        },
+        error: function(xhr, status, error) {
+            // 요청 실패한 경우
+            console.log('토큰 요청에 실패했습니다:', error);
         }
-    } catch (error) {
-        console.error('Error fetching token:', error);
-    }
+    });
 });
+
 document.addEventListener("DOMContentLoaded", () => {
     // ************ 메인 3열 배너 슬라이드 ************
     const sliderTrack = document.querySelector(".slider-track");
