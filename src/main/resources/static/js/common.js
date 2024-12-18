@@ -1,3 +1,24 @@
+let getToken =()=>{
+    $.ajax({
+        type: 'POST',
+        url: '/get-token', // 쿠키에서 accessToken을 받아오는 엔드포인트
+        contentType: 'application/json; charset=utf-8', // 전송 데이터의 타입
+        dataType: 'json', // 서버에서 받을 데이터의 타입
+        xhrFields: {
+            withCredentials: true // 쿠키를 포함한 요청을 보냄
+        },
+        success: function(response) {
+            // 성공적으로 응답을 받은 경우
+            console.log('Access토큰을 성공적으로 받았습니다:', response);
+            localStorage.setItem('accessToken', response.accessToken);
+        },
+        error: function(xhr, status, error) {
+            // 요청 실패한 경우
+            console.log('토큰 요청에 실패했습니다:', error);
+        }
+    });
+}
+
 let setupAjax = () => {
     // 모든 Ajax 요청에 JWT Access Token을 포함
     $.ajaxSetup({
@@ -34,17 +55,18 @@ let checkToken = () => {
             return response.json(); // JSON 형태의 응답 받기
         })
         .then(data => {
-            // ValidTokenResponseDTO의 statusNum으로 검증 결과 판단
-            switch (data.statusNum) {
+            const statusNum = Number(data.statusNum);
+            console.log('검증 결과 : ', statusNum);
+            switch (statusNum) {
                 case 1: // 유효한 토큰
-                    console.log('토큰이 유효합니다.');
+                    console.log('Access Token이 유효합니다.');
                     break;
                 case 2: // 만료된 토큰
-                    console.warn('토큰이 만료되었습니다.');
+                    console.warn('Access Token이 만료되었습니다.');
                     handleTokenExpiration();
                     break;
                 case 3: // 유효하지 않은 토큰
-                    console.warn('유효하지 않은 토큰입니다.');
+                    console.warn('유효하지 않은 Access Token입니다.');
                     handleTokenExpiration();
                     break;
                 default: // 알 수 없는 상태 코드
@@ -75,6 +97,10 @@ let handleTokenExpiration = () => {
                 // 새로운 Access Token을 로컬스토리지에 저장
                 localStorage.setItem('accessToken', response.accessToken);
                 console.log('새로운 access token을 local storage에 저장하였습니다.')
+                document.cookie = `Authorization=${response.accessToken}; path=/; secure; samesite=Strict`;
+                setupAjax();
+                console.log('새로운 access token을 쿠키의 Authorization에 저장하였습니다.')
+                checkToken()
             } else {
                 failed();
             }
