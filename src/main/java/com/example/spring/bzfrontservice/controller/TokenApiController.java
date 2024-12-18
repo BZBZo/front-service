@@ -6,6 +6,7 @@ import com.example.spring.bzfrontservice.dto.ValidTokenRequestDTO;
 import com.example.spring.bzfrontservice.dto.ValidTokenResponseDTO;
 import com.example.spring.bzfrontservice.service.TokenService;
 import com.example.spring.bzfrontservice.util.CookieUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +38,14 @@ public class TokenApiController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh Token 유효하지 않습니다.");
         }
 
-//        CookieUtil.addCookie(response, "refreshToken", responseDTO.getRefreshToken(), 7*24*60*60);
+        CookieUtil.addCookie(response, "refreshToken", responseDTO.getRefreshToken(), 7*24*60*60);
+        // CookieUtil.addCookie(response, "Authorization", responseDTO.getAccessToken(), 2*60);
+
+        Cookie accessTokenCookie = new Cookie("Authorization", responseDTO.getAccessToken());
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setMaxAge(7 * 24 * 60 * 60); // 7일 유효
+        response.addCookie(accessTokenCookie);
 
         return ResponseEntity.ok(
                 TokenRefreshResponseDTO.builder()

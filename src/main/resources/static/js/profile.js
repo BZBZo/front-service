@@ -1,3 +1,14 @@
+$(document).ready(() => {
+    getToken()
+        .then(() => {
+            setupAjax();
+            return checkToken();
+        })
+        .catch(error => {
+            console.error('토큰을 가져오는 데 실패했습니다:', error);
+        });
+});
+
 // // JWT 토큰 처리 및 사용자 정보 로드
 // document.addEventListener('DOMContentLoaded', async () => {
 //     const token = localStorage.getItem('jwt');

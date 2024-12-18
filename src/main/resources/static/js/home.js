@@ -1,7 +1,12 @@
 $(document).ready(() => {
-    getToken();
-    setupAjax();
-    checkToken();
+    getToken()
+        .then(() => {
+            setupAjax();
+            return checkToken();
+        })
+        .catch(error => {
+            console.error('토큰을 가져오는 데 실패했습니다:', error);
+        });
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -246,10 +251,3 @@ document.addEventListener("DOMContentLoaded", () => {
         moveToOotdSlide(ootdCurrentIndex + 1);
     }, 3000);
 });
-
-
-
-
-
-
-
