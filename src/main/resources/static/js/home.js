@@ -1,29 +1,7 @@
-// $(document).ready(() => {
-//     setupAjax();
-//     checkToken();
-// });
-
-$(document).ready(function() {
-    $.ajax({
-        type: 'POST',
-        url: '/get-token', // 쿠키에서 accessToken을 받아오는 엔드포인트
-        contentType: 'application/json; charset=utf-8', // 전송 데이터의 타입
-        dataType: 'json', // 서버에서 받을 데이터의 타입
-        xhrFields: {
-            withCredentials: true // 쿠키를 포함한 요청을 보냄
-        },
-        success: function(response) {
-            // 성공적으로 응답을 받은 경우
-            console.log('Access토큰을 성공적으로 받았습니다:', response);
-            localStorage.setItem('accessToken', response.accessToken);
-            setupAjax();
-            checkToken();
-        },
-        error: function(xhr, status, error) {
-            // 요청 실패한 경우
-            console.log('토큰 요청에 실패했습니다:', error);
-        }
-    });
+$(document).ready(() => {
+    getToken();
+    setupAjax();
+    checkToken();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
