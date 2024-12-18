@@ -1,21 +1,21 @@
 let getToken =()=>{
-    $.ajax({
-        type: 'POST',
-        url: '/get-token', // 쿠키에서 accessToken을 받아오는 엔드포인트
-        contentType: 'application/json; charset=utf-8', // 전송 데이터의 타입
-        dataType: 'json', // 서버에서 받을 데이터의 타입
-        xhrFields: {
-            withCredentials: true // 쿠키를 포함한 요청을 보냄
-        },
-        success: function(response) {
-            // 성공적으로 응답을 받은 경우
-            console.log('Access토큰을 성공적으로 받았습니다:', response);
-            localStorage.setItem('accessToken', response.accessToken);
-        },
-        error: function(xhr, status, error) {
-            // 요청 실패한 경우
-            console.log('토큰 요청에 실패했습니다:', error);
-        }
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            type: 'POST',
+            url: '/get-token',
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            xhrFields: { withCredentials: true },
+            success: function(response) {
+                console.log('Access토큰을 성공적으로 받았습니다:', response);
+                localStorage.setItem('accessToken', response.accessToken);
+                resolve(); // 비동기 작업 완료 후 다음 작업 진행
+            },
+            error: function(xhr, status, error) {
+                console.log('토큰 요청에 실패했습니다:', error);
+                reject(error); // 에러 발생 시 처리
+            }
+        });
     });
 }
 
@@ -25,7 +25,7 @@ let setupAjax = () => {
         beforeSend: function(xhr) {
             let token = localStorage.getItem('accessToken'); // 저장된 Access Token 가져오기
             if (token) {
-                xhr.setRequestHeader('Authorization', token); // Authorization 헤더에 Access Token 추가 //'Bearer ' + token 처리 안해도되지않나
+                xhr.setRequestHeader('Authorization', 'Bearer ' + token); // Authorization 헤더에 Access Token 추가
             }
         }
     });
@@ -33,7 +33,7 @@ let setupAjax = () => {
 
 let checkToken = () => {
     let token = localStorage.getItem('accessToken');
-
+    console.log('checktoken : ', token);
     if (token === 'undefined' || token == null || token.trim() === '') {
         localStorage.removeItem('accessToken');
         handleTokenExpiration();
@@ -51,6 +51,7 @@ let checkToken = () => {
         .then(response => {
             if (!response.ok) {
                 throw new Error('서버 오류');
+                console.log(err);
             }
             return response.json(); // JSON 형태의 응답 받기
         })
@@ -81,36 +82,38 @@ let checkToken = () => {
         });
 }
 
-
 let handleTokenExpiration = () => {
+    console.log('토큰 갱신 요청 시작');
     $.ajax({
         type: 'POST',
-        url: '/refresh-token', // 새로운 Access Token 요청을 처리하는 엔드포인트
-        contentType: 'application/json; charset=utf-8', // 전송 데이터의 타입
-        dataType: 'json', // 서버에서 받을 데이터의 타입
+        url: '/refresh-token',
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
         xhrFields: {
-            withCredentials: true // 쿠키를 포함한 요청을 보냄
+            withCredentials: true
         },
         success: (response) => {
-            console.log('res :: ', response.accessToken)
-            if (response.status === 1) {
-                // 새로운 Access Token을 로컬스토리지에 저장
+            console.log('res :: ', response.accessToken);
+
+            if (response.accessToken && response.status === 1) {
+                // 새로운 Access Token 저장
                 localStorage.setItem('accessToken', response.accessToken);
-                console.log('새로운 access token을 local storage에 저장하였습니다.')
-                document.cookie = `Authorization=${response.accessToken}; path=/; secure; samesite=Strict`;
+                console.log('새로운 access token을 local storage에 저장하였습니다.');
+                document.cookie = `Authorization=${response.accessToken}; path=/; samesite=Lax`;
+                // setupAjax 호출
                 setupAjax();
-                console.log('새로운 access token을 쿠키의 Authorization에 저장하였습니다.')
-                checkToken()
+                checkToken();
             } else {
-                failed();
+                console.warn('Access Token이 null이거나 상태 코드가 1이 아님.');
+                failed(); // 로그인 필요 처리
             }
         },
-        error: (error) => {
-            // 실패 시 기본 동작
+        error: (xhr, status, error) => {
+            console.error('갱신 요청 오류:', xhr, status, error);
             failed();
         }
     });
-}
+};
 
 let failed = () => {
     alert('로그인이 필요합니다. 다시 로그인해주세요.');
