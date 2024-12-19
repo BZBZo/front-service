@@ -1,7 +1,6 @@
 package com.example.spring.bzfrontservice.client;
 
-import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
-import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
+import com.example.spring.bzfrontservice.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,4 +35,9 @@ public interface AuthClient {
 //    RefreshTokenClientResponseDTO refresh(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO);
 
 
+    @PostMapping("/token/validToken")
+    ResponseEntity<?> validToken(@RequestBody ValidTokenRequestDTO validTokenRequestDTO);
+
+    @PostMapping("/token/refresh")
+    RefreshTokenClientResponseDTO refresh(@RequestBody TokenRefreshRequestDTO tokenRefreshRequestDTO);
 }

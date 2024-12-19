@@ -7,6 +7,15 @@ $(document).ready(function() {
         return;
     }
 
+    getToken()
+        .then(() => {
+            setupAjax();
+            return checkToken();
+        })
+        .catch(error => {
+            console.error('토큰을 가져오는 데 실패했습니다:', error);
+        });
+
     loadUserInfo();
 
     // 사용자 정보 로드 함수
@@ -67,6 +76,14 @@ $(document).ready(function() {
 //             alert('값을 입력해주세요.');
 //             return;
 //         }
+
+// // JWT 토큰 처리 및 사용자 정보 로드
+// document.addEventListener('DOMContentLoaded', async () => {
+//     const token = localStorage.getItem('jwt');
+//     if (!token) {
+//         window.location.href = '/login';
+//         return;
+//     }
 //
 //         $.ajax({
 //             url: `/webs/check/${field}`,
