@@ -30,11 +30,6 @@ public interface AuthClient {
     @GetMapping("/user/info")
     ResponseEntity<?> loadUserInfo(@RequestHeader("Authorization") String authorizationHeader);
 
-    //
-//    @PostMapping("/token/refresh")
-//    ResponseEntity<TokenResponseStatus> refresh(@RequestHeader("Authorization") final String accessToken);
-
-
     @PostMapping("/token/validToken")
     ResponseEntity<?> validToken(@RequestBody ValidTokenRequestDTO validTokenRequestDTO);
 
