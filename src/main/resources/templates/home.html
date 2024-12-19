@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="ko">
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -13,6 +14,7 @@
 </head>
 <body>
 <div th:replace="fragments/header :: header"></div>
+        <button class="profile-edit-button" type="button" id="profileEdit">회원 정보 수정</button>
 <section class="main-slider">
     <div class="slider-track">
         <div class="slide"><img th:src="@{/images/main_bn_01.jpg}" alt="슬라이드 1"></div>

@@ -4,6 +4,8 @@ import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
 import com.example.spring.bzfrontservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/webs")
 public class UserApiController {
     private final UserService userService;
+
+    private static final Logger logger = LoggerFactory.getLogger(UserApiController.class);
 
     @PostMapping("/join")
     public ResponseEntity<JoinResponseDTO> join(@RequestBody JoinRequestDTO joinRequestDTO) {
@@ -46,6 +50,12 @@ public class UserApiController {
             @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorizationHeader,
             @RequestParam String customerPhone) {
         return userService.checkCustomerPhone(authorizationHeader, customerPhone);
+    }
+
+    @GetMapping("/user/info")
+    public ResponseEntity<?> loadUserInfo(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        // 요청 받은 Authorization 헤더 로그
+        return userService.loadUserInfo(authorizationHeader);
     }
 
 }

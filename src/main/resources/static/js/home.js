@@ -7,6 +7,12 @@ $(document).ready(() => {
         .catch(error => {
             console.error('토큰을 가져오는 데 실패했습니다:', error);
         });
+
+    // 회원 정보 수정 버튼을 클릭 시 /webs/profile 로 이동
+    $('#profileEdit').click(() => {
+        window.location.href = '/webs/profile';
+    });
+
 });
 
 document.addEventListener("DOMContentLoaded", () => {

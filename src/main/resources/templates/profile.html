@@ -2,10 +2,11 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>회원 정보 수정</title>
     <script th:src="@{/js/common.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script th:src="@{/js/profile.js}"></script>
     <link th:href="@{/css/profile.css}" rel="stylesheet">
+    <title>회원 정보 수정</title>
 </head>
 <body>
 <header>
@@ -23,77 +24,100 @@
 <main>
     <h2>회원 정보 수정</h2>
     <form class="edit-form">
-        <section class="form-section">
-            <h3>내 계정</h3>
+        <!-- ROLE_CUSTOMER 섹션 -->
+        <section class="form-section customer-section">
+            <h3>나의 기본 정보</h3>
             <div class="input-group">
-                <label>비밀번호</label>
+                <label>이메일</label>
+                <input type="text" id="email" readonly> <!-- 이메일을 읽기 전용으로 표시 -->
+                <span id="email-provider"></span> <!-- 이메일 제공자 표시 (예: kakao) -->
+            </div>
+
+            <h3>나의 스타일 정보</h3>
+            <div class="input-group">
+                <label>한줄 소개</label>
                 <div class="input-with-button">
-                    <input type="password" id="password">
-                    <button type="button" onclick="updatePassword()">변경</button>
+                    <input type="text" id="introduction">
+                    <button type="button" class="action-btn" data-field="introduction">등록</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>스타일 프로필 이미지</label>
+                <div class="input-with-button">
+                    <input type="file" id="profileImage" accept="image/*">
+                    <img class="preview-image">
+                    <button type="button" class="action-btn" data-field="profileImage">등록</button>
+                </div>
+            </div>
+
+            <h3>개인 정보</h3>
+            <div class="input-group">
+                <label>닉네임</label>
+                <div class="input-with-button">
+                    <input type="text" id="nickname">
+                    <button type="button" class="check-btn">중복확인</button>
+                    <button type="button" class="confirm-btn">변경</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>휴대폰 번호</label>
+                <div class="input-with-button">
+                    <input type="tel" id="phone">
+                    <button type="button" class="check-btn">중복확인</button>
+                    <button type="button" class="confirm-btn">변경</button>
                 </div>
             </div>
         </section>
 
-        <!-- USER_CUSTOMER 섹션 -->
-        <section class="form-section customer-section">
-            <h3>개인 정보</h3>
-            <!-- USER_CUSTOMER 섹션 -->
+        <!-- ROLE_SELLER 섹션 -->
+        <section class="form-section seller-section" style="display: none;">
+            <h3>나의 기본 정보</h3>
             <div class="input-group">
-                <label>닉네임</label>
-                <div class="input-with-buttons">
-                    <input type="text" id="nickname">
-                    <button type="button" onclick="checkNickname()">중복확인</button>
-                    <button type="button" onclick="updateNickname()">변경</button>
-                </div>
+                <label>이메일</label>
+                <input type="text" id="seller-email" readonly> <!-- 이메일을 읽기 전용으로 표시 -->
+                <span id="seller-email-provider"></span> <!-- 이메일 제공자 표시 (예: kakao) -->
             </div>
-
-            <div class="input-group">
-                <label>전화번호</label>
-                <div class="input-with-buttons">
-                    <input type="tel" id="phone">
-                    <button type="button" onclick="checkPhone()">중복확인</button>
-                    <button type="button" onclick="updatePhone()">변경</button>
-                </div>
-            </div>
-
-            <!-- USER_SELLER 섹션 -->
-            <div class="input-group">
-                <label>상점명</label>
-                <div class="input-with-buttons">
-                    <input type="text" id="shopName">
-                    <button type="button" onclick="checkShopName()">중복확인</button>
-                    <button type="button" onclick="updateShopName()">변경</button>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>전화번호</label>
-                <div class="input-with-buttons">
-                    <input type="tel" id="shopPhone">
-                    <button type="button" onclick="checkShopPhone()">중복확인</button>
-                    <button type="button" onclick="updateShopPhone()">변경</button>
-                </div>
-            </div>
-
             <div class="input-group">
                 <label>사업자 번호</label>
-                <div class="input-with-buttons">
-                    <input type="text" id="businessNumber">
-                    <button type="button" onclick="checkBusinessNumber()">중복확인</button>
-                    <button type="button" onclick="updateBusinessNumber()">변경</button>
+                <input type="text" id="businessNumber" readonly> <!-- 사업자 번호 읽기 전용 -->
+            </div>
+
+            <h3>나의 상점 정보</h3>
+            <div class="input-group">
+                <label>상점 소개</label>
+                <div class="input-with-button">
+                    <input type="text" id="shopIntroduction">
+                    <button type="button" class="action-btn" data-field="shopIntroduction">등록</button>
                 </div>
             </div>
             <div class="input-group">
-                <label>상점 이미지</label>
+                <label>나의 상점 이미지</label>
                 <div class="input-with-button">
                     <input type="file" id="shopImage" accept="image/*">
-                    <button type="button" onclick="updateShopImage()">변경</button>
+                    <img class="preview-image">
+                    <button type="button" class="action-btn" data-field="shopImage">등록</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>상점명</label>
+                <div class="input-with-button">
+                    <input type="text" id="shopName">
+                    <button type="button" class="check-btn">중복확인</button>
+                    <button type="button" class="confirm-btn">변경</button>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>전화번호</label>
+                <div class="input-with-button">
+                    <input type="tel" id="shopPhone">
+                    <button type="button" class="check-btn">중복확인</button>
+                    <button type="button" class="confirm-btn">변경</button>
                 </div>
             </div>
         </section>
 
         <div class="form-footer">
-            <button type="button" class="withdraw-btn" onclick="withdrawMembership()">회원탈퇴</button>
+            <button type="button" class="withdraw-btn">회원탈퇴</button>
         </div>
     </form>
 </main>
