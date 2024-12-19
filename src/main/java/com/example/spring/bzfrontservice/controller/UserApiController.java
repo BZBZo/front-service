@@ -55,7 +55,6 @@ public class UserApiController {
     @GetMapping("/user/info")
     public ResponseEntity<?> loadUserInfo(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         // 요청 받은 Authorization 헤더 로그
-        logger.info("Received Authorization Header: {}", authorizationHeader);
         return userService.loadUserInfo(authorizationHeader);
     }
 

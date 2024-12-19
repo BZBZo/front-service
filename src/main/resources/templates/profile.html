@@ -26,6 +26,13 @@
     <form class="edit-form">
         <!-- ROLE_CUSTOMER 섹션 -->
         <section class="form-section customer-section">
+            <h3>나의 기본 정보</h3>
+            <div class="input-group">
+                <label>이메일</label>
+                <input type="text" id="email" readonly> <!-- 이메일을 읽기 전용으로 표시 -->
+                <span id="email-provider"></span> <!-- 이메일 제공자 표시 (예: kakao) -->
+            </div>
+
             <h3>나의 스타일 정보</h3>
             <div class="input-group">
                 <label>한줄 소개</label>
@@ -64,6 +71,17 @@
 
         <!-- ROLE_SELLER 섹션 -->
         <section class="form-section seller-section" style="display: none;">
+            <h3>나의 기본 정보</h3>
+            <div class="input-group">
+                <label>이메일</label>
+                <input type="text" id="seller-email" readonly> <!-- 이메일을 읽기 전용으로 표시 -->
+                <span id="seller-email-provider"></span> <!-- 이메일 제공자 표시 (예: kakao) -->
+            </div>
+            <div class="input-group">
+                <label>사업자 번호</label>
+                <input type="text" id="businessNumber" readonly> <!-- 사업자 번호 읽기 전용 -->
+            </div>
+
             <h3>나의 상점 정보</h3>
             <div class="input-group">
                 <label>상점 소개</label>
@@ -99,7 +117,6 @@
         </section>
 
         <div class="form-footer">
-            <button type="button" class="complete-btn">수정 완료</button>
             <button type="button" class="withdraw-btn">회원탈퇴</button>
         </div>
     </form>

@@ -101,6 +101,16 @@ button {
     background-color: #333;
 }
 
+.confirm-btn:disabled {
+    background-color: #CCCCCC;  /* 비활성화 시 회색 배경 */
+    color: #888888;             /* 비활성화 시 회색 텍스트 */
+    cursor: not-allowed;        /* 비활성화 시 마우스 커서 비활성화 */
+}
+
+.confirm-btn:disabled:hover {
+    background-color: #CCCCCC;  /* 비활성화 시 마우스 오버에도 회색 유지 */
+}
+
 .form-footer {
     margin-top: 3rem;
     display: flex;

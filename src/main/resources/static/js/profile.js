@@ -1,5 +1,15 @@
 $(document).ready(function() {
     const token = localStorage.getItem('accessToken');
+    let validationStates = {
+        sellerIntroduceValid: true,
+        customerIntroduceValid: true,
+        sellerImageValid: true,
+        customerImageValid: true,
+        shopNameValid: false,
+        nicknameValid: false,
+        sellerPhoneValid: false,
+        customerPhoneValid: false,
+    }
 
     if (!token) {
         alert("로그인이 필요한 서비스입니다.")
@@ -31,7 +41,14 @@ $(document).ready(function() {
                     $('.customer-section').hide();
                     $('.seller-section').show();
 
-                    setFieldValue('shopName', userInfo.shopName);
+                    // 판매자 이메일을 readonly로 설정하고 제공자 정보 표시
+                    $('#seller-email').val(userInfo.email).prop('readonly', true);
+                    $('#seller-email-provider').text(userInfo.provider ? `(${userInfo.provider} 로그인)` : '');
+
+                    // 사업자 번호를 readonly로 설정
+                    $('#businessNumber').val(userInfo.businessNumber).prop('readonly', true);
+
+                    setFieldValue('shopName', userInfo.nickname);
                     setFieldValue('shopPhone', userInfo.phone);
                     setFieldValue('shopIntroduction', userInfo.introduce);
 
@@ -44,6 +61,10 @@ $(document).ready(function() {
                 } else {
                     $('.seller-section').hide();
                     $('.customer-section').show();
+
+                    // 고객 이메일을 readonly로 설정하고 제공자 정보 표시
+                    $('#email').val(userInfo.email).prop('readonly', true);
+                    $('#email-provider').text(userInfo.provider ? `(${userInfo.provider} 로그인)` : '');
 
                     setFieldValue('nickname', userInfo.nickname);
                     setFieldValue('phone', userInfo.phone);
@@ -64,7 +85,120 @@ $(document).ready(function() {
         });
     }
 
-    $('.confirm-btn').prop('disabled', true);  // 초기에 변경 버튼 비활성화
+    // // 초기에 변경 버튼 비활성화
+    // $('.confirm-btn').prop('disabled', true);
+    // $('.check-btn').prop('disabled', true);
+
+    // 입력 필드값 변경 시 확인 버튼 상태 초기화
+    function setFieldValue(field, value) {
+        const input = $(`#${field}`);
+        const checkBtn = input.siblings('.check-btn');
+        const confirmBtn = input.siblings('.confirm-btn');
+        let isChecked = false;
+
+        if (value) {
+            input.attr('placeholder', value);
+            updateButtonText(field, '변경');
+        } else {
+            input.attr('placeholder', '');
+            updateButtonText(field, '등록');
+        }
+
+        // 실시간으로 입력값 변경에 따라 중복 체크 버튼 상태 업데이트
+        input.on('input', function() {
+            const inputValue = input.val();
+            if (inputValue !== input.attr('placeholder')) {
+                checkBtn.prop('disabled', false);
+            } else {
+                checkBtn.prop('disabled', true);
+            }
+        });
+
+        // 중복 확인 버튼 클릭 시 처리
+        $(checkBtn).click(function() {
+            const value = input.val();
+            if (!value) {
+                alert('값을 입력해주세요.');
+                return;
+            }
+
+            // 기존 값과 입력값이 동일한지 확인
+            if (value === input.attr('placeholder')) {
+                alert('기존 정보와 동일합니다');
+                return;
+            }
+
+            let checkUrl = '';
+            // 중복 확인 API URL 설정
+            if (field === 'nickname') {
+                checkUrl = '/webs/check/nickname?nickname=';
+            } else if (field === 'phone') {
+                checkUrl = '/webs/check/customerPhone?customerPhone=';
+            } else if (field === 'shopName') {
+                checkUrl = '/webs/check/nickname?nickname='; // 같은 API를 사용하므로 shopName은 nickname 확인
+            } else if (field === 'shopPhone') {
+                checkUrl = '/webs/check/sellerPhone?sellerPhone=';
+            }
+
+            $.ajax({
+                url: checkUrl + value,
+                method: 'POST',
+                headers: {
+                    'Authorization': token
+                },
+                success: function(response) {
+                    alert(response.message);
+                    if (response.status === "available") {
+                        isChecked = true;
+                        confirmBtn.prop('disabled', false); // 중복 없으면 변경 버튼 활성화
+                    } else {
+                        isChecked = false;
+                        confirmBtn.prop('disabled', true);  // 중복이면 변경 버튼 비활성화
+                    }
+                },
+                error: function() {
+                    alert('중복 확인 중 오류가 발생했습니다.');
+                    confirmBtn.prop('disabled', true);  // 오류 시 변경 버튼 비활성화
+                }
+            });
+        });
+
+        // 변경 버튼 클릭 시 처리
+        $(confirmBtn).click(function() {
+            const value = input.val();
+            if (!value) {
+                alert('값을 입력해주세요.');
+                return;
+            }
+
+            if (!isChecked) {
+                alert('중복 확인을 먼저 진행해주세요.')
+                return;
+            }
+
+            $.ajax({
+                url: `/webs/update/${field}`,
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({ [field]: value }),
+                success: function() {
+                    alert('수정되었습니다.');
+                    loadUserInfo();
+                },
+                error: function() {
+                    alert('수정에 실패했습니다.');
+                }
+            });
+        });
+
+        function updateButtonText(field, text) {
+            $(`.action-btn[data-field="${field}"]`).text(text);
+        }
+    }
+
 
 //     $('.check-btn').click(function() {
 //         const input = $(this).closest('.input-with-button').find('input');
@@ -192,12 +326,6 @@ $(document).ready(function() {
 //         }
 //     });
 //
-//     // 수정 완료 버튼 클릭 이벤트
-//     $('.complete-btn').click(function() {
-//         if(confirm('수정을 완료하시겠습니까?')) {
-//             window.location.href = '/';
-//         }
-//     });
 //
 //     // 회원탈퇴 버튼 클릭 이벤트
 //     $('.withdraw-btn').click(function() {
@@ -220,17 +348,3 @@ $(document).ready(function() {
 //         }
 //     });
 });
-
-// function setFieldValue(field, value) {
-//     if (value) {
-//         $(`#${field}`).attr('placeholder', value);
-//         updateButtonText(field, '변경');
-//     } else {
-//         $(`#${field}`).attr('placeholder', '');
-//         updateButtonText(field, '등록');
-//     }
-// }
-//
-// function updateButtonText(field, text) {
-//     $(`.action-btn[data-field="${field}"]`).text(text);
-// }
