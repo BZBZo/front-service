@@ -10,4 +10,6 @@ spring:
 
 bzbzo:
   bz-auth-service-url: ${AUTH_SERVICE_URL:http://localhost:8085}/auths
+  bz-seller-service-url: ${SELLER_SERVICE_URL:http://localhost:8088}/seller
+  bz-ad-service-url: ${AD_SERVICE_URL:http://localhost:8089}/ad
 
