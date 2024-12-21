@@ -10,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const adTitleInput = document.querySelector('#adTitle');
             const adUrlInput = document.querySelector('#adUrl');
 
+            const adId = document.getElementById('adId').value;
+
             // 필수 입력 검증
             if (!adTitleInput.value.trim()) {
                 alert('광고명을 입력해주세요.');
@@ -40,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
                 .then(data => {
                     alert(data.message || '수정이 완료되었습니다.');
-                    window.location.href = '/ad/list'; // 수정 완료 후 목록 페이지로 이동
+                    window.location.href = `/ad/detail/${adId}`; // 수정 완료 후 목록 페이지로 이동
                 })
                 .catch(error => {
                     console.error('Error:', error);
