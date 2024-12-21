@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
             .then(response => {
                 if (response.ok) {
-                    alert('광고가 성공적으로 등록되었습니다.');
+                    alert(response.message);
                     window.location.href = '/ad/list'; // 등록 후 이동할 페이지
                 } else {
                     return response.text().then(text => { throw new Error(text); });
