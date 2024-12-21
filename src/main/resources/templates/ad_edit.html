@@ -13,7 +13,8 @@
         <header>
             <h1 class="title">광고 수정</h1>
         </header>
-        <form th:action="@{/ad/edit/{id}(id=${ad.id})}" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="adId" th:value="${ad.id}">
+        <form th:action="@{/api/ad/edit/{id}(id=${ad.id})}" method="post" enctype="multipart/form-data">
             <input type="hidden" name="_method" value="put">
 
             <!-- 광고영역 선택 -->

@@ -2,8 +2,10 @@ package com.example.spring.bzfrontservice.service;
 
 import com.example.spring.bzfrontservice.client.AdClient;
 import com.example.spring.bzfrontservice.dto.AdDTO;
+import com.example.spring.bzfrontservice.dto.AdEditRequestDTO;
 import com.example.spring.bzfrontservice.dto.AdWriteRequestDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,5 +20,13 @@ public class AdService {
 
     public AdDTO getAdDetail(Long id) {
         return adClient.getAdDetail(id);
+    }
+
+    public ResponseEntity<?> editAd(Long id, AdEditRequestDTO adEditRequestDTO) {
+        return adClient.editAd(id, adEditRequestDTO);
+    }
+
+    public Page<AdDTO> getAds(int page, int size) {
+        return adClient.getAds(page, size);
     }
 }

@@ -1,14 +1,14 @@
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.dto.AdEditRequestDTO;
 import com.example.spring.bzfrontservice.dto.AdWriteRequestDTO;
 import com.example.spring.bzfrontservice.service.AdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,5 +36,28 @@ public class AdApiController {
 
         return adService.writeAd(adWriteRequestDTO);
 
+    }
+
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<?> editAd(
+            @PathVariable Long id,
+            @RequestParam("adPosition") String adPosition,
+            @RequestParam("adStart") String adStart,
+            @RequestParam("adEnd") String adEnd,
+            @RequestParam("adTitle") String adTitle,
+            @RequestParam("adUrl") String adUrl,
+            @RequestParam(value = "adImage", required = false) MultipartFile adImage
+    ) {
+
+        AdEditRequestDTO adEditRequestDTO = AdEditRequestDTO.builder()
+                .adPosition(adPosition)
+                .adStart(adStart)
+                .adEnd(adEnd)
+                .adTitle(adTitle)
+                .adUrl(adUrl)
+                .adImage(adImage)
+                .build();
+
+        return adService.editAd(id, adEditRequestDTO);
     }
 }
