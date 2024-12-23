@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (selectedIds.length > 0) {
                 if (confirm(`선택한 ${selectedIds.length}개의 광고를 삭제하시겠습니까?`)) {
-                    fetch('/api/ad/delete', {
-                        method: 'POST',
+                    fetch('/api/ad/erase', {
+                        method: 'DELETE',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ ids: selectedIds }),
                     })

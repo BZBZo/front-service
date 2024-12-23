@@ -4,11 +4,14 @@ import com.example.spring.bzfrontservice.dto.AdEditRequestDTO;
 import com.example.spring.bzfrontservice.dto.AdWriteRequestDTO;
 import com.example.spring.bzfrontservice.service.AdService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -59,5 +62,11 @@ public class AdApiController {
                 .build();
 
         return adService.editAd(id, adEditRequestDTO);
+    }
+
+    @DeleteMapping("/erase")
+    public ResponseEntity<Map<String, String>> deleteAds(@RequestBody Map<String, List<Long>> request) {
+        List<Long> ids = request.get("ids");
+        return adService.deleteAd(ids);
     }
 }

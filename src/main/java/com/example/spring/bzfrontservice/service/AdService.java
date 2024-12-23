@@ -8,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -28,5 +32,9 @@ public class AdService {
 
     public Page<AdDTO> getAds(int page, int size) {
         return adClient.getAds(page, size);
+    }
+
+    public ResponseEntity<Map<String, String>> deleteAd(List<Long> ids) {
+        return adClient.deleteAd(ids);
     }
 }
