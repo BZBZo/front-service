@@ -8,6 +8,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @FeignClient(name="adClient", url="${bzbzo.bz-ad-service-url}")
 public interface AdClient {
     @PostMapping("/write")
@@ -21,4 +24,7 @@ public interface AdClient {
 
     @GetMapping("/list")
     Page<AdDTO> getAds(@RequestParam("page") int page, @RequestParam("size") int size);
+
+    @DeleteMapping("/erase")
+    ResponseEntity<Map<String, String>> deleteAd(@RequestBody List<Long> ids);
 }
