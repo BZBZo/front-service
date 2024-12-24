@@ -27,4 +27,7 @@ public interface AdClient {
 
     @DeleteMapping("/erase")
     ResponseEntity<Map<String, String>> deleteAd(@RequestBody List<Long> ids);
+
+    @PostMapping("/updateStatus/{id}")
+    ResponseEntity<Map<String, String>> updateStatus(@PathVariable Long id, @RequestBody String newStatus);
 }
