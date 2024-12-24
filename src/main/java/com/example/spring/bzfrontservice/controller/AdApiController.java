@@ -69,4 +69,17 @@ public class AdApiController {
         List<Long> ids = request.get("ids");
         return adService.deleteAd(ids);
     }
+
+    @PostMapping("/updateStatus/{id}")
+    public ResponseEntity<Map<String, String>> updateStatus(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> request) {
+        String newStatus = request.get("status");
+
+        if (newStatus == null || newStatus.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "상태 값이 제공되지 않았습니다."));
+        }
+
+        return adService.updateStatus(id, newStatus);
+    }
 }

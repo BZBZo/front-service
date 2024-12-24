@@ -37,4 +37,8 @@ public class AdService {
     public ResponseEntity<Map<String, String>> deleteAd(List<Long> ids) {
         return adClient.deleteAd(ids);
     }
+
+    public ResponseEntity<Map<String, String>> updateStatus(Long id, String newStatus) {
+        return adClient.updateStatus(id, newStatus);
+    }
 }
