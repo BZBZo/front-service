@@ -8,6 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -41,5 +45,40 @@ public class UserService {
         logger.info("UserService received Authorization Header: {}", authorizationHeader);
 
         return authClient.loadUserInfo(authorizationHeader);
+    }
+
+    public boolean updateField(String authorizationHeader, String field, String newValue) {
+        try {
+            Map<String, String> valueMap = new HashMap<>();
+            valueMap.put(field, newValue);
+            ResponseEntity<?> response = authClient.updateUserField(authorizationHeader, field, valueMap);
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            logger.error("Error updating user field: {}", e.getMessage());
+            return false;
+        }
+    }
+
+//    이미지 업로드 (미완)
+//    public boolean updateImage(String authorizationHeader, String field, MultipartFile file) {
+//        try {
+//            ResponseEntity<?> response = authClient.updateUserImage(authorizationHeader, field, file);
+//            return response.getStatusCode().is2xxSuccessful();
+//        } catch (Exception e) {
+//            logger.error("Error updating user image: {}", e.getMessage());
+//            return false;
+//        }
+//    }
+
+
+
+    public boolean deleteUser(String authorizationHeader) {
+        try {
+            ResponseEntity<String> response = authClient.deleteUser(authorizationHeader);
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            logger.error("Error deleting user: {}", e.getMessage());
+            return false;
+        }
     }
 }
