@@ -1,8 +1,12 @@
 package com.example.spring.bzfrontservice.dto;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
+@Builder
 public class JoinRequestDTO {
     private Long memberNo;
     private String email;

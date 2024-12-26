@@ -70,6 +70,11 @@ public class TokenApiController {
 
     @PostMapping("/validToken")
     public ResponseEntity<?> validToken( @RequestBody ValidTokenRequestDTO validTokenRequestDTO) {
+        // 토큰을 디코드
+
+
+
+
         System.out.println("컨트롤러 받는 값 : " + validTokenRequestDTO.getToken());
         return tokenService.validToken(validTokenRequestDTO);
     }
