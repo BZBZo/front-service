@@ -7,8 +7,8 @@ $(document).ready(() => {
         businessNumberValid: false,
         shopNameValid: false,
         sellerPhoneValid: false,
-        customerPhoneValid: false,
-        nicknameValid: false
+        customerPhoneValid: true,
+        nicknameValid: true
     };
 
     function resetValidationStates() {
@@ -24,13 +24,11 @@ $(document).ready(() => {
         $('#businessNumber').val('');
         $('#shopName').val('');
         $('#sellerPhone').val('');
-        resetValidationStates();
     }
 
     function resetCustomerInputs() {
         $('#nickname').val('');
         $('#customerPhone').val('');
-        resetValidationStates();
     }
 
 
@@ -49,6 +47,7 @@ $(document).ready(() => {
                 $('#sellerContainer').show();
                 $('#customerContainer').hide();
                 resetCustomerInputs(); // 초기화 고객 입력
+                resetValidationStates();
                 validationStates.nicknameValid = true;
                 validationStates.customerPhoneValid = true;
                 updateSignupButtonState();
@@ -56,6 +55,7 @@ $(document).ready(() => {
                 $('#sellerContainer').hide();
                 $('#customerContainer').show();
                 resetSellerInputs(); // 초기화 판매자 입력
+                resetValidationStates();
                 validationStates.businessNumberValid = true;
                 validationStates.shopNameValid = true;
                 validationStates.sellerPhoneValid = true;
@@ -63,7 +63,6 @@ $(document).ready(() => {
             }
 
         });
-
 
         // 사업자번호 중복 검사
         $('#dupliBusinessNum').click(function() {
@@ -168,12 +167,22 @@ $(document).ready(() => {
         });
 
         $('#signup').click(() => {
-            console.log("가입 버튼이 클릭되었습니다.");  // 테스트 로그 추가
+            let roleValue = $('#role').val();
+            console.log("Role value on signup:", roleValue); // signup 클릭 시 role 값 확인
+
+            if (!roleValue) {
+                alert("회원 유형을 선택해주세요.");
+                return; // role 값이 없는 경우 요청을 중단
+            }
+
             let formData = {
-                email: email,
-                provider: provider,
-                role: $('#role').val()
+                email: $('#email').val(),
+                provider: $('#provider').val(),
+                role: roleValue // role 값 포함
             };
+
+            console.log("가입 버튼이 클릭되었습니다.");  // 테스트 로그 추가
+            console.log("Role value on signup:", $('#role').val());
 
             if ($('#role').val() === 'ROLE_SELLER') {
                 formData.businessNumber = $('#businessNumber').val();
@@ -186,6 +195,7 @@ $(document).ready(() => {
                 formData.phone = $('#customerPhone').val();
             }
 
+            console.log("FormData before sending:", formData);
             $.ajax({
                 type: 'POST',
                 url: '/webs/join',
@@ -199,7 +209,7 @@ $(document).ready(() => {
                 error: function(error) {
                     console.error('오류 발생:', error);
                     alert('회원가입 중 오류가 발생했습니다.');
-                    window.location.href = "/webs/join"
+                    window.location.href = "/webs/signin"
                 }
             });
         });
@@ -223,18 +233,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const customerContainer = document.getElementById("customerContainer");
     const roleInput = document.getElementById("role");
 
+    // 기본값 설정
+    const defaultRole = document.querySelector(".tab.active").dataset.role;
+    roleInput.value = defaultRole;
+    console.log("Default role set to:", defaultRole);
+
     // 탭 클릭 이벤트
     tabs.forEach((tab) => {
         tab.addEventListener("click", () => {
-            // 모든 탭에서 active 클래스 제거
             tabs.forEach((t) => t.classList.remove("active"));
             tab.classList.add("active");
 
-            // 선택된 역할 가져오기
             const selectedRole = tab.dataset.role;
+            console.log("Role selected:", selectedRole); // 디버깅 로그
             roleInput.value = selectedRole;
 
-            // 폼 전환 처리
             if (selectedRole === "ROLE_SELLER") {
                 sellerContainer.classList.remove("hidden");
                 customerContainer.classList.add("hidden");
