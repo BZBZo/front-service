@@ -61,18 +61,23 @@ document.addEventListener('DOMContentLoaded', () => {
             body: formData,
         })
             .then(response => {
-                if (response.ok) {
-                    alert(response.message);
-                    window.location.href = '/ad/list'; // 등록 후 이동할 페이지
-                } else {
-                    return response.text().then(text => { throw new Error(text); });
+                if (!response.ok) {
+                    return response.json().then(err => {
+                        throw new Error(err.message || '서버 오류');
+                    });
                 }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                window.location.href = '/ad/list'; // 등록 후 이동할 페이지
             })
             .catch(error => {
                 console.error('Error:', error);
                 alert('광고 등록 중 오류가 발생했습니다.\n' + error.message);
             });
     });
+
 
     // 이미지 및 버튼 초기화 함수
     function resetImagePreview() {

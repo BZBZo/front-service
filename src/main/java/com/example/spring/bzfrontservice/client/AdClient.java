@@ -7,14 +7,22 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
 
 @FeignClient(name="adClient", url="${bzbzo.bz-ad-service-url}")
 public interface AdClient {
-    @PostMapping("/write")
-    ResponseEntity<?> writeAd(@RequestBody AdWriteRequestDTO adWriteRequestDTO);
+    @PostMapping(value = "/write", consumes = "multipart/form-data")
+    ResponseEntity<?> writeAd(
+            @RequestPart("adArea") String adPosition,
+            @RequestPart("startDate") String adStart,
+            @RequestPart("endDate") String adEnd,
+            @RequestPart("adName") String adTitle,
+            @RequestPart("adLink") String adUrl,
+            @RequestPart("adImage") MultipartFile adImage
+    );
 
     @GetMapping("/detail/{id}")
     AdDTO getAdDetail(@PathVariable Long id);
