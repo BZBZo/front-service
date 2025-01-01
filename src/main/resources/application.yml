@@ -4,6 +4,10 @@ server:
 spring:
   application:
     name: bz-front-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/java_basic?useSSL=false&characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 12341234
   web:
     resources:
       static-locations: classpath:/static/
