@@ -28,7 +28,13 @@ public interface AdClient {
     AdDTO getAdDetail(@PathVariable Long id);
 
     @PostMapping("/edit/{id}")
-    ResponseEntity<?> editAd(@PathVariable Long id, @RequestBody AdEditRequestDTO adEditRequestDTO);
+    ResponseEntity<?> editAd(@PathVariable Long id,
+                             @RequestPart("adArea") String adPosition,
+                             @RequestPart("startDate") String adStart,
+                             @RequestPart("endDate") String adEnd,
+                             @RequestPart("adName") String adTitle,
+                             @RequestPart("adLink") String adUrl,
+                             @RequestPart("adImage") MultipartFile adImage);
 
     @GetMapping("/list")
     Page<AdDTO> getAds(@RequestParam("page") int page, @RequestParam("size") int size);
