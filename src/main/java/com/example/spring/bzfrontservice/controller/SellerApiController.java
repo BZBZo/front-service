@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.controller;
 import com.example.spring.bzfrontservice.dto.ProdUploadRequestDTO;
 import com.example.spring.bzfrontservice.dto.ProdUploadResponseDTO;
 import com.example.spring.bzfrontservice.service.SellerService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,28 +23,109 @@ public class SellerApiController {
     private final SellerService sellerService;
 
     // 상품 등록 (POST)
-    @PostMapping
+    @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<ProdUploadResponseDTO> addProduct(
-            @ModelAttribute ProdUploadRequestDTO dto,
-            @RequestPart("mainPicture") MultipartFile mainPicture) {
+            @RequestPart("mainPicture") MultipartFile mainPicture,
+            @RequestPart("productData") String productDataJson) {
+
         try {
-            Long productId = sellerService.save(dto, mainPicture); // 수정된 서비스 호출
-            log.info("Product ID: {}", productId);
-            return ResponseEntity.ok(
-                    ProdUploadResponseDTO.builder()
-                            .url("/seller/product/list")
-                            .mainPicturePath(dto.getMainPicturePath())
-                            .build()
-            );
+            // JSON 문자열을 객체로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            ProdUploadRequestDTO dto = objectMapper.readValue(productDataJson, ProdUploadRequestDTO.class);
+
+            log.info("Received isCong value: {}", dto.isCong());
+
+            // 상품 등록 처리 (productId를 반환하지 않음)
+            sellerService.save(dto, mainPicture); // 수정된 서비스 호출
+            log.info("Product registered successfully");
+
+            // 응답 DTO 생성 후 반환 (productId를 제거)
+            ProdUploadResponseDTO responseDTO = ProdUploadResponseDTO.builder()
+                    .url("/seller/product/list")
+                    .mainPicturePath(dto.getMainPicturePath())
+                    .build();  // productId가 없으므로 productId 부분을 제거
+
+            log.info("Returning response: {}", responseDTO);
+            return ResponseEntity.ok(responseDTO);  // 상품 등록 성공 응답
+
         } catch (Exception e) {
             log.error("상품 등록 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     ProdUploadResponseDTO.builder()
-                            .url("/seller/product/upload")
+                            .url("/seller/product/upload") // 실패 시 상품 등록 페이지로 돌아가도록 처리
                             .build()
             );
         }
     }
+
+//    // 상품 등록 (POST)
+//    @PostMapping(value = "/product", consumes = "multipart/form-data")
+//    public ResponseEntity<ProdUploadResponseDTO> addProduct(
+//            @RequestPart("mainPicture") MultipartFile mainPicture,
+//            @RequestPart("productData") ProdUploadRequestDTO dto) {
+//
+//        try {
+//            log.info("Received isCong value: {}", dto.isCong());  // isCong 값 확인
+//
+//            // 상품 저장 서비스 호출
+//            Long productId = sellerService.save(dto, mainPicture);
+//
+//            // 응답 DTO 생성 후 반환
+//            ProdUploadResponseDTO responseDTO = ProdUploadResponseDTO.builder()
+//                    .url("/seller/product/list")
+//                    .mainPicturePath(dto.getMainPicturePath())
+//                    .productId(productId)  // 상품 ID 포함
+//                    .build();
+//
+//            log.info("Returning response: {}", responseDTO);
+//            return ResponseEntity.ok(responseDTO);  // 성공적으로 상품 등록 후 응답
+//
+//        } catch (Exception e) {
+//            log.error("상품 등록 실패", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+//                    ProdUploadResponseDTO.builder()
+//                            .url("/seller/product/upload") // 실패 시 상품 등록 페이지로 돌아가도록 처리
+//                            .build()
+//            );
+//        }
+//    }
+
+
+//    @PostMapping(consumes = "multipart/form-data")
+//    public ResponseEntity<ProdUploadResponseDTO> addProduct(
+//            @RequestPart("mainPicture") MultipartFile mainPicture,
+//            @RequestPart("productData") String productDataJson) {
+//
+//        try {
+//            // JSON 문자열을 객체로 변환
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            ProdUploadRequestDTO dto = objectMapper.readValue(productDataJson, ProdUploadRequestDTO.class);
+//
+//            log.info("Received isCong value: {}", dto.isCong());  // isCong 값 확인
+//
+//            Long productId = sellerService.save(dto, mainPicture); // 수정된 서비스 호출
+//            log.info("Product ID: {}", productId);
+//            log.info("Product ID after save: {}", productId);  // productId 로그 찍기
+//
+//            // 응답 DTO 생성 후 반환
+//            ProdUploadResponseDTO responseDTO = ProdUploadResponseDTO.builder()
+//                    .url("/seller/product/list")
+//                    .mainPicturePath(dto.getMainPicturePath())
+//                    .productId(productId)
+//                    .build();
+//
+//            log.info("Returning response: {}", responseDTO);
+//            return ResponseEntity.ok(responseDTO); // 상품 등록이 성공적이면 200 OK와 함께 반환
+//
+//        } catch (Exception e) {
+//            log.error("상품 등록 실패", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+//                    ProdUploadResponseDTO.builder()
+//                            .url("/seller/product/upload") // 실패 시 상품 등록 페이지로 돌아가도록 처리
+//                            .build()
+//            );
+//        }
+//    }
 
     // 상품 수정 (PUT)
     @PutMapping("/update/{id}")

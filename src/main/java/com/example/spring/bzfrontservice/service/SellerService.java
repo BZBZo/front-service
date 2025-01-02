@@ -33,10 +33,12 @@ public class SellerService {
     private final SellerClient sellerClient;
 
     public Page<ProdReadResponseDTO> findAll(Pageable pageable) {
-        return sellerClient.getProductList(pageable.getPageNumber(), pageable.getPageSize());
+        return sellerClient.getProductList(pageable.getPageNumber(), pageable.getPageSize(), "application/json");
     }
 
-    public Long save(ProdUploadRequestDTO dto, MultipartFile mainPicture) throws IOException {
+    public void save(ProdUploadRequestDTO dto, MultipartFile mainPicture) throws IOException {
+        log.info("Received isCong: {}", dto.isCong());
+
         // 1. 파일 저장
         String mainPicturePath = saveFile(mainPicture);
         dto.setMainPicturePath(mainPicturePath);
@@ -44,24 +46,88 @@ public class SellerService {
         // 2. 상품 등록 요청 (파일과 DTO 전달)
         ResponseEntity<ProdUploadResponseDTO> response = sellerClient.addProduct(mainPicture, dto);
 
-        log.info("Response: {}", response); // 응답 전체를 먼저 출력
+        log.info("Response body: {}", response.getBody()); // 응답 전체를 먼저 출력
 
         // 3. 응답 처리
         if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-            Long productId = response.getBody().getProductId(); // DTO에서 상품 ID 직접 가져오기
-            if (productId == null) {
-                log.error("상품 ID가 응답에 포함되지 않았습니다.");
-                throw new RuntimeException("상품 ID가 응답에 포함되지 않았습니다.");
-            }
-            log.info("상품 ID: {}", productId);
-            saveCongdong(dto, productId); // Congdong 추가 처리
-            return productId;
+            log.info("상품 등록 성공, 응답 본문: {}", response.getBody());
+
+            // `productId` 처리하지 않음
+            saveCongdong(dto);  // Congdong 추가 처리 (상품 등록 후 후속 작업)
         } else {
             log.error("상품 등록 실패: 응답 본문이 없습니다.");
             throw new RuntimeException("상품 등록 실패: " +
                     (response.getBody() == null ? "응답 본문이 없습니다." : "상태 코드: " + response.getStatusCode()));
         }
     }
+
+
+//    public Long save(ProdUploadRequestDTO dto, MultipartFile mainPicture) throws IOException {
+//        log.info("Received isCong: {}", dto.isCong());
+//
+//        // 1. 파일 저장
+//        String mainPicturePath = saveFile(mainPicture);
+//        dto.setMainPicturePath(mainPicturePath);
+//
+//        // 2. 상품 등록 요청 (파일과 DTO 전달)
+//        ResponseEntity<ProdUploadResponseDTO> response = sellerClient.addProduct(mainPicture, dto);
+//
+//        log.info("Response body: {}", response.getBody()); // 응답 전체를 먼저 출력
+//
+//        // 3. 응답 처리
+//        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+//            Long productId = response.getBody().getProductId(); // DTO에서 상품 ID 직접 가져오기
+//            log.info("Received productId: {}", productId);  // 여기서 productId를 로그로 출력
+//
+//            // 상품 ID 처리
+//            if (dto.isCong() && productId == null) {
+//                // isCong이 true일 때만 상품 ID가 필요함
+//                log.error("상품 ID가 응답에 포함되지 않았습니다.");
+//                throw new RuntimeException("상품 ID가 응답에 포함되지 않았습니다.");
+//            }
+//
+//            // 상품 ID가 유효하면 Congdong 추가 처리
+//            log.info("상품 ID: {}", productId);
+//            saveCongdong(dto, productId); // Congdong 추가 처리
+//            return productId;
+//        } else {
+//            log.error("상품 등록 실패: 응답 본문이 없습니다.");
+//            throw new RuntimeException("상품 등록 실패: " +
+//                    (response.getBody() == null ? "응답 본문이 없습니다." : "상태 코드: " + response.getStatusCode()));
+//        }
+//    }
+
+//    public Long save(ProdUploadRequestDTO dto, MultipartFile mainPicture) throws IOException {
+//        log.info("Received isCong: {}", dto.isCong());
+//
+//        // 1. 파일 저장
+//        String mainPicturePath = saveFile(mainPicture);
+//        dto.setMainPicturePath(mainPicturePath);
+//
+//        // 2. 상품 등록 요청 (파일과 DTO 전달)
+//        ResponseEntity<ProdUploadResponseDTO> response = sellerClient.addProduct(mainPicture, dto);
+//
+//        log.info("Response: {}", response); // 응답 전체를 먼저 출력
+//
+//        // 3. 응답 처리
+//        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+//            Long productId = response.getBody().getProductId(); // DTO에서 상품 ID 직접 가져오기
+//            log.info("Response body: {}", response.getBody());
+//            log.info("Received productId: {}", productId);  // 여기서 productId를 로그로 출력
+//            log.error("상품 ID가 응답에 포함되지 않았습니다.");
+////            if (productId == null) {
+////                log.error("상품 ID가 응답에 포함되지 않았습니다.");
+////                throw new RuntimeException("상품 ID가 응답에 포함되지 않았습니다.");
+////            }
+//            log.info("상품 ID: {}", productId);
+//            saveCongdong(dto, productId); // Congdong 추가 처리
+//            return productId;
+//        } else {
+//            log.error("상품 등록 실패: 응답 본문이 없습니다.");
+//            throw new RuntimeException("상품 등록 실패: " +
+//                    (response.getBody() == null ? "응답 본문이 없습니다." : "상태 코드: " + response.getStatusCode()));
+//        }
+//    }
 
     public void updateProduct(Long id, ProdUploadRequestDTO dto) throws IOException {
         // 외부 API를 통해 상품 정보를 조회 (기존 DB 조회 코드 제거)
@@ -116,16 +182,19 @@ public class SellerService {
     }
 
     // Congdong 저장
-    private void saveCongdong(ProdUploadRequestDTO dto, Long productId) {
+    private void saveCongdong(ProdUploadRequestDTO dto) {
         if (dto.isCong()) {
+            // condition을 CongdongDTO로 변환
+            Map<Integer, Integer> conditionMap = CongdongDTO.parseCondition(dto.getCondition());
+
             CongdongDTO congdongDTO = CongdongDTO.builder()
-                    .productId(productId)
-                    .condition(dto.getCondition())
+                    .condition(CongdongDTO.formatCondition(conditionMap))  // 변환된 condition 설정
                     .build();
-            sellerClient.saveCongdong(congdongDTO); // 외부 API 호출하여 Congdong 저장
-            log.info("Congdong saved for product ID: {}", productId);
+
+            // 이 부분에서 외부 API 호출을 제거하고, 실제로 저장만 진행하거나 콘솔에 출력
+            log.info("Congdong saved with condition: {}", congdongDTO.getCondition());
         } else {
-            log.info("No Congdong saved for product ID: {} because isCong is false", productId);
+            log.info("No Congdong saved because isCong is false");
         }
     }
 

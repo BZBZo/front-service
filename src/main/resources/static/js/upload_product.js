@@ -32,6 +32,11 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    const isCongRadioFalse = document.querySelector('input[name="isCong"][value="false"]');
+    if (isCongRadioFalse) {
+        isCongRadioFalse.checked = true;  // 처음 로드 시 false로 설정
+    }
+
     const conditionContainer = document.getElementById("extraFields");
     const conditionInput = document.getElementById("condition");
     const addButton = document.getElementById("addConditionBtn");
@@ -82,6 +87,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // 공구 상태에 따라 필드 숨김/표시
     window.toggleFields = (isVisible) => {
+        const isCong = document.querySelector('input[name="isCong"]:checked').value;  // 현재 선택된 값 가져오기
+        console.log("isCong value: ", isCong);  // 콘솔에 출력
+
         if (isVisible) {
             conditionContainer.classList.remove("hidden");
             addButton.style.display = "inline-block";
@@ -109,6 +117,34 @@ function submitForm() {
     const formData = new FormData(document.getElementById('productForm'));
     formData.set('description', description);
 
+    const isCong = document.querySelector('input[name="isCong"]:checked').value === "true"; // 값이 "true"일 때만 true로 설정
+    console.log("isCong value during form submission: ", isCong); // isCong 값을 콘솔에 출력
+
+    const condition = document.getElementById('condition').value;
+    console.log('condition :: ', condition)
+
+    if (isCong && !condition) {
+        alert('공구 진행 상태가 "가능"일 경우, 조건을 입력해야 합니다.');
+        return; // condition이 없으면 폼 제출을 중단
+    }
+
+    // ProdUploadRequestDTO 객체를 추가 (DTO를 JSON으로 변환)
+    const productData = {
+        name: document.getElementById('name').value,
+        price: document.getElementById('price').value,
+        quantity: document.getElementById('quantity').value,
+        category: document.getElementById('category').value,
+        description: description,
+        isCong: isCong,
+        condition: condition,
+    };
+
+    console.log('Product data:', productData);
+
+    formData.set('productData', JSON.stringify(productData));  // 'productData'를 JSON 문자열로 추가
+
+    console.log(productData);
+
     fetch('/seller/product', {
         method: 'POST',
         body: formData
@@ -122,7 +158,7 @@ function submitForm() {
                 alert('상품이 성공적으로 등록되었습니다!');
                 window.location.href = data.url;
             } else {
-                alert('응답 URL이 없습니다.');
+                alert('상품 등록 중 문제가 발생했습니다.');
             }
         })
         .catch((error) => {
@@ -130,3 +166,63 @@ function submitForm() {
             alert('상품 등록 중 문제가 발생했습니다.');
         });
 }
+
+// function submitForm() {
+//     const description = quill.root.innerHTML.trim();
+//     if (!description) {
+//         alert('설명을 입력하세요.');
+//         return;
+//     }
+//
+//     const formData = new FormData(document.getElementById('productForm'));
+//     formData.set('description', description);
+//
+//     const isCong = document.querySelector('input[name="isCong"]:checked').value === "true"; // 값이 "true"일 때만 true로 설정
+//     console.log("isCong value during form submission: ", isCong); // isCong 값을 콘솔에 출력
+//
+//     const condition = document.getElementById('condition').value;
+//     console.log('condition :: ', condition)
+//
+//     if (isCong && !condition) {
+//         alert('공구 진행 상태가 "가능"일 경우, 조건을 입력해야 합니다.');
+//         return; // condition이 없으면 폼 제출을 중단
+//     }
+//
+//     // ProdUploadRequestDTO 객체를 추가 (DTO를 JSON으로 변환)
+//     const productData = {
+//         name: document.getElementById('name').value,
+//         price: document.getElementById('price').value,
+//         quantity: document.getElementById('quantity').value,
+//         category: document.getElementById('category').value,
+//         description: description,
+//         isCong: isCong,
+//         condition: condition,
+//     };
+//
+//     console.log('Product data:', productData);
+//
+//     formData.set('productData', JSON.stringify(productData));  // 'productData'를 JSON 문자열로 추가
+//
+//     console.log(productData);
+//
+//     fetch('/seller/product', {
+//         method: 'POST',
+//         body: formData
+//     })
+//         .then((response) => {
+//             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+//             return response.json();
+//         })
+//         .then((data) => {
+//             if (data.url) {
+//                 alert('상품이 성공적으로 등록되었습니다!');
+//                 window.location.href = data.url;
+//             } else {
+//                 alert('응답 URL이 없습니다.');
+//             }
+//         })
+//         .catch((error) => {
+//             console.error('Error occurred during product registration:', error);
+//             alert('상품 등록 중 문제가 발생했습니다.');
+//         });
+// }

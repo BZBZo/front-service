@@ -14,7 +14,7 @@ public class CongdongDTO {
     private Long productId;
     private String condition; // 변환된 {?:?} 형태
 
-    private static Map<Integer, Integer> parseCondition(String condition) {
+    public static Map<Integer, Integer> parseCondition(String condition) {
         Map<Integer, Integer> conditionMap = new HashMap<>();
 
         if (condition == null || condition.isEmpty()) {
@@ -43,7 +43,7 @@ public class CongdongDTO {
         return conditionMap;
     }
 
-    private static String formatCondition(Map<Integer, Integer> conditionMap) {
+    public static String formatCondition(Map<Integer, Integer> conditionMap) {
         return conditionMap.entrySet().stream()
                 .map(entry -> "{" + entry.getKey() + ":" + entry.getValue() + "}")
                 .collect(Collectors.joining(", "));

@@ -16,13 +16,11 @@ import java.util.Map;
 @FeignClient(name = "sellerClient", url = "${bzbzo.bz-seller-service-url}")
 public interface SellerClient {
 
-    // 상품 목록 조회 (GET)
     @GetMapping("/product/list")
-    @ResponseBody
     Page<ProdReadResponseDTO> getProductList(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    );
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestHeader("Accept") String acceptHeader); // Accept 헤더 추가
 
     // 상품 등록 (POST)
     @PostMapping(value = "/product", consumes = "multipart/form-data")
@@ -54,9 +52,9 @@ public interface SellerClient {
     @GetMapping("/seller/product/status/{id}")
     ResponseEntity<Map<String, Object>> getProductStatus(@PathVariable Long id);
 
-    // Congdong 저장 (POST)
-    @PostMapping("/product/congdong")
-    ResponseEntity<Map<String, Object>> saveCongdong(@RequestBody CongdongDTO congdongDTO);
+//    // Congdong 저장 (POST)
+//    @PostMapping("/product/congdong")
+//    ResponseEntity<Map<String, Object>> saveCongdong(@RequestBody CongdongDTO congdongDTO);
 
     // Congdong 업데이트 (PUT)
     @PutMapping("/product/congdong/{id}")
