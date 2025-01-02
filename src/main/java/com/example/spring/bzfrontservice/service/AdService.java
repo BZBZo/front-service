@@ -26,8 +26,10 @@ public class AdService {
         return adClient.getAdDetail(id);
     }
 
-    public ResponseEntity<?> editAd(Long id, AdEditRequestDTO adEditRequestDTO) {
-        return adClient.editAd(id, adEditRequestDTO);
+    public ResponseEntity<?> editAd(Long id,
+                                    String adPosition, String adStart, String adEnd,
+                                    String adTitle, String adUrl, MultipartFile adImage) {
+        return adClient.editAd(id, adPosition, adStart, adEnd, adTitle, adUrl, adImage);
     }
 
     public Page<AdDTO> getAds(int page, int size) {

@@ -39,16 +39,7 @@ public class AdApiController {
             @RequestParam(value = "adImage", required = false) MultipartFile adImage
     ) {
 
-        AdEditRequestDTO adEditRequestDTO = AdEditRequestDTO.builder()
-                .adPosition(adPosition)
-                .adStart(adStart)
-                .adEnd(adEnd)
-                .adTitle(adTitle)
-                .adUrl(adUrl)
-                .adImage(adImage)
-                .build();
-
-        return adService.editAd(id, adEditRequestDTO);
+        return adService.editAd(id, adPosition, adStart, adEnd, adTitle, adUrl, adImage);
     }
 
     @DeleteMapping("/erase")
