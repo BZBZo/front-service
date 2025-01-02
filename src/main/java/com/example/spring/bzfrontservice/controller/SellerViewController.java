@@ -1,6 +1,5 @@
 package com.example.spring.bzfrontservice.controller;
 
-
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
 import com.example.spring.bzfrontservice.service.SellerService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class SellerViewController {
 
     private final SellerService sellerService;
 
-    // 판매자가 판매하는 상품들 (상품 목록 조회)
+    // 상품 목록 조회 (HTML 반환)
     @GetMapping("/product/list")
     public String productList(@RequestParam(defaultValue = "0") int page, Model model) {
         int pageSize = 5;
@@ -48,26 +47,25 @@ public class SellerViewController {
         return "product_list";
     }
 
+    // 상품 등록 페이지
     @GetMapping("/product/upload")
     public String uploadProduct() {
-        //상품 등록 폼으로 이동
         return "upload_product";
     }
 
+    // 상품 상세 페이지
     @GetMapping("/product/detail/{id}")
     public String productDetail(@PathVariable Long id, Model model) {
-        ProdReadResponseDTO product = sellerService.getProductDetails(id); // 상품 상세 조회
-        model.addAttribute("product", product); // 모델에 상품 정보 추가
-        return "detail_product"; // 상품 상세 페이지 뷰 반환
-    }
-
-
-    @GetMapping("/product/edit/{id}")
-    public String editProduct(@PathVariable Long id, Model model) {
-        // 상품의 상세 정보를 조회하여 수정 폼에 표시할 수 있도록 모델에 추가
         ProdReadResponseDTO product = sellerService.getProductDetails(id);
         model.addAttribute("product", product);
-        return "edit_product"; // 수정 페이지 HTML 파일 이름
+        return "detail_product";
     }
 
+    // 상품 수정 페이지
+    @GetMapping("/product/edit/{id}")
+    public String editProduct(@PathVariable Long id, Model model) {
+        ProdReadResponseDTO product = sellerService.getProductDetails(id);
+        model.addAttribute("product", product);
+        return "edit_product";
+    }
 }

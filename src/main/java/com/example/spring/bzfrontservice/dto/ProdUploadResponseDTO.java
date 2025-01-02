@@ -10,5 +10,4 @@ import lombok.Getter;
 public class ProdUploadResponseDTO {
     private String url;
     private String mainPicturePath; // mainPicturePath 필드 추가
-    private Long productId; // 상품 ID 추가
 }
