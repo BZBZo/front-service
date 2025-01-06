@@ -58,4 +58,7 @@ public interface AuthClient {
 
     @PostMapping("/token/refresh")
     RefreshTokenClientResponseDTO refresh(@RequestBody TokenRefreshRequestDTO tokenRefreshRequestDTO);
+
+    @PostMapping("/token/logout")
+    ResponseEntity<?> logout(@RequestHeader("Authorization") String accessToken);
 }

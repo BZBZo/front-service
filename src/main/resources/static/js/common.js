@@ -121,20 +121,73 @@ let failed = () => {
     window.location.href = '/webs/signin';
 }
 
-function logout() {
-    // 로컬 스토리지에서 액세스 토큰 제거
-    localStorage.removeItem('accessToken');
+// function logout() {
+//     // 로컬 스토리지에서 액세스 토큰 제거
+//     localStorage.removeItem('accessToken');
+//
+//     // 서버에 로그아웃 요청을 보내어 리프레시 토큰 쿠키 제거 요청
+//     $.ajax({
+//         type: 'POST',
+//         url: '/logout',
+//         success: function() {
+//             console.log('Logged out successfully.');
+//             window.location.href = '/webs/signin'; // 로그인 페이지로 리다이렉트
+//         },
+//         error: function() {
+//             console.log('Logout failed.');
+//         }
+//     });
+// }
 
-    // 서버에 로그아웃 요청을 보내어 리프레시 토큰 쿠키 제거 요청
-    $.ajax({
-        type: 'POST',
-        url: '/logout',
-        success: function() {
-            console.log('Logged out successfully.');
-            window.location.href = '/webs/signin'; // 로그인 페이지로 리다이렉트
-        },
-        error: function() {
-            console.log('Logout failed.');
+document.addEventListener('DOMContentLoaded', function () {
+    const logoutButton = document.getElementById('logout-btn');
+    console.log('Logout button:', logoutButton); // 버튼이 정상적으로 선택되었는지 확인
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function () {
+            if (confirm('정말 로그아웃 하시겠습니까?')) {
+                logout();
+            }
+        });
+    }
+});
+
+function logout() {
+    const token = localStorage.getItem('accessToken'); // Access Token 가져오기
+    if (!token) {
+        console.error('Access Token is missing');
+        alert('로그인이 필요합니다. 다시 로그인해주세요.');
+        window.location.href = '/webs/signin';
+        return;
+    }
+
+    fetch('/webs/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token // Authorization 헤더 추가
         }
-    });
+    })
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            alert('로그아웃 성공');
+            clearSession();
+            window.location.href = '/webs/signin';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('로그아웃 중 문제가 발생했습니다.');
+        });
+}
+
+function clearSession() {
+    deleteCookie('Authorization');
+    deleteCookie('refreshToken');
+    deleteCookie('JSESSIONID');
+    deleteCookie('Idea-7645dd67');
+    localStorage.removeItem('accessToken');
+}
+
+function deleteCookie(name) {
+    document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
 }

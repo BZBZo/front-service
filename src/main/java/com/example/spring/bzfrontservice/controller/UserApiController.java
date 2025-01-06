@@ -3,7 +3,10 @@ package com.example.spring.bzfrontservice.controller;
 import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
 //import com.example.spring.bzfrontservice.service.FileStorageService;
+import com.example.spring.bzfrontservice.dto.StatusResponseDto;
 import com.example.spring.bzfrontservice.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +111,28 @@ public class UserApiController {
         } else {
             return ResponseEntity.badRequest().body("회원 탈퇴에 실패했습니다.");
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("logout" + request.getHeader(HttpHeaders.AUTHORIZATION));
+
+        // Access Token 확인
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Access Token is missing or invalid.");
+        }
+
+        String token = authHeader.substring(7); // 'Bearer ' 이후의 토큰 값
+
+        System.out.println(token +" : logout controller token 받았음");
+
+        try{
+            return userService.logout(token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("logout 에러 발생");
+        }
+
     }
 
 }

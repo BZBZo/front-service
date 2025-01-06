@@ -1,3 +1,16 @@
+$(document).ready(() => {
+    console.log('document.ready 실행됨'); // 디버깅 로그
+    getToken()
+        .then(() => {
+            console.log('getToken 성공');
+            setupAjax();
+            return checkToken();
+        })
+        .catch(error => {
+            console.error('토큰을 가져오는 데 실패했습니다:', error);
+        });
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     // "select-all" 체크박스
     const selectAllCheckbox = document.querySelector('.select-all');
