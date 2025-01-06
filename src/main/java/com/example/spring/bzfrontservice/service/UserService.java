@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.service;
 import com.example.spring.bzfrontservice.client.AuthClient;
 import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
+import com.example.spring.bzfrontservice.dto.StatusResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,5 +81,9 @@ public class UserService {
             logger.error("Error deleting user: {}", e.getMessage());
             return false;
         }
+    }
+
+    public ResponseEntity<?> logout(String accessToken) {
+        return authClient.logout(accessToken);
     }
 }
