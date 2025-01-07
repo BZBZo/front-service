@@ -257,3 +257,14 @@ document.addEventListener("DOMContentLoaded", () => {
         moveToOotdSlide(ootdCurrentIndex + 1);
     }, 3000);
 });
+
+//우측 사이드 광고 배너
+const banner = document.querySelector(".floating-banner");
+
+window.addEventListener("scroll", () => {
+    if (window.scrollY > 200) {
+        banner.style.opacity = "1"; // 스크롤 위치에 따라 보임
+    } else {
+        banner.style.opacity = "0.5"; // 덜 보이게 설정
+    }
+});
