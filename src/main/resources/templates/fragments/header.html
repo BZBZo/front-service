@@ -8,7 +8,7 @@
     <link th:href="@{/css/layout.css}" rel="stylesheet">
 </head>
 <body>
-<div id="header" th:replace="~{fragments/header :: header}"></div>
+
 <header class="b2-header" th:fragment="header">
     <div class="b2-logo">
         <a th:href="@{/webs/loginSuccess}">
@@ -29,7 +29,7 @@
     <div id="megaMenu" class="mega-menu" style="display: none;">
         <div class="menu-overlay">
             <button id="closeMegaMenu" class="close-button">×</button>
-            <div class="menu-content">
+            <div class="menu-content"  id="defaultMegaMenu">
                 <section>
                     <h2>내 정보</h2>
                     <!-- 고객용 메뉴 -->
@@ -59,6 +59,13 @@
                         <li><a th:href="@{/qna}">문의현황</a></li>
                     </ul>
                 </section>
+                <section>
+                    <h2 id="dynamicMegaMenuHeader" class="seller-header" style="display: none;">메뉴</h2>
+                    <ul id="dynamicMegaMenu" style="display: none;">
+                        <!-- b2-nav-menu 항목이 동적으로 추가될 위치 -->
+                    </ul>
+                </section>
+
 
                 <button id="logout-btn">로그아웃</button>
 
