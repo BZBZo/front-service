@@ -21,17 +21,8 @@
             <li><a th:href="@{/purchase}">콩동구매</a></li>
             <li><a th:href="@{/community}">콩떡찰떡</a></li>
             <li><a th:href="@{/products}">콩나물</a></li>
-            <li><a th:href="@{/ad/list}">광고리스트</a></li>
         </ul>
     </nav>
-    <div class="b2-icons">
-        <a th:href="@{/cart}" class="b2-cart-icon">
-            <img src="/images/cart_icon.png" alt="장바구니">
-        </a>
-        <a th:href="@{/webs/profile}" class="b2-profile-icon">
-            <img src="/images/my_icon.png" alt="프로필">
-        </a>
-    </div>
     <div class="b2-user-menu">
         <button id="megaMenuButton" class="hamburger-button">☰</button>
     </div>
@@ -41,18 +32,31 @@
             <div class="menu-content">
                 <section>
                     <h2>내 정보</h2>
-                    <ul>
-                        <li><a th:href="@{/profile}">회원 정보 수정</a></li>
-                        <li><a th:href="@{/style}">MY STYLE</a></li>
+                    <!-- 고객용 메뉴 -->
+                    <ul class="customer-menu" style="display: none;">
+                        <li><a th:href="@{/webs/profile}">회원 정보 수정</a></li>
+                        <li><a th:href="@{/myStyle}">MY STYLE</a></li>
+                    </ul>
+
+                    <!-- 판매자용 메뉴 -->
+                    <ul class="seller-menu" style="display: none;">
+                        <li><a th:href="@{/webs/profile}">회원 정보 수정</a></li>
+                        <li><a th:href="@{/myMarket}">MY MARKET</a></li>
                     </ul>
                 </section>
                 <section>
-                    <h2>구매 정보</h2>
-                    <ul>
+                    <h2 class="customer-header" style="display: none;">구매 정보</h2>
+                    <ul class="customer-menu" style="display: none;">
                         <li><a th:href="@{/cart}">장바구니</a></li>
-                        <li><a th:href="@{/history}">구매내역</a></li>
-                        <li><a th:href="@{/groupPurchase}">나의 공동구매</a></li>
-                        <li><a th:href="@{/inquiries}">문의 내역</a></li>
+                        <li><a th:href="@{/purchaseHistory}">구매내역</a></li>
+                        <li><a th:href="@{/qna}">문의현황</a></li>
+                    </ul>
+
+                    <h2 class="seller-header" style="display: none;">판매 정보</h2>
+                    <ul class="seller-menu" style="display: none;">
+                        <li><a th:href="@{/product/saleHistory}">판매현황</a></li>
+                        <li><a th:href="@{/ad/list}">광고현황</a></li>
+                        <li><a th:href="@{/qna}">문의현황</a></li>
                     </ul>
                 </section>
 

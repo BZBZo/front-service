@@ -21,20 +21,36 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Mega Menu elements are missing.");
         return;
     }
+
     megaMenuButton.addEventListener("click", () => {
-        console.log("Mega Menu Button Clicked"); // 클릭 이벤트 확인
         megaMenu.classList.add("active");
         document.body.style.overflow = "hidden"; // 스크롤 방지
+
+        // 토큰에서 사용자 역할 가져오기
+        let token = localStorage.getItem('accessToken');
+        if (!token) {
+            alert("로그인이 필요한 서비스입니다.");
+            window.location.href = '/webs/signin';
+            return;
+        }
+
+        const userRole = getUserRoleFromToken(token);
+        // 역할에 맞는 메뉴 렌더링
+        renderMenuBasedOnRole(userRole);
     });
+    if (logoutButton) {
+        logoutButton.addEventListener('click', function () {
+            if (confirm('정말 로그아웃 하시겠습니까?')) {
+                logout();
+            }
+        });
+    }
 
-
-    // 메가 메뉴 닫기
     closeMegaMenuButton.addEventListener("click", () => {
         megaMenu.classList.remove("active");
         document.body.style.overflow = "auto"; // 스크롤 복원
     });
 
-    // ESC 키로 닫기
     document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
             megaMenu.classList.remove("active");
@@ -42,13 +58,43 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // 메뉴 외부 클릭으로 닫기
     megaMenu.addEventListener("click", (event) => {
         if (event.target === megaMenu) {
             megaMenu.classList.remove("active");
             document.body.style.overflow = "auto";
         }
     });
+
+    function getUserRoleFromToken(token) {
+        try {
+            const decodedToken = JSON.parse(atob(token.split('.')[1]));  // JWT 디코딩
+            return decodedToken.role;  // 토큰에서 'role' 추출
+        } catch (error) {
+            console.error("토큰 디코딩에 실패했습니다.", error);
+            return null;
+        }
+    }
+
+    function renderMenuBasedOnRole(role) {
+        if (role === 'ROLE_SELLER') {
+            document.querySelectorAll('.customer-menu, .customer-header').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('.seller-menu, .seller-header').forEach(el => {
+                el.style.display = 'block';
+            });
+        } else if (role === 'ROLE_CUSTOMER') {
+            document.querySelectorAll('.seller-menu, .seller-header').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.querySelectorAll('.customer-menu, .customer-header').forEach(el => {
+                el.style.display = 'block';
+            });
+        } else {
+            console.error('권한이 없습니다.');
+        }
+    }
+
 });
 
 function logout() {
