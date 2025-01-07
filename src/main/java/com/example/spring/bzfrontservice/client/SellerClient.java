@@ -16,7 +16,7 @@ import java.util.Map;
 @FeignClient(name = "sellerClient", url = "${bzbzo.bz-seller-service-url}")
 public interface SellerClient {
 
-    @GetMapping("/product/list")
+    @GetMapping("/list")
     Page<ProdReadResponseDTO> getProductList(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
