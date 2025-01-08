@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const megaMenuButton = document.getElementById("megaMenuButton");
     const megaMenu = document.getElementById("megaMenu");
     const closeMegaMenuButton = document.getElementById("closeMegaMenu");
-    const logoutButton = document.getElementById('logout-btn');
     const dynamicMegaMenu = document.createElement('ul'); // 동적으로 추가될 메뉴 목록
     dynamicMegaMenu.id = 'dynamicMegaMenu';
     const b2NavMenu = document.querySelector('.b2-nav-menu');
@@ -11,16 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Mega Menu Button:", megaMenuButton);
     console.log("Mega Menu:", megaMenu);
     console.log("Close Mega Menu Button:", closeMegaMenuButton);
-    console.log('Logout button:', logoutButton);
 
-    if (logoutButton) {
-        logoutButton.addEventListener('click', function () {
-            if (confirm('정말 로그아웃 하시겠습니까?')) {
-                logout();
-            }
-        });
-    }
-
+    // 요소가 제대로 선택되었는지 확인
     if (!megaMenu || !megaMenuButton || !closeMegaMenuButton) {
         console.error("Mega Menu elements are missing.");
         return;
@@ -48,8 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     megaMenuButton.addEventListener("click", () => {
         megaMenu.classList.add("active");
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow = "hidden"; // 스크롤 방지
 
+        // 토큰에서 사용자 역할 가져오기
         let token = localStorage.getItem('accessToken');
         if (!token) {
             alert("로그인이 필요한 서비스입니다.");
@@ -58,12 +50,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const userRole = getUserRoleFromToken(token);
+        // 역할에 맞는 메뉴 렌더링
         renderMenuBasedOnRole(userRole);
     });
 
     closeMegaMenuButton.addEventListener("click", () => {
         megaMenu.classList.remove("active");
-        document.body.style.overflow = "auto";
+        document.body.style.overflow = "auto"; // 스크롤 복원
     });
 
     document.addEventListener("keydown", (event) => {
@@ -82,8 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function getUserRoleFromToken(token) {
         try {
-            const decodedToken = JSON.parse(atob(token.split('.')[1]));
-            return decodedToken.role;
+            const decodedToken = JSON.parse(atob(token.split('.')[1])); // JWT 디코딩
+            return decodedToken.role;  // 토큰에서 'role' 추출
         } catch (error) {
             console.error("토큰 디코딩에 실패했습니다.", error);
             return null;
@@ -110,48 +103,3 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 });
-
-function logout() {
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-        console.error('Access Token is missing');
-        alert('로그인이 필요합니다. 다시 로그인해주세요.');
-        window.location.href = '/webs/signin';
-        return;
-    }
-
-    fetch('/webs/logout', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
-        }
-    })
-        .then(response => {
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return response.json();
-        })
-        .then(data => {
-            console.log("Server Response:", data);
-            alert('로그아웃 성공');
-            clearSession();
-            window.location.href = '/webs/signin';
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('로그아웃 중 문제가 발생했습니다.');
-        });
-}
-
-function clearSession() {
-    deleteCookie('Authorization');
-    deleteCookie('refreshToken');
-    deleteCookie('JSESSIONID');
-    deleteCookie('Idea-7645dd67');
-    localStorage.removeItem('accessToken');
-}
-
-function deleteCookie(name) {
-    document.cookie = `${name}=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;`;
-}

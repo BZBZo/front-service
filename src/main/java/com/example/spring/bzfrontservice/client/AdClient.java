@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name="adClient", url="${bzbzo.bz-ad-service-url}")
+@FeignClient(name="adClient", url="${bzbzo.bz-edge-service-url}/ad")
 public interface AdClient {
     @PostMapping(value = "/write", consumes = "multipart/form-data")
     ResponseEntity<?> writeAd(
