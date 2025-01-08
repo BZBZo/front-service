@@ -59,7 +59,7 @@ public class SellerViewController {
     public String productDetail(@PathVariable Long id, Model model) {
         ProdReadResponseDTO product = sellerService.getProductDetails(id);
         model.addAttribute("product", product);
-        return "detail_product";
+        return "product_detail";
     }
 
     // 상품 수정 페이지
@@ -67,6 +67,6 @@ public class SellerViewController {
     public String editProduct(@PathVariable Long id, Model model) {
         ProdReadResponseDTO product = sellerService.getProductDetails(id);
         model.addAttribute("product", product);
-        return "edit_product";
+        return "product_edit";
     }
 }

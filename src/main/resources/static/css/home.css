@@ -186,6 +186,12 @@ section.main-slider {
     will-change: transform;
     justify-content: flex-end;
 }
+.cong-products__track {
+    display: flex;
+    transition: transform 0.3s ease-in-out;
+    will-change: transform;
+    justify-content: flex-end;
+}
 .related-products__slide {
     flex: 0 0 185px;
     margin-right: 15px;
@@ -283,4 +289,9 @@ section.main-slider {
     .floating-banner {
         display: none;
     }
+}
+
+a {
+    text-decoration: none; /* 밑줄 제거 */
+    color: inherit; /* 링크의 기본 색상 제거하고 부모의 색상 적용 */
 }
