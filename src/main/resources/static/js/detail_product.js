@@ -18,11 +18,11 @@ $(document).ready(function() {
 function deleteProduct(productId) {
     $.ajax({
         type: 'DELETE',
-        url: '/seller/product/detail/' + productId,  // 해당 상품 ID를 포함한 URL로 요청
+        url: '/product/detail/' + productId,  // 해당 상품 ID를 포함한 URL로 요청
         success: function(response) {
             if (response.success) {
                 alert(response.message);  // 성공 메시지
-                window.location.href = '/seller/product/list';  // 상품 목록 페이지로 리다이렉트
+                window.location.href = '/product/list';  // 상품 목록 페이지로 리다이렉트
             } else {
                 alert(response.message);  // 실패 메시지
             }
@@ -33,41 +33,6 @@ function deleteProduct(productId) {
         }
     });
 }
-
-// 이 아래 39줄 ~ 70줄 주석들은 지워도 됌
-
-// isCong 공구 가능/불가만 처리
-// document.addEventListener("DOMContentLoaded", () => {
-//     const isCongValue = document.getElementById("isCong").value;
-//
-//     // 값에 따라 상태를 설정
-//     const statusText = isCongValue === "true" ? "공구 가능" : "공구 불가";
-//     console.log(`현재 공구 진행 상태: ${statusText}`);
-//
-//     // 상태를 화면에 표시
-//     const statusElement = document.querySelector('.product-status product-mt-2 span');
-//     if (statusElement) {
-//         statusElement.textContent = statusText;
-//     }
-// });
-
-// isCong 공구 가능/불가와 condition 별도 이벤트로 처리
-// document.addEventListener("DOMContentLoaded", () => {
-//     const conditionInput = document.querySelector('input[name="condition"]').value;
-//
-//     if (conditionInput) {
-//         // condition 값을 파싱
-//         const conditionParts = conditionInput.replace(/[{}]/g, '').split(':');
-//         const people = conditionParts[0] || 1;
-//         const discount = conditionParts[1] || 0;
-//
-//         console.log(`모집 인원: ${people}, 할인율: ${discount}`);
-//
-//         // 화면에 표시
-//         document.getElementById("peopleCount").textContent = `모집 인원: ${people}명`;
-//         document.getElementById("discountRate").textContent = `할인율: ${discount}%`;
-//     }
-// });
 
 // isCong & condition 동일 이벤트로 통합 처리
 // DOMContentLoaded 이벤트: HTML 문서가 완전히 로드된 후 실행

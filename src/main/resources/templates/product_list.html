@@ -20,7 +20,7 @@
     <div class="container">
         <h2>판매 상품</h2>
         <div class="button-group">
-            <a id="button_black" th:href="@{/seller/product/upload}" type="button">상품등록</a>
+            <a id="button_black" th:href="@{/product/upload}" type="button">상품등록</a>
         </div>
         <table>
             <thead>
@@ -37,12 +37,12 @@
                 <td><input type="checkbox" class="checkbox" th:value="${product.id}"/></td>
                 <td th:text="${iterStat.count}"></td>
                 <td>
-                    <a th:href="@{/seller/product/detail/{id}(id=${product.id})}">
+                    <a th:href="@{/product/detail/{id}(id=${product.id})}">
                         <img th:src="@{${#strings.replace(product.mainPicturePath,'src/main/resources/static', '')}}" th:alt="${product.name}"/>
                     </a>
                 </td>
                 <td>
-                    <a th:href="@{/seller/product/detail/{id}(id=${product.id})}" th:text="${product.name}"></a>
+                    <a th:href="@{/product/detail/{id}(id=${product.id})}" th:text="${product.name}"></a>
                 </td>
                 <td th:text="${#numbers.formatDecimal(product.price, 1, 0)}"></td>
             </tr>
@@ -52,28 +52,28 @@
             <ul class="pagination">
                 <!-- 첫 페이지로 이동 -->
                 <li th:if="${productPage.number > 0}" class="page-item">
-                    <a class="page-link" th:href="@{/seller/product/list(page=0)}">처음</a>
+                    <a class="page-link" th:href="@{/product/list(page=0)}">처음</a>
                 </li>
 
                 <!-- 이전 페이지 블록으로 이동 -->
                 <li th:if="${showPrevious}" class="page-item">
-                    <a class="page-link" th:href="@{/seller/product/list(page=${startPage - 1})}">이전</a>
+                    <a class="page-link" th:href="@{/product/list(page=${startPage - 1})}">이전</a>
                 </li>
 
                 <!-- 페이지 번호 -->
                 <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
                     th:class="${productPage.number == i} ? 'active page-item' : 'page-item'">
-                    <a class="page-link" th:href="@{/seller/product/list(page=${i})}" th:text="${i + 1}">1</a>
+                    <a class="page-link" th:href="@{/product/list(page=${i})}" th:text="${i + 1}">1</a>
                 </li>
 
                 <!-- 다음 페이지 블록으로 이동 -->
                 <li th:if="${showNext}" class="page-item">
-                    <a class="page-link" th:href="@{/seller/product/list(page=${endPage + 1})}">다음</a>
+                    <a class="page-link" th:href="@{/product/list(page=${endPage + 1})}">다음</a>
                 </li>
 
                 <!-- 마지막 페이지로 이동 -->
                 <li th:if="${productPage.number < productPage.totalPages - 1}" class="page-item">
-                    <a class="page-link" th:href="@{/seller/product/list(page=${productPage.totalPages - 1})}">마지막</a>
+                    <a class="page-link" th:href="@{/product/list(page=${productPage.totalPages - 1})}">마지막</a>
                 </li>
             </ul>
         </div>
