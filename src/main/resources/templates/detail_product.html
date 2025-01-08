@@ -78,7 +78,7 @@
             <div id="description" class="ql-editor product-label" th:utext="${product.description}"></div>
         </div>
         <div class="button-container">
-            <a class="product-button" th:href="@{/seller/product/edit/{id}(id=${product.id})}">수정</a>
+            <a class="product-button" th:href="@{/product/edit/{id}(id=${product.id})}">수정</a>
             <button id="button_red" type="button">상품삭제</button>
         </div>
     </form>

@@ -2,6 +2,7 @@ package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.dto.ProdUploadRequestDTO;
 import com.example.spring.bzfrontservice.dto.ProdUploadResponseDTO;
+
 import com.example.spring.bzfrontservice.service.SellerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-@RequestMapping("/seller/product")
+@RequestMapping("/product")
 @RequiredArgsConstructor
 public class SellerApiController {
 
@@ -41,7 +42,7 @@ public class SellerApiController {
 
             // 응답 DTO 생성 후 반환 (productId를 제거)
             ProdUploadResponseDTO responseDTO = ProdUploadResponseDTO.builder()
-                    .url("/seller/product/list")
+                    .url("/product/list")
                     .mainPicturePath(dto.getMainPicturePath())
                     .build();  // productId가 없으므로 productId 부분을 제거
 
@@ -52,83 +53,14 @@ public class SellerApiController {
             log.error("상품 등록 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
                     ProdUploadResponseDTO.builder()
-                            .url("/seller/product/upload") // 실패 시 상품 등록 페이지로 돌아가도록 처리
+                            .url("/product/upload") // 실패 시 상품 등록 페이지로 돌아가도록 처리
                             .build()
             );
         }
     }
 
-//    // 상품 등록 (POST)
-//    @PostMapping(value = "/product", consumes = "multipart/form-data")
-//    public ResponseEntity<ProdUploadResponseDTO> addProduct(
-//            @RequestPart("mainPicture") MultipartFile mainPicture,
-//            @RequestPart("productData") ProdUploadRequestDTO dto) {
-//
-//        try {
-//            log.info("Received isCong value: {}", dto.isCong());  // isCong 값 확인
-//
-//            // 상품 저장 서비스 호출
-//            Long productId = sellerService.save(dto, mainPicture);
-//
-//            // 응답 DTO 생성 후 반환
-//            ProdUploadResponseDTO responseDTO = ProdUploadResponseDTO.builder()
-//                    .url("/seller/product/list")
-//                    .mainPicturePath(dto.getMainPicturePath())
-//                    .productId(productId)  // 상품 ID 포함
-//                    .build();
-//
-//            log.info("Returning response: {}", responseDTO);
-//            return ResponseEntity.ok(responseDTO);  // 성공적으로 상품 등록 후 응답
-//
-//        } catch (Exception e) {
-//            log.error("상품 등록 실패", e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-//                    ProdUploadResponseDTO.builder()
-//                            .url("/seller/product/upload") // 실패 시 상품 등록 페이지로 돌아가도록 처리
-//                            .build()
-//            );
-//        }
-//    }
-
-
-//    @PostMapping(consumes = "multipart/form-data")
-//    public ResponseEntity<ProdUploadResponseDTO> addProduct(
-//            @RequestPart("mainPicture") MultipartFile mainPicture,
-//            @RequestPart("productData") String productDataJson) {
-//
-//        try {
-//            // JSON 문자열을 객체로 변환
-//            ObjectMapper objectMapper = new ObjectMapper();
-//            ProdUploadRequestDTO dto = objectMapper.readValue(productDataJson, ProdUploadRequestDTO.class);
-//
-//            log.info("Received isCong value: {}", dto.isCong());  // isCong 값 확인
-//
-//            Long productId = sellerService.save(dto, mainPicture); // 수정된 서비스 호출
-//            log.info("Product ID: {}", productId);
-//            log.info("Product ID after save: {}", productId);  // productId 로그 찍기
-//
-//            // 응답 DTO 생성 후 반환
-//            ProdUploadResponseDTO responseDTO = ProdUploadResponseDTO.builder()
-//                    .url("/seller/product/list")
-//                    .mainPicturePath(dto.getMainPicturePath())
-//                    .productId(productId)
-//                    .build();
-//
-//            log.info("Returning response: {}", responseDTO);
-//            return ResponseEntity.ok(responseDTO); // 상품 등록이 성공적이면 200 OK와 함께 반환
-//
-//        } catch (Exception e) {
-//            log.error("상품 등록 실패", e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-//                    ProdUploadResponseDTO.builder()
-//                            .url("/seller/product/upload") // 실패 시 상품 등록 페이지로 돌아가도록 처리
-//                            .build()
-//            );
-//        }
-//    }
-
     // 상품 수정 (PUT)
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateProduct(@PathVariable Long id, @ModelAttribute ProdUploadRequestDTO dto) {
         try {
             sellerService.updateProduct(id, dto); // 상품 수정
@@ -145,41 +77,24 @@ public class SellerApiController {
     // 상품 삭제 (DELETE)
     @DeleteMapping("/detail/{id}")
     public ResponseEntity<Map<String, Object>> removeProduct(@PathVariable Long id) {
+        log.info("Received DELETE request for Product ID: {}", id);
+
         try {
-            sellerService.deleteProduct(id); // 상품 삭제
+            sellerService.deleteProduct(id);
+
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "상품이 성공적으로 삭제되었습니다.");
+
+            log.info("DELETE request processed successfully for Product ID: {}", id);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
+            log.error("Error during DELETE request for Product ID: {}: {}", id, e.getMessage());
+
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
-            response.put("message", "상품 삭제에 실패했습니다.");
+            response.put("message", "상품 삭제에 실패했습니다: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
-        }
-    }
-
-    // 판매자 상품 등록 검증 (POST)
-    @PostMapping("/verify")
-    public ResponseEntity<Map<String, Object>> verifySellerProduct(@ModelAttribute ProdUploadRequestDTO dto) {
-        try {
-            sellerService.verifySellerProduct(dto); // 판매자 상품 등록 검증
-            return ResponseEntity.ok(Map.of("success", true));
-        } catch (Exception e) {
-            log.error("판매자 상품 등록 검증 실패", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("success", false, "message", "판매자 상품 등록 검증 실패"));
-        }
-    }
-
-    // 상품 상태 조회 (GET)
-    @GetMapping("/status/{id}")
-    public ResponseEntity<Map<String, Object>> getProductStatus(@PathVariable Long id) {
-        try {
-            Map<String, Object> status = sellerService.getProductStatus(id); // 상품 상태 조회
-            return ResponseEntity.ok(status);
-        } catch (Exception e) {
-            log.error("상품 상태 조회 실패 {}: {}", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

@@ -255,9 +255,13 @@ function submitForm() {
         return;
     }
 
+    const productId = document.getElementById('id').value;
     const formData = new FormData(document.getElementById('productForm'));
 
-    fetch('/seller/product/update', {
+    console.log("Content-Type: multipart/form-data");
+
+    console.log([...formData.entries()]);
+    fetch('/product/' + productId, {
         method: 'PUT',
         body: formData,
     })
