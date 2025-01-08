@@ -13,6 +13,81 @@ $(document).ready(() => {
         window.location.href = '/webs/profile';
     });
 
+    // 서버에서 상품 목록을 가져와서 동적으로 슬라이드 생성
+    $(document).ready(() => {
+        $.ajax({
+            url: '/loginSuccess', // 상품 데이터를 받아올 URL
+            method: 'GET',
+            success: function (response) {
+                // response에서 제품 목록을 가져오기
+                const products = response.products; // 전체 상품 목록
+                const congproducts = response.congproducts; // 공구 가능 상품 목록
+
+                // 관련 상품 슬라이드에 상품 추가
+                const relatedTrack = document.querySelector(".related-products__track");
+
+                // 기존 슬라이드 삭제
+                relatedTrack.innerHTML = '';
+
+                // 전체 상품 목록을 슬라이드로 추가
+                products.forEach(product => {
+                    const productSlide = document.createElement('li');
+                    productSlide.classList.add('related-products__slide');
+
+                    productSlide.innerHTML = `
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            ${product.mainPicturePath ?
+                        `<img src="${product.mainPicturePath}" alt="상품 이미지">` :
+                        `<p>상품 이미지 없음</p>`}
+                        </div>
+                        <span class="related-products__badge" ${product.isCong ? '' : 'style="display:none;"'}>
+                            <img src="/images/group_yes.png" alt="공구 가능 아이콘">
+                        </span>
+                        <p class="related-products__name">${product.name}</p>
+                        <p class="related-products__price">${product.price} 원</p>
+                    </div>
+                `;
+                    relatedTrack.appendChild(productSlide);
+                });
+
+                // 공구 가능 상품 슬라이드 추가
+                const congTrack = document.querySelector(".cong-products__track");  // 별도로 공구 가능 상품을 위한 트랙
+
+                // 기존 슬라이드 삭제
+                congTrack.innerHTML = '';
+
+                // 공구 가능 상품 목록을 슬라이드로 추가
+                congproducts.forEach(product => {
+                    const productSlide = document.createElement('li');
+                    productSlide.classList.add('related-products__slide');
+
+                    productSlide.innerHTML = `
+                    <div class="related-products__card">
+                        <div class="related-products__image">
+                            ${product.mainPicturePath ?
+                        `<img src="${product.mainPicturePath}" alt="상품 이미지">` :
+                        `<p>상품 이미지 없음</p>`}
+                        </div>
+                        <span class="related-products__badge" ${product.isCong ? '' : 'style="display:none;"'}>
+                            <img src="/images/group_yes.png" alt="공구 가능 아이콘">
+                        </span>
+                        <p class="related-products__name">${product.name}</p>
+                        <p class="related-products__price">${product.price} 원</p>
+                    </div>
+                `;
+                    congTrack.appendChild(productSlide);
+                });
+
+                // 슬라이드 갱신 후 슬라이더 초기화 (기존 슬라이더 복제 로직)
+                replicateRelatedSlides();
+            },
+            error: function (error) {
+                console.error("상품 목록을 가져오는 데 실패했습니다:", error);
+            }
+        });
+    });
+
 });
 
 document.addEventListener("DOMContentLoaded", () => {

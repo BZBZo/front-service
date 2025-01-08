@@ -6,6 +6,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/product_upload.js}"></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+    <script th:src="@{/js/layout.js}"></script>
     <link th:href="@{/css/product_upload.css}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
@@ -31,11 +33,11 @@
             <div class="product-col-md-8">
                 <select id="category" name="category" class="product-select product-mt-2" required>
                     <option value="">카테고리선택</option>
-                    <option value="tp">상의</option>
-                    <option value="jk">자켓</option>
-                    <option value="sk">스커트</option>
-                    <option value="pt">바지</option>
-                    <option value="et">잡화</option>
+                    <option value="Home">가구가구</option>
+                    <option value="Clothing">옷</option>
+                    <option value="Books">책</option>
+                    <option value="Toys">장난감</option>
+                    <option value="Electronics">가전</option>
                 </select>
 
                 <input type="text" id="name" name="name" placeholder="상품명을 입력하세요" class="product-input product-mt-2" required>

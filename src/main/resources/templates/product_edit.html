@@ -6,6 +6,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/common.js}"></script>
     <script th:src="@{/js/edit_product.js}"></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+    <script th:src="@{/js/layout.js}"></script>
     <link th:href="@{/css/edit_product.css}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
@@ -40,11 +42,11 @@
 
                 <!-- 카테고리 선택 드롭다운 -->
                 <select id="category" name="category" class="product-select product-mt-2" required>
-                    <option th:selected="${product.category == 'tp'}" value="tp">상의</option>
-                    <option th:selected="${product.category == 'jk'}" value="jk">자켓</option>
-                    <option th:selected="${product.category == 'sk'}" value="sk">스커트</option>
-                    <option th:selected="${product.category == 'pt'}" value="pt">바지</option>
-                    <option th:selected="${product.category == 'et'}" value="et">잡화</option>
+                    <option th:selected="${product.category == 'Home'}" value="tp">가구가구</option>
+                    <option th:selected="${product.category == 'Clothing'}" value="jk">옷</option>
+                    <option th:selected="${product.category == 'Books'}" value="sk">책</option>
+                    <option th:selected="${product.category == 'Toys'}" value="pt">장난감</option>
+                    <option th:selected="${product.category == 'Electronics'}" value="et">가전</option>
                 </select>
 
                 <!-- 상품 정보 입력 필드 -->
