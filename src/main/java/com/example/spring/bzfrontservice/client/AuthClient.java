@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
-@FeignClient(name="authClient", url="${bzbzo.bz-auth-service-url}")
+@FeignClient(name="authClient", url="${bzbzo.bz-edge-service-url}/auths")
 public interface AuthClient {
 
     Logger logger = LoggerFactory.getLogger(AuthClient.class);

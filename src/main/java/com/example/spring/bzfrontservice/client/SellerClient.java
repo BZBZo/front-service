@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
-@FeignClient(name = "sellerClient", url = "${bzbzo.bz-seller-service-url}")
+@FeignClient(name = "sellerClient", url = "${bzbzo.bz-edge-service-url}/product")
 public interface SellerClient {
 
     @GetMapping("/list")
