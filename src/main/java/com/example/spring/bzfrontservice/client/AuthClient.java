@@ -33,6 +33,10 @@ public interface AuthClient {
     @GetMapping("/user/info")
     ResponseEntity<?> loadUserInfo(@RequestHeader("Authorization") String authorizationHeader);
 
+    // 새로운 메서드 추가 (String 반환)
+    @GetMapping(value = "/user/info", produces = "application/json")
+    Map<String, Object> getUserInfo(@RequestHeader("Authorization") String authorizationHeader);
+
     @PutMapping("/user/update/{field}")
     ResponseEntity<?> updateUserField(@RequestHeader("Authorization") String authorizationHeader,
                                       @PathVariable String field,
