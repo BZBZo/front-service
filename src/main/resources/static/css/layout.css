@@ -11,6 +11,65 @@ body, html {
 }
 
 
+* {
+    box-sizing: inherit;
+}
+
+/* Header */
+.b2-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 30px;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ddd;
+    width: 100%;
+    z-index: 1000;
+}
+
+.b2-header.scrolled {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgb(245 245 245 / 50%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 5px 20px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.b2-header .b2-logo img {
+    height: 40px;
+    transition: height 0.3s ease;
+}
+
+.b2-header.scrolled .b2-logo img {
+    height: 30px;
+}
+
+.b2-header .b2-nav-menu ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+    gap: 20px;
+}
+
+.b2-header .b2-nav-menu ul li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 15px;
+    transition: color 0.3s ease;
+}
+
+.b2-header .b2-nav-menu ul li a:hover {
+    color: #007bff;
+}
+
 /* Main Content */
 main {
     flex: 1; /* 화면의 남는 공간을 채움 */
@@ -293,6 +352,20 @@ main {
     gap: 20px;
 }
 
+/* 로그아웃 버튼 스타일 - 하단 오른쪽 */
+#logout-btn {
+    position: absolute; /* 절대 위치 */
+    bottom: 20px; /* 하단에서 20px 위 */
+    right: 20px; /* 오른쪽에서 20px */
+    padding: 8px 16px; /* 버튼 내부 여백 (크기 줄임) */
+    font-size: 0.875rem; /* 텍스트 크기 줄임 (기본보다 작게) */
+    color: #fff; /* 텍스트 색상 */
+    background-color: #007bff; /* 파란색 배경 */
+    border: none; /* 테두리 제거 */
+    border-radius: 4px; /* 모서리를 약간 둥글게 */
+    cursor: pointer; /* 클릭 가능한 스타일 */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* 효과 */
+}
 .b2-nav-menu ul li {
     margin: 0;
 }
@@ -304,3 +377,14 @@ main {
     font-weight: bold;
 }
 
+/* 마우스 오버 효과 */
+#logout-btn:hover {
+    background-color: #0056b3; /* 어두운 파란색 */
+    transform: scale(1.05); /* 약간 확대 */
+}
+
+/* 클릭 효과 */
+#logout-btn:active {
+    background-color: #004085; /* 더 어두운 파란색 */
+    transform: scale(0.95); /* 살짝 축소 */
+}

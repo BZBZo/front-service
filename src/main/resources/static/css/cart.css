@@ -1,0 +1,67 @@
+body {
+    font-family: 'Pretendard-Regular', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    width: 1000px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+.table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+thead th, tbody td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.button-group {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+#delete-selected, #order-selected {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#delete-selected:hover, #order-selected:hover {
+    background-color: #0056b3;
+}
+
+.summary {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}

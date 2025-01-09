@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.controller;
 import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
 //import com.example.spring.bzfrontservice.service.FileStorageService;
+//import com.example.spring.bzfrontservice.dto.StatusResponseDto;
 import com.example.spring.bzfrontservice.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
