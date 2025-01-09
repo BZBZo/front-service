@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/ootd_list.js}"></script>
+    <script th:src="@{/js/layout.js}"></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+    <link th:href="@{/css/ootd_list.css}" rel="stylesheet">
+
+    <title>OOTD 목록 페이지</title>
+</head>
+<body>
+<header>
+    <div th:replace="~{fragments/header :: header}"></div>
+</header>
+<div class="ootd-grid-container">
+    <div th:if="${ootdList == null || ootdList.isEmpty()}">
+        <p>등록된 OOTD가 없습니다. 새로운 스타일을 공유해 보세요!</p>
+    </div>
+
+    <div th:each="ootd : ${ootdList}" class="ootd-container">
+        <div class="ootd-header">
+            <!-- 프로필 이미지 -->
+            <img th:src="${ootd.profilePic != null ? ootd.profilePic : '/images/default-profile.png'}"
+                 alt="프로필 이미지" class="ootd-profile-img">
+            <!-- 닉네임 -->
+            <span th:text="${ootd.nickname != null ? ootd.nickname : 'Guest'}">사용자</span>
+        </div>
+        <div class="ootd-image-section">
+            <!-- OOTD 이미지 -->
+            <img th:src="@{${ootd.image}}" alt="OOTD 이미지" class="ootd-main-img">
+        </div>
+        <div class="ootd-title-section">
+            <!-- OOTD 제목 -->
+            <span th:text="${ootd.title}">제목</span>
+        </div>
+
+        <div th:each="product : ${ootd.products}" class="ootd-product-item">
+            <!-- 상품 이미지 -->
+            <img th:src="@{${product.mainPicturePath}}" class="ootd-product-item-img" alt="Product Image" />
+
+            <div>
+                <!-- 상품 이름 -->
+                <span th:text="${product.name}" class="product-name">상품명</span>
+                <div class="group-ing-icon-price">
+                    <div class="group-ing-icon">
+                        <img th:if="${product.isCong()}" th:src="@{/images/group_ing.png}" alt="공동구매 중 아이콘" />
+                        <img th:if="${not product.isCong()}" th:src="@{/images/group_yes.png}" alt="공동구매 종료 아이콘" />
+                    </div>
+                    <!-- 상품 가격 -->
+                    <span id="price-text" th:text="${product.price} + '원'">가격</span>
+                </div>
+                <!-- 상품 설명 -->
+                <span th:text="${product.description}">설명</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

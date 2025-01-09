@@ -1,0 +1,217 @@
+/* 상단 프로필 영역 */
+.ootd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.ootd-profile {
+    display: flex;
+    align-items: center;
+}
+
+.ootd-profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.ootd-nickname {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* 하트 스타일 */
+.ootd-heart {
+    font-size: 24px;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.ootd-heart.liked {
+    color: #e60000; /* 하트를 클릭했을 때 빨간색 */
+}
+
+.ootd-like-count {
+    font-size: 15px;
+    color: #777;
+    margin-left: 5px;
+}
+
+/* 이미지 섹션 */
+.ootd-image-section {
+    text-align: center;
+}
+
+.ootd-main-img {
+    width: 100%;
+    max-width: 600px;
+    display: block;
+    margin: 0 auto;
+}
+.ootd-title-section span {
+    color: #676767;
+    font-size: 13px;
+    padding: 10px 0 0 20px;
+    display: block;
+}
+
+/* 게시글 내용 */
+.ootd-post-description {
+    padding: 0 0 0 13px;
+    text-align: left;
+}
+
+.ootd-post-description h2 {
+    font-size: 20px;
+    margin: 0 0 10px;
+}
+
+.ootd-post-description p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* 상품 목록 */
+
+
+.ootd-product-list {
+    padding: 0 10px;
+}
+
+.ootd-product-item {
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.ootd-product-item-img {
+
+    width:100%;
+    max-width:60px;
+    margin:10px;
+    border-radius: 5px;
+}
+.ootd-product-item:last-child {
+    border-bottom: none; /* 마지막 연관상품 border 제거 */
+}
+
+.ootd-product-img {
+    width: 45px;
+    height: 45px;
+    border-radius: 8px;
+    margin-right: 10px;
+}
+
+.ootd-product-info h3 {
+    font-size: 11px;
+    margin: 0 0 5px;
+}
+
+.related-products {
+    display: flex; /* Flexbox 사용 */
+    align-items: center; /* 세로 중앙 정렬 */
+    gap: 10px; /* 이미지와 가격 사이 간격 */
+}
+
+.related-products__badge {
+    width: 45px; /* 이미지 크기 설정 */
+    height: 45px; /* 이미지 크기 설정 */
+    object-fit: contain; /* 이미지 비율 유지 */
+    margin: -15px 0 -15px 0px;
+}
+
+.ootd-product-price {
+    font-size: 16px; /* 폰트 크기 */
+    color: #e60000; /* 가격 색상 */
+    font-weight: bold;
+    margin: 0; /* 불필요한 마진 제거 */
+}
+.ootd-product-price strong {
+    margin-right: 5px;
+    color: #333;
+}
+
+
+
+/* 전체 그리드 컨테이너 */
+.ootd-grid-container {
+    column-count: 3;
+    column-gap: 15px;
+    gap: 10px; /* 항목 간 간격 */
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    max-width: 1200px;
+}
+
+/* 각 OOTD 항목 */
+.ootd-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), /* 부드러운 그림자 */
+    0 10px 20px rgba(0, 0, 0, 0.05); /* 추가로 넓은 그림자 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* 부드러운 hover 효과 */
+    overflow: hidden;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+/* hover 시 입체감 추가 */
+.ootd-container:hover {
+    transform: translateY(-5px); /* 위로 살짝 올라가는 효과 */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15),
+    0 15px 25px rgba(0, 0, 0, 0.1); /* hover 시 더 진한 그림자 */
+}
+
+/* 반응형 미디어 쿼리 */
+@media (max-width: 1200px) {
+    .ootd-grid-container {
+        column-count: 2;
+        padding: 15px;
+        gap: 10px; /* 항목 간 간격 */
+    }
+}
+
+@media (max-width: 800px) {
+    .ootd-grid-container {
+        column-count: 1;
+        padding: 15px;
+        gap: 10px; /* 항목 간 간격 */
+    }
+}
+
+@media (max-width: 400px) {
+    .ootd-grid-container {
+        column-count: 1;
+        padding: 15px;
+        gap: 10px; /* 항목 간 간격 */
+    }
+}
+.group-ing-icon-price{
+    width: 100%;
+}
+.group-ing-icon img {
+    width: 30%;
+    max-width: 160px;
+    display: inline-block;
+    float: left;
+}
+#price-text {
+    font-size: 16px;
+    font-weight: 700;
+    display: inline-block;
+    width: 70%;
+    padding: 0 0 0 10px;
+}
+span.product-name {
+    padding: 0 0 10px 0;
+    display: block;
+}
