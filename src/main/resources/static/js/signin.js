@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // 동적으로 폼 생성
         const form = document.createElement('form');
         form.method = 'GET';
-        form.action = `http://localhost:8085/oauth2/authorization/${provider}`;
+        form.action = `http://localhost:9999/oauth2/authorization/${provider}`;
         document.body.appendChild(form);
         form.submit();
     }
