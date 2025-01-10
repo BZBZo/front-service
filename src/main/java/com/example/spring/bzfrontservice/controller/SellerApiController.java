@@ -4,6 +4,7 @@ import com.example.spring.bzfrontservice.dto.ProdUploadRequestDTO;
 import com.example.spring.bzfrontservice.dto.ProdUploadResponseDTO;
 
 import com.example.spring.bzfrontservice.service.SellerService;
+import com.example.spring.bzfrontservice.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +23,16 @@ import java.util.Map;
 public class SellerApiController {
 
     private final SellerService sellerService;
+    private final UserService userService;
 
     // 상품 등록 (POST)
     @PostMapping(consumes = "multipart/form-data")
     public ResponseEntity<ProdUploadResponseDTO> addProduct(
             @RequestPart("mainPicture") MultipartFile mainPicture,
-            @RequestPart("productData") String productDataJson) {
-
+            @RequestPart("productData") String productDataJson,
+            @RequestHeader("Authorization") String token // Authorization 헤더 추가
+    ) {
+        log.info("Authorization Header: {}", token);
         try {
             // JSON 문자열을 객체로 변환
             ObjectMapper objectMapper = new ObjectMapper();
@@ -36,18 +40,28 @@ public class SellerApiController {
 
             log.info("Received isCong value: {}", dto.isCong());
 
-            // 상품 등록 처리 (productId를 반환하지 않음)
-            sellerService.save(dto, mainPicture); // 수정된 서비스 호출
+            // **UserService를 통해 memberNo 조회**
+            Long memberNo = userService.getMemberNo(token);
+            log.info("Fetched memberNo: {}", memberNo);
+
+            // **memberNo를 DTO에 설정**
+            dto.setSellerId(memberNo);
+
+            log.info("DTO received in seller: {}", dto); // 여기서 DTO 내부 값 확인
+            log.info("SellerId in DTO: {}", dto.getSellerId());
+
+            // 상품 등록 처리 (token 추가 전달)
+            sellerService.save(dto, mainPicture, token); // 수정된 서비스 호출
             log.info("Product registered successfully");
 
-            // 응답 DTO 생성 후 반환 (productId를 제거)
+            // 응답 DTO 생성 후 반환
             ProdUploadResponseDTO responseDTO = ProdUploadResponseDTO.builder()
                     .url("/product/list")
                     .mainPicturePath(dto.getMainPicturePath())
-                    .build();  // productId가 없으므로 productId 부분을 제거
+                    .build();
 
             log.info("Returning response: {}", responseDTO);
-            return ResponseEntity.ok(responseDTO);  // 상품 등록 성공 응답
+            return ResponseEntity.ok(responseDTO);
 
         } catch (Exception e) {
             log.error("상품 등록 실패", e);

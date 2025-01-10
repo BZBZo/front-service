@@ -22,5 +22,7 @@ public class ProdUploadRequestDTO {
     @JsonProperty("isCong")
     private boolean isCong;
     private String condition; // 모집인원과 할인율 정보를 JSON 형식으로 저장
+    private Long sellerId;
+
 }
 

@@ -37,7 +37,7 @@ public class SellerService {
         return sellerClient.getProductList(page, size, "application/json");
     }
 
-    public void save(ProdUploadRequestDTO dto, MultipartFile mainPicture) throws IOException {
+    public void save(ProdUploadRequestDTO dto, MultipartFile mainPicture, String token) throws IOException {
         log.info("Received isCong: {}", dto.isCong());
 
         // 1. 파일 저장
@@ -45,7 +45,7 @@ public class SellerService {
         dto.setMainPicturePath(mainPicturePath);
 
         // 2. 상품 등록 요청 (파일과 DTO 전달)
-        ResponseEntity<ProdUploadResponseDTO> response = sellerClient.addProduct(mainPicture, dto);
+        ResponseEntity<ProdUploadResponseDTO> response = sellerClient.addProduct(mainPicture, dto, token);
 
         log.info("Response body: {}", response.getBody()); // 응답 전체를 먼저 출력
 
