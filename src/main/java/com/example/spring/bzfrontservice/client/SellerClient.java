@@ -23,7 +23,8 @@ public interface SellerClient {
     @PostMapping( consumes = "multipart/form-data")
     ResponseEntity<ProdUploadResponseDTO> addProduct(
             @RequestPart("mainPicture") MultipartFile mainPicture,
-            @RequestPart("productData") ProdUploadRequestDTO dto
+            @RequestPart("productData") ProdUploadRequestDTO dto,
+            @RequestHeader("Authorization") String token
     );
 
     // 3. 상품 수정 (PUT)

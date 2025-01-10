@@ -37,6 +37,9 @@ public interface AuthClient {
     @GetMapping(value = "/user/info", produces = "application/json")
     Map<String, Object> getUserInfo(@RequestHeader("Authorization") String authorizationHeader);
 
+    @GetMapping("/user/memberNo")
+    ResponseEntity<Long> getMemberNo(@RequestHeader("Authorization") String authorizationHeader);
+
     @PutMapping("/user/update/{field}")
     ResponseEntity<?> updateUserField(@RequestHeader("Authorization") String authorizationHeader,
                                       @PathVariable String field,

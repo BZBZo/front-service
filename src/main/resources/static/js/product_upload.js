@@ -104,6 +104,20 @@ document.addEventListener('DOMContentLoaded', function () {
             conditionInput.value = "";
         }
     };
+
+    // 토큰 관리와 Ajax 설정
+    getToken()
+        .then(() => {
+            console.log('getToken 성공');
+            setupAjax(); // 모든 Ajax 요청에 토큰 설정
+            return checkToken(); // 토큰 유효성 확인
+        })
+        .then(() => {
+            console.log('checkToken 성공');
+        })
+        .catch(error => {
+            console.error('토큰 관련 작업 실패:', error);
+        });
 });
 
 // 폼 제출 함수
@@ -147,6 +161,9 @@ function submitForm() {
 
     fetch('/product', {
         method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')}` // Bearer 추가
+        },
         body: formData
     })
         .then((response) => {

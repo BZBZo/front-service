@@ -48,6 +48,24 @@ public class UserService {
         return authClient.loadUserInfo(authorizationHeader);
     }
 
+    public Long getMemberNo(String authorizationHeader) {
+        try {
+            // AuthClient 호출을 통해 memberNo 반환
+            ResponseEntity<Long> response = authClient.getMemberNo(authorizationHeader);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                logger.info("Successfully fetched memberNo: {}", response.getBody());
+                return response.getBody();
+            } else {
+                logger.error("Failed to fetch memberNo. Status: {}", response.getStatusCode());
+                throw new IllegalArgumentException("Failed to fetch memberNo.");
+            }
+        } catch (Exception e) {
+            logger.error("Error while fetching memberNo: {}", e.getMessage());
+            throw new RuntimeException("Error while fetching memberNo", e);
+        }
+    }
+
     public boolean updateField(String authorizationHeader, String field, String newValue) {
         try {
             Map<String, String> valueMap = new HashMap<>();
