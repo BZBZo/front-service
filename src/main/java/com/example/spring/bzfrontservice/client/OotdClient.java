@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
-@FeignClient(name = "ootdClient", url = "${bzbzo.bz-ootd-service-url}")
+@FeignClient(name = "ootdClient", url = "${bzbzo.bz-edge-service-url}/ootd")
 public interface OotdClient {
 
     @GetMapping("/api/ootd")

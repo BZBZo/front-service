@@ -13,13 +13,11 @@ spring:
       static-locations: classpath:/static/
 
 bzbzo:
-  bz-auth-service-url: ${AUTH_SERVICE_URL:http://localhost:8085}/auths
-  bz-seller-service-url: ${SELLER_SERVICE_URL:http://localhost:8088}/
-  bz-ad-service-url: ${AD_SERVICE_URL:http://localhost:8089}/ad
-  bz-customer-service-url: ${CUSTOMER_SERVICE_URL:http://localhost:8087}/customer
-  bz-ootd-service-url: ${OOTD_SERVICE_URL:http://localhost:8090}/
-
-  web:
-    resources:
-      static-locations: classpath:/static/, file:./uploads
+#  bz-auth-service-url: ${AUTH_SERVICE_URL:http://localhost:8085}/auths    #8085
+#  bz-admin-service-url: ${ADMIN_SERVICE_URL:http://localhost:8086}/admin  #8086
+#  bz-customer-service-url: ${CUSTOMER_SERVICE_URL:http://localhost:8087}/customer   #8087
+#  bz-seller-service-url: ${SELLER_SERVICE_URL:http://localhost:8088}/product    #8088
+#  bz-ad-service-url: ${AD_SERVICE_URL:http://localhost:8089}/ad   #8089
+#  bz-ootd-service-url: ${OOTD_SERVICE_URL:http://localhost:8090}/ootd   #8090
+  bz-edge-service-url: ${EDGE_SERVICE_URL:http://localhost:9999}   #9999
 
