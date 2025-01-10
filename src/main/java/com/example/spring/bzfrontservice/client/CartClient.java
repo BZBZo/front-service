@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "CartClient", url = "${bzbzo.bz-customer-service-url.${CUSTOMER_SERVICE_URL")
+@FeignClient(name = "CartClient", url = "${bzbzo.bz-edge-service-url}/customer")
 public interface CartClient {
 
     @PostMapping("/api/cart/add")

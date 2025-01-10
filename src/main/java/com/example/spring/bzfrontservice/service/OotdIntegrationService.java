@@ -6,7 +6,6 @@ import com.example.spring.bzfrontservice.client.SellerClient;
 import com.example.spring.bzfrontservice.dto.OotdResponseDTO;
 import com.example.spring.bzfrontservice.dto.ProductDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
-import com.example.spring.bzfrontservice.dto.UserInfoDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
