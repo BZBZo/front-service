@@ -26,13 +26,13 @@ public class OotdIntegrationService {
     private final SellerClient sellerClient;
     private final AuthClient authClient;
 
-    @Value("${bzbzo.bz-seller-service-url}")
+    @Value("${bzbzo.bz-edge-service-url}/product")
     private String sellerServiceBaseUrl; // Seller 서비스 URL
 
-    @Value("${bzbzo.bz-ootd-service-url}")
+    @Value("${bzbzo.bz-edge-service-url}/ootd")
     private String ootdServiceBaseUrl; // OOTD 서비스 URL
 
-    @Value("${bzbzo.bz-auth-service-url}")
+    @Value("${bzbzo.bz-edge-service-url}/auths")
     private String authServiceBaseUrl; // Auth 서비스 URL
 
     public List<OotdResponseDTO> getOotdListWithDetails(String authorization) {
