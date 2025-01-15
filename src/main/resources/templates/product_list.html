@@ -93,20 +93,5 @@
 </main>
 <div th:replace="~{fragments/footer :: footer}"></div>
 
-<script>
-    // 장바구니 담기 함수
-    function addToCart(productId) {
-        console.log("장바구니에 담기: " + productId);
-        // Ajax 또는 다른 로직으로 처리
-    }
-
-    // 주문하기 함수
-    function orderProduct(productId) {
-        console.log("주문하기: " + productId);
-        // 주문 페이지로 이동하거나 주문 처리 로직
-        window.location.href = '/order/checkout/' + productId;
-    }
-</script>
-
 </body>
 </html>

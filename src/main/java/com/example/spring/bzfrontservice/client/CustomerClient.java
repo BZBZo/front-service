@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "CartClient", url = "${bzbzo.bz-edge-service-url}/customer")
-public interface CartClient {
+@FeignClient(name = "CustomerClient", url = "${bzbzo.bz-edge-service-url}/customer")
+public interface CustomerClient {
 
-    @PostMapping("/api/cart/add")
+    @PostMapping("/cart/add")
     void addToCart(@RequestBody CartRequestDTO cartRequest,
                    @RequestHeader("Authorization") String token);
 }
