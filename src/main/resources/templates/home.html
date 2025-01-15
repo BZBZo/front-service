@@ -130,9 +130,7 @@
                     <div class="related-products__card">
                         <div class="related-products__image">
                             <!-- 상품 이미지 -->
-                            <a th:href="@{/product/detail/{id}(id=${product.id})}">
-                                <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
-                            </a>
+                            <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
                         </div>
                         <span class="related-products__badge" th:if="${product.isCong}">
                             <img th:src="@{/images/group_yes.png}" alt="공구 가능 아이콘">
@@ -187,9 +185,7 @@
                     <div class="related-products__card">
                         <div class="related-products__image">
                             <!-- 상품 이미지 -->
-                            <a th:href="@{/product/detail/{id}(id=${product.id})}">
-                                <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
-                            </a>
+                            <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
                         </div>
                         <span class="related-products__badge" th:if="${product.isCong}">
                             <img th:src="@{/images/group_yes.png}" alt="공구 가능 아이콘">

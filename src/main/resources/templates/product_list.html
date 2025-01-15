@@ -38,15 +38,15 @@
             </thead>
             <tbody>
             <tr th:each="product, iterStat : ${products}">
-                <td><input type="checkbox" class="checkbox" th:value="${product.id}"/></td>
+                <td><input type="checkbox" class="checkbox" th:value="${product.id}" /></td>
                 <td th:text="${iterStat.count}"></td>
                 <td>
-                    <a th:href="@{/product/detail/{id}(id=${product.id})}">
-                        <img th:src="@{${#strings.replace(product.mainPicturePath,'src/main/resources/static', '')}}" th:alt="${product.name}"/>
+                    <a href="#" class="product-detail-link" th:attr="data-id=${product.id}">
+                        <img th:src="@{${#strings.replace(product.mainPicturePath,'src/main/resources/static', '')}}" th:alt="${product.name}" />
                     </a>
                 </td>
                 <td>
-                    <a th:href="@{/product/detail/{id}(id=${product.id})}" th:text="${product.name}"></a>
+                    <a href="#" class="product-detail-link" th:attr="data-id=${product.id}" th:text="${product.name}"></a>
                 </td>
                 <td th:text="${#numbers.formatDecimal(product.price, 1, 0)}"></td>
                 <td>

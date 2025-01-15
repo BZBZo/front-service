@@ -1,36 +1,74 @@
 $(document).ready(() => {
     const start = performance.now();
 
-    //checkSession();
-    getBoards();
-
     $('body').on('click', '#check_all', function () {
         $('input[type="checkbox"].checkbox').prop('checked', $(this).is(':checked'));
     });
 
-    let currentPage = 1;
-    const pageSize = 10;  // 한 페이지에 보여줄 게시글 수
-    loadBoard(currentPage, pageSize);
+    //checkSession();
+    getBoards();
 
-    $('#nextPage').on('click', function () {
-        currentPage++;
+    // 게시판 데이터 초기화 및 페이지네이션 처리
+    function getBoards() {
+        let currentPage = 1;
+        const pageSize = 10; // 한 페이지에 보여줄 게시글 수
+
+        // 초기 게시글 로드
         loadBoard(currentPage, pageSize);
-    });
 
-    $('#prevPage').on('click', function () {
-        if (currentPage > 1) {
-            currentPage--;
+        // 다음 페이지 버튼 클릭 이벤트
+        $('#nextPage').on('click', () => {
+            currentPage++;
             loadBoard(currentPage, pageSize);
-        }
-    });
+        });
 
+        // 이전 페이지 버튼 클릭 이벤트
+        $('#prevPage').on('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                loadBoard(currentPage, pageSize);
+            }
+        });
+    }
+
+    // 게시판 데이터를 로드하는 함수
     function loadBoard(page, size) {
         $.ajax({
             type: 'GET',
-            url: '/seller/product/list',
+            url: '/product/list',
             data: { page, size },
             success: (response) => {
-                updateBoard(response);
+                $('#boardContent').empty(); // 기존 게시글 내용 비우기
+                if (response.boards.length <= 0) {
+                    // 게시글이 없는 경우 메시지 출력
+                    $('#boardContent').append(
+                        `<tr>
+                            <td colspan="4" style="text-align: center;">글이 존재하지 않습니다.</td>
+                        </tr>`
+                    );
+                } else {
+                    // 게시글 렌더링
+                    response.boards.forEach((product) => {
+                        $('#boardContent').append(
+                            `<tr>
+                                <td>${product.id}</td>
+                                <td><img src="${product.mainPicture}" alt="${product.name}"></td>
+                                <td>${product.name}</td>
+                                <td>${product.price.toLocaleString()} 원</td>
+                            </tr>`
+                        );
+                    });
+                }
+                // 페이지 정보 업데이트
+                $('#pageInfo').text(page);
+
+                // 이전/다음 버튼 상태 설정
+                $('#prevPage').prop('disabled', page === 1);
+                $('#nextPage').prop('disabled', response.last);
+            },
+            error: (error) => {
+                console.error('오류 발생:', error);
+                alert('게시판 데이터를 불러오는데 오류가 발생했습니다.');
             },
             complete: () => {
                 const end = performance.now();
@@ -38,29 +76,6 @@ $(document).ready(() => {
             }
         });
     }
-
-    function updateBoard(data) {
-        // 게시판 업데이트
-        // 이전 및 다음 버튼 상태 업데이트
-        $('#prevPage').prop('disabled', currentPage === 1);
-        $('#nextPage').prop('disabled', currentPage >= data.totalPages);
-    }
-
-    // // 동적 이벤트 바인딩: 페이지의 어느 시점에서든지 요소가 존재하면 이벤트가 실행됩니다.
-    // $('body').on('click', '#button_red', function () {
-    //     let selectedProducts = $('.checkbox:checked').map(function () {
-    //         return $(this).val();
-    //     }).get();
-    //
-    //     if (selectedProducts.length === 0) {
-    //         alert('삭제할 상품을 선택해 주세요.');
-    //         return;
-    //     }
-    //
-    //     if (confirm('선택한 상품을 정말 삭제하시겠습니까?')) {
-    //         deleteProducts(selectedProducts);
-    //     }
-    // });
 
     // DOM이 준비된 후 실행
     document.addEventListener("DOMContentLoaded", () => {
@@ -122,6 +137,45 @@ $(document).ready(() => {
             }
         });
     }
+
+    // 상세보기 링크 클릭 이벤트
+    $('body').on('click', '.product-detail-link', function (event) {
+        event.preventDefault(); // 기본 동작 방지
+        const productId = $(this).data('id');
+        const token = localStorage.getItem('accessToken');
+
+        console.log(token);
+
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            window.location.href = '/webs/signin';
+            return;
+        }
+
+        fetch(`/product/detail/po/${productId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`, // 템플릿 리터럴 수정
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch product details');
+                }
+                return response.text(); // 서버에서 HTML 반환 시 텍스트로 처리
+            })
+            .then((html) => {
+                history.pushState(null, '', `/product/detail/po/${productId}`); // URL 변경
+                document.open();
+                document.write(html);
+                document.close();
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('상품 정보를 가져오는 데 실패했습니다.');
+            });
+    });
 
     // // 수량 적용 버전
 
@@ -211,72 +265,3 @@ $(document).ready(() => {
 //     if (hUserId == null || hUserId === '')
 //         window.location.href = "/user/login";
 // }
-
-let getBoards = () => {
-    let currentPage = 1;
-    const pageSize = 10; // 한 페이지에 보여줄 게시글 수
-
-    // 초기 게시글 로드
-    loadBoard(currentPage, pageSize);
-
-    // 다음 페이지 버튼 클릭 이벤트
-    $('#nextPage').on('click', () => {
-        currentPage++;
-        loadBoard(currentPage, pageSize);
-    });
-
-    // 이전 페이지 버튼 클릭 이벤트
-    $('#prevPage').on('click', function () {
-        if (currentPage > 1) {
-            currentPage--;
-            loadBoard(currentPage, pageSize);
-        }
-    });
-}
-
-// 게시글 데이터를 로드하는 함수
-let loadBoard = (page, size) => {
-    $.ajax({
-        type: 'GET',
-        url: '/seller/product/list',
-        data: {
-            page: page,
-            size: size
-        },
-        success: (response) => {
-            $('#boardContent').empty(); // 기존 게시글 내용 비우기
-            if (response.boards.length <= 0) {
-                // 게시글이 없는 경우 메시지 출력
-                $('#boardContent').append(
-                    `<tr>
-                        <td colspan="4" style="text-align: center;">글이 존재하지 않습니다.</td>
-                    </tr>`
-                );
-            } else {
-                response.boards.forEach((item) => {
-                    $('#boardContent').append(
-                        `
-                    <tr>
-                        <td>${product.id}</td>
-                        <td><img src="${product.mainPicture}" alt="${product.name}"></td>
-                        <td>${product.name}</td>
-                        <td>${product.price.toLocaleString()} 원</td>
-                    </tr>
-                    `
-                    );
-                });
-
-            }
-            // 페이지 정보 업데이트
-            $('#pageInfo').text(page);
-
-            // 이전/다음 버튼 상태 설정
-            $('#prevPage').prop('disabled', page === 1);
-            $('#nextPage').prop('disabled', response.last);
-        },
-        error: function (error) {
-            console.error('오류 발생:', error);
-            alert('게시판 데이터를 불러오는데 오류가 발생했습니다.');
-        }
-    });
-}

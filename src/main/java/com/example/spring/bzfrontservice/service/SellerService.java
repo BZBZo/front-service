@@ -6,6 +6,7 @@ import com.example.spring.bzfrontservice.dto.CongdongDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
 import com.example.spring.bzfrontservice.dto.ProdUploadRequestDTO;
 import com.example.spring.bzfrontservice.dto.ProdUploadResponseDTO;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -31,6 +32,7 @@ import java.util.Map;
 public class SellerService {
 
     private final SellerClient sellerClient;
+    private final UserService userService;
 
     public Page<ProdReadResponseDTO> findAll(int page, int size) {
         System.out.println("seller service findall");
@@ -62,9 +64,9 @@ public class SellerService {
         }
     }
 
-    public void updateProduct(Long id, ProdUploadRequestDTO dto) throws IOException {
+    public void updateProduct(Long id, ProdUploadRequestDTO dto) {
         // 외부 API를 통해 상품 정보를 조회 (기존 DB 조회 코드 제거)
-        ProdReadResponseDTO product = sellerClient.getProductDetail(id);
+        ProdReadResponseDTO product = sellerClient.getProductEdit(id);
 
         // 받은 데이터로 수정할 정보를 설정
         String filteredDescription = filterDescription(dto.getDescription());
@@ -98,9 +100,26 @@ public class SellerService {
         deleteCongdong(id);
     }
 
-    // 상품 상세 조회
-    public ProdReadResponseDTO getProductDetails(Long id) {
-        return sellerClient.getProductDetail(id);
+    // 상품 수정 정보 조회
+    public ProdReadResponseDTO getProductEditInfo(Long id) {
+        log.info("Fetching product edit info for product ID: {}", id);
+
+        // SellerClient를 통해 상품 수정 정보를 가져옵니다.
+        return sellerClient.getProductEdit(id); // 클라이언트 메소드 호출
+    }
+
+    // 찐 상품 상세 조회
+    public ProdReadResponseDTO getProductDetailto(Long id, String token) {
+        try {
+            // 토큰 확인을 위한 로그
+            System.out.println("Token being sent to Seller Service via Feign: " + token);
+            // 로그 추가: FeignClient 호출 전에 확인
+            System.out.println("FeignClient 호출: ID=" + id + ", Token=" + token);
+
+            return sellerClient.getProductDetaillli(id, token);
+        } catch (FeignException e) {
+            throw new RuntimeException("Failed to fetch product details: " + e.getMessage(), e);
+        }
     }
 
     // 상품 상태 조회
