@@ -24,6 +24,12 @@ function loadUserInfo() {
 }
 
 function addToCart(productId) {
+    const quantity = prompt("수량을 입력해주세요:", "1"); // 수량 입력 받기
+    if (!quantity || isNaN(quantity) || quantity <= 0) {
+        alert("올바른 수량을 입력해주세요.");
+        return;
+    }
+
     loadUserInfo()
         .then(() => {
             console.log('Adding to cart, productId:', productId);
@@ -38,7 +44,8 @@ function addToCart(productId) {
                 },
                 data: JSON.stringify({
                     productId: productId,
-                    memberNo: memberNo
+                    memberNo: memberNo,
+                    quantity: parseInt(quantity, 10) // 수량 추가
                 }),
                 success: function (response) {
                     console.log('장바구니 추가 성공:', response);
@@ -54,6 +61,8 @@ function addToCart(productId) {
             console.error('Error in loading user info:', error);
         });
 }
+
+
 
 
 
@@ -143,11 +152,17 @@ $(document).ready(() => {
         $('#nextPage').prop('disabled', currentPage >= data.totalPages);
     }
 
-    $(document).on('click', '.add-to-cart', function () {
-        const productId = $(this).data('product-id');
+    // 이벤트 위임 방식으로 클릭 이벤트 처리
+    $('body').on('click', '.add-to-cart', function () {
+        const productId = $(this).data('product-id'); // data-product-id 속성 값 가져오기
+        if (!productId) {
+            console.error('Product ID not found!');
+            return;
+        }
         console.log('Clicked productId:', productId);
-        addToCart(productId);
+        addToCart(productId); // 정확한 productId로 addToCart 호출
     });
+
 
     // // 동적 이벤트 바인딩: 페이지의 어느 시점에서든지 요소가 존재하면 이벤트가 실행됩니다.
     // $('body').on('click', '#button_red', function () {

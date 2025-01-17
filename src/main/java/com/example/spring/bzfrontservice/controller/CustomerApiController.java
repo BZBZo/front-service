@@ -16,8 +16,7 @@ public class CustomerApiController {
     @PostMapping("/add")
     public ResponseEntity<String> addToCart(@RequestBody CartRequestDTO cartRequest,
                                             @RequestHeader("Authorization") String token) {
-        System.out.println("Received token: " + token); // 로그 추가
-        customerClient.addToCart(cartRequest, token);
+        customerClient.addToCart(cartRequest, token); // quantity 포함
         return ResponseEntity.ok("장바구니에 추가되었습니다.");
     }
 
