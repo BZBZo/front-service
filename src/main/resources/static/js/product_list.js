@@ -191,46 +191,6 @@ $(document).ready(() => {
     //     });
     // });
 
-
-    // 상세보기 링크 클릭 이벤트
-    $('body').on('click', '.product-detail-link', function (event) {
-        event.preventDefault(); // 기본 동작 방지
-        const productId = $(this).data('id');
-        const token = localStorage.getItem('accessToken');
-
-        console.log(token);
-
-        if (!token) {
-            alert('로그인이 필요합니다.');
-            window.location.href = '/webs/signin';
-            return;
-        }
-
-        fetch(`/product/detail/po/${productId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`, // 템플릿 리터럴 수정
-            },
-        })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Failed to fetch product details');
-                }
-                return response.text(); // 서버에서 HTML 반환 시 텍스트로 처리
-            })
-            .then((html) => {
-                history.pushState(null, '', `/product/detail/po/${productId}`); // URL 변경
-                document.open();
-                document.write(html);
-                document.close();
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-                alert('상품 정보를 가져오는 데 실패했습니다.');
-            });
-    });
-
     // // 수량 적용 버전
 
     // document.addEventListener("DOMContentLoaded", () => {

@@ -96,4 +96,48 @@ public class SellerViewController {
         model.addAttribute("product", product);
         return "product_edit";
     }
+
+    // 상품 목록 조회 (HTML 반환)
+    @GetMapping("/myMarket")
+    public String loadmyProduct(
+            @RequestParam(defaultValue = "1") int page, // 기본값 1
+            @CookieValue(value = "Authorization", required = false) String token,
+            Model model) {
+
+        System.out.println("Token received in Seller Controller: " + token);
+
+        if (token == null || token.isEmpty()) {
+            throw new IllegalStateException("Authorization token is missing");
+        }
+
+        // 현재 사용자 memberNo 가져오기
+        Long userId = userService.getMemberNo(token);
+        log.info("How MBN???: {}", userId);
+
+        int pageSize = 5;
+
+        // 페이지 1부터 시작하도록 조정
+        int adjustedPage = page - 1;
+        if (adjustedPage < 0) {
+            adjustedPage = 0; // 최소값 0
+        }
+
+        Page<ProdReadResponseDTO> productPage = sellerService.getProductsForSeller(adjustedPage, pageSize, token);
+        List<ProdReadResponseDTO> products = productPage.getContent();
+
+        int totalPages = productPage.getTotalPages();
+        int pageBlock = 10; // 페이지 블록 크기
+        int startPage = (adjustedPage / pageBlock) * pageBlock;
+        int endPage = Math.min(startPage + pageBlock - 1, totalPages - 1);
+
+        model.addAttribute("products", products);
+        model.addAttribute("userId", userId);
+        model.addAttribute("productPage", productPage);
+        model.addAttribute("startPage", startPage + 1); // 1부터 시작
+        model.addAttribute("endPage", endPage + 1); // 1부터 시작
+        model.addAttribute("showPrevious", startPage > 0);
+        model.addAttribute("showNext", endPage < totalPages - 1);
+
+        return "mymarket";
+    }
 }
