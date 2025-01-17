@@ -2,12 +2,12 @@ package com.example.spring.bzfrontservice.client;
 
 
 import com.example.spring.bzfrontservice.dto.*;
-import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Map;
 
 @FeignClient(name = "sellerClient", url = "${bzbzo.bz-edge-service-url}/product")
@@ -17,7 +17,8 @@ public interface SellerClient {
     Page<ProdReadResponseDTO> getProductList(
             @RequestParam("page") int page,
             @RequestParam("size") int size,
-            @RequestHeader("Accept") String acceptHeader); // Accept 헤더 추가
+            @RequestHeader("Accept") String acceptHeader // Accept 헤더 추가
+    );
 
     // 상품 등록 (POST)
     @PostMapping( consumes = "multipart/form-data")
@@ -50,6 +51,14 @@ public interface SellerClient {
     @GetMapping("/detail/po/{id}")
     ProdReadResponseDTO getProductDetaillli(
             @PathVariable("id") Long id,
+            @RequestHeader("Authorization") String token
+    );
+
+    // 판매자가 상품 보기
+    @GetMapping("/myMarket")
+    Page<ProdReadResponseDTO> loadmyProduct(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
             @RequestHeader("Authorization") String token
     );
 

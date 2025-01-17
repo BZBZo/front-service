@@ -56,7 +56,7 @@ public class SellerApiController {
 
             // 응답 DTO 생성 후 반환
             ProdUploadResponseDTO responseDTO = ProdUploadResponseDTO.builder()
-                    .url("/product/list")
+                    .url("/product/myMarket")
                     .mainPicturePath(dto.getMainPicturePath())
                     .build();
 

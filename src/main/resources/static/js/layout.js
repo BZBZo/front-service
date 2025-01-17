@@ -102,4 +102,46 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error('권한이 없습니다.');
         }
     }
+
+    // "MY MARKET" 클릭 이벤트
+    document.querySelector('body').addEventListener('click', function (event) {
+        // 클릭된 요소가 "MY MARKET" 링크인지 확인
+        if (event.target.matches('.my-market-link')) {
+            event.preventDefault(); // 기본 동작 방지
+
+            const token = localStorage.getItem('accessToken'); // 토큰 가져오기
+            console.log("Token before fetch:", token);
+
+            if (!token) {
+                alert("로그인이 필요한 서비스입니다.");
+                window.location.href = '/webs/signin';
+                return;
+            }
+
+            // fetch로 서버에 요청
+            fetch('/product/myMarket', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`, // 토큰 헤더에 포함
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch MY MARKET data');
+                    }
+                    return response.text(); // HTML 응답 처리
+                })
+                .then((html) => {
+                    history.pushState(null, '', '/product/myMarket'); // URL 업데이트
+                    document.open();
+                    document.write(html); // HTML 렌더링
+                    document.close();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('MY MARKET 데이터를 가져오는 중 문제가 발생했습니다.');
+                });
+        }
+    });
 });

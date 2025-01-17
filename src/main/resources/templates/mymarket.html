@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/common.js}"></script>
-    <script th:src="@{/js/product_list.js}"></script>
-    <link th:href="@{/css/product_list.css}" rel="stylesheet">
+    <script th:src="@{/js/mymarket.js}"></script>
+    <link th:href="@{/css/mymarket.css}" rel="stylesheet">
     <script th:src="@{/js/layout.js}"></script>
     <link th:href="@{/css/layout.css}" rel="stylesheet">
 
-    <title>상품 목록 페이지</title>
+
+    <title>내 상품만 볼 수 있다면 페이지</title>
 </head>
 <body>
 <header>
@@ -19,8 +20,9 @@
 </header>
 <main>
     <div class="container">
-        <h2>판매 상품</h2>
+        <h2>내 상품 목록</h2>
         <div class="button-group">
+            <a id="button_black" th:href="@{/product/upload}" type="button">상품등록</a>
         </div>
         <table>
             <thead>
@@ -29,26 +31,22 @@
                 <th class="th_2">이미지</th>
                 <th class="th_3">상품명</th>
                 <th class="th_2">가격</th>
-                <th class="th_4">작업</th> <!-- 작업 컬럼 추가 -->
+                <th class="th_2">공구상태</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="product, iterStat : ${products}">
-                <td th:text="${iterStat.count}"></td>
+            <tr th:each="product, iterStat : ${products}" th:if="${product.sellerId == userId}">
+                <td th:text="${iterStat.index + 1}"></td>
                 <td>
-                    <img th:src="@{${#strings.replace(product.mainPicturePath,'src/main/resources/static', '')}}" th:alt="${product.name}" />
+                    <a href="#" class="product-detail-link" th:attr="data-id=${product.id}">
+                        <img th:src="@{${#strings.replace(product.mainPicturePath,'src/main/resources/static', '')}}" th:alt="${product.name}" />
+                    </a>
                 </td>
                 <td>
-                    <span th:text="${product.name}"></span>
+                    <a href="#" class="product-detail-link" th:attr="data-id=${product.id}" th:text="${product.name}"></a>
                 </td>
-                <td th:text="${#numbers.formatDecimal(product.price, 1, 0)}"></td>
-                <td>
-                    <!-- 장바구니 담기 버튼 -->
-                    <button class="add-to-cart" th:attr="data-product-id=${product.id}">장바구니 담기</button>
-                    <!-- 주문하기 버튼 -->
-                    <button class="order-now" type="button"
-                            th:onclick="'orderProduct(' + ${product.id} + ')'">주문하기</button>
-                </td>
+                <td th:text="${#numbers.formatDecimal(product.price, 1, 0)} + ' 원'"></td>
+                <td th:text="${product.isCong ? '공구 가능' : '공구 없음'}"></td>
             </tr>
             </tbody>
         </table>
@@ -56,34 +54,33 @@
             <ul class="pagination">
                 <!-- 첫 페이지로 이동 -->
                 <li th:if="${productPage.number > 0}" class="page-item">
-                    <a class="page-link" th:href="@{/product/list(page=0)}">처음</a>
+                    <a class="page-link" th:href="@{/product/myMarket(page=1)}">처음</a>
                 </li>
 
                 <!-- 이전 페이지 블록으로 이동 -->
                 <li th:if="${showPrevious}" class="page-item">
-                    <a class="page-link" th:href="@{/product/list(page=${startPage - 1})}">이전</a>
+                    <a class="page-link" th:href="@{/product/myMarket(page=${startPage - 1})}">이전</a>
                 </li>
 
                 <!-- 페이지 번호 -->
                 <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
-                    th:class="${productPage.number == i} ? 'active page-item' : 'page-item'">
-                    <a class="page-link" th:href="@{/product/list(page=${i})}" th:text="${i + 1}">1</a>
+                    th:class="${productPage.number + 1 == i} ? 'active page-item' : 'page-item'">
+                    <a class="page-link" th:href="@{/product/myMarket(page=${i})}" th:text="${i}"></a>
                 </li>
 
                 <!-- 다음 페이지 블록으로 이동 -->
                 <li th:if="${showNext}" class="page-item">
-                    <a class="page-link" th:href="@{/product/list(page=${endPage + 1})}">다음</a>
+                    <a class="page-link" th:href="@{/product/myMarket(page=${endPage + 1})}">다음</a>
                 </li>
 
                 <!-- 마지막 페이지로 이동 -->
                 <li th:if="${productPage.number < productPage.totalPages - 1}" class="page-item">
-                    <a class="page-link" th:href="@{/product/list(page=${productPage.totalPages - 1})}">마지막</a>
+                    <a class="page-link" th:href="@{/product/myMarket(page=${productPage.totalPages})}">마지막</a>
                 </li>
             </ul>
         </div>
     </div>
 </main>
 <div th:replace="~{fragments/footer :: footer}"></div>
-
 </body>
 </html>

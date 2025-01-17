@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -32,7 +31,6 @@ import java.util.Map;
 public class SellerService {
 
     private final SellerClient sellerClient;
-    private final UserService userService;
 
     public Page<ProdReadResponseDTO> findAll(int page, int size) {
         System.out.println("seller service findall");
@@ -117,6 +115,20 @@ public class SellerService {
             System.out.println("FeignClient 호출: ID=" + id + ", Token=" + token);
 
             return sellerClient.getProductDetaillli(id, token);
+        } catch (FeignException e) {
+            throw new RuntimeException("Failed to fetch product details: " + e.getMessage(), e);
+        }
+    }
+
+    // 판매자가 상품 조회
+    public Page<ProdReadResponseDTO> getProductsForSeller(int page, int size, String token) {
+        try {
+            // 토큰 확인을 위한 로그
+            System.out.println("Token being sent to Seller Service via Feign: " + token);
+            // 로그 추가: FeignClient 호출 전에 확인
+            System.out.println("FeignClient Token=" + token);
+
+            return sellerClient.loadmyProduct(page, size, token);
         } catch (FeignException e) {
             throw new RuntimeException("Failed to fetch product details: " + e.getMessage(), e);
         }
