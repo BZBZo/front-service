@@ -41,8 +41,6 @@ public class OotdController {
         return "ootd_write";
     }
 
-
-
     private Object getUserInfo() {
         return Map.of(
                 "nickname", "miyoung",

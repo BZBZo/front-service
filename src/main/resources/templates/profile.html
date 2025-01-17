@@ -35,10 +35,12 @@
             </div>
             <div class="input-group">
                 <label>스타일 프로필 이미지</label>
-                <div class="input-with-button">
-                    <input type="file" id="profileImage" accept="image/*">
-                    <img class="preview-image">
-                    <button type="button" class="action-btn" data-field="profileImage">등록</button>
+                <div id="image-group">
+                    <input type="file" name="profileImage" id="profileImage" accept="image/*">
+                    <div class="image-preview">
+                        <img id="previewImage" src="" alt="이미지 미리보기" data-field="profileImage" style="display: none;">
+                    </div>
+                    <button type="button" class="action-btn">등록</button>
                 </div>
             </div>
 

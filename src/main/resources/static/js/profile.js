@@ -2,6 +2,8 @@ let token = localStorage.getItem('accessToken');
 $(document).ready(function () {
     // 사용자 정보 로드
     loadUserInfo();
+    const profileImage = document.getElementById('profileImage');
+    const previewImage = document.getElementById('previewImage');
 
     if (!token) {
         alert("로그인이 필요한 서비스입니다.");
@@ -68,28 +70,50 @@ $(document).ready(function () {
     }
 
     // 파일 업로드 처리 함수
-    // function handleFileUpload(file, field) {
-    //     const formData = new FormData();
-    //     formData.append('file', file);
-    //
-    //     $.ajax({
-    //         url: `/webs/user/update/${field}`,
-    //         method: 'POST',
-    //         headers: {
-    //             'Authorization': token
-    //         },
-    //         data: formData,
-    //         processData: false,
-    //         contentType: false,
-    //         success: function(response) {
-    //             alert('이미지가 업로드되었습니다.');
-    //             loadUserInfo();
-    //         },
-    //         error: function() {
-    //             alert('이미지 업로드에 실패했습니다.');
-    //         }
-    //     });
-    // }
+    function handleFileUpload(file, field) {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        $.ajax({
+            url: `/webs/user/update/${field}`,
+            method: 'POST',
+            headers: {
+                'Authorization': token
+            },
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert('이미지가 업로드되었습니다.');
+                loadUserInfo();
+            },
+            error: function() {
+                alert('이미지 업로드에 실패했습니다.');
+            }
+        });
+    }
+
+    // 이미지 선택 시 미리보기 표시
+    profileImage.addEventListener('change', function (event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            resetImagePreview();
+        }
+    });
+
+    // 이미지 및 버튼 초기화 함수
+    function resetImagePreview() {
+        previewImage.src = '';
+        previewImage.style.display = 'none';
+    }
 
     // 사용자 정보 로드 함수
     function loadUserInfo() {
