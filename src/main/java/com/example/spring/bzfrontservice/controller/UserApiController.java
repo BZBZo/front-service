@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,6 +27,12 @@ public class UserApiController {
 //    private final FileStorageService fileStorageService;
 
     private static final Logger logger = LoggerFactory.getLogger(UserApiController.class);
+
+    @GetMapping("/members")
+    public List<Map<String, Object>> allMembers() {
+        return userService.allMembers();
+    }
+
 
     @PostMapping("/join")
     public ResponseEntity<JoinResponseDTO> join(@RequestBody JoinRequestDTO joinRequestDTO) {
@@ -82,24 +89,23 @@ public class UserApiController {
     }
 
 //    이미지 업로드 (미완)
-//    @PostMapping("/user/update/{field}")
-//    public ResponseEntity<String> updateUserImage(
-//            @PathVariable String field,
-//            @RequestParam("file") MultipartFile file,
-//            @RequestHeader("Authorization") String token) {
-//
-//        try {
-//            // 파일 처리 로직 (예: 파일 저장)
-//            if (file != null && !file.isEmpty()) {
-//                String fileName = fileStorageService.store(file); // 파일 저장 로직
-//                return ResponseEntity.ok("이미지가 업로드되었습니다.");
-//            } else {
-//                return ResponseEntity.badRequest().body("파일을 선택해주세요.");
-//            }
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드에 실패했습니다.");
-//        }
-//    }
+    @PostMapping(value = "/user/update/{field}", consumes = "multipart/form-data")
+    public ResponseEntity<?> updateUserImage(
+            @PathVariable String field,
+            @RequestPart("file") MultipartFile file,
+            @RequestHeader("Authorization") String token) {
+
+        try {
+            // 파일 처리 로직 (예: 파일 저장)
+            if (file != null && !file.isEmpty()) {
+                return userService.profileImage(token, field, file);
+            } else {
+                return ResponseEntity.badRequest().body("파일을 선택해주세요.");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이미지 업로드에 실패했습니다.");
+        }
+    }
 
 
     @DeleteMapping("/user/delete")

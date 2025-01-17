@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @FeignClient(name="authClient", url="${bzbzo.bz-edge-service-url}/auths")
@@ -46,10 +47,10 @@ public interface AuthClient {
                                       @RequestBody Map<String, String> value);
 
 //    이미지 업로드 (미완)
-//    @PostMapping("/user/update/{field}")
-//    ResponseEntity<?> updateUserImage(@RequestHeader("Authorization") String authorizationHeader,
-//                                      @PathVariable String field,
-//                                      @RequestPart("file") MultipartFile file);
+    @PostMapping("/user/update/{field}")
+    ResponseEntity<?> updateUserImage(@RequestHeader("Authorization") String authorizationHeader,
+                                      @PathVariable String field,
+                                      @RequestPart("file") MultipartFile file);
 
 
     @DeleteMapping("/user/delete")
@@ -68,4 +69,10 @@ public interface AuthClient {
 
     @PostMapping("/token/logout")
     ResponseEntity<?> logout(@RequestHeader("Authorization") String accessToken);
+
+    @GetMapping("/members")
+    List<Map<String, Object>> allMembers();
+
+//    @GetMapping("/user/find")
+//    MemberResponseDTO findByEmailAndProvider(String email, String provider);
 }

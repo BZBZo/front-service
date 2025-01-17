@@ -40,6 +40,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'mysql:mysql-connector-java:8.0.33'
     implementation 'org.jsoup:jsoup:1.14.1'
+//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -60,4 +61,13 @@ tasks.named('test') {
 
 tasks.named('jar') {
     enabled = false
+}
+
+bootBuildImage {
+    imageName = "${project.name}"
+    builder = "paketobuildpacks/builder:full"
+    environment = [
+            "BP_PLATFORM": "linux/amd64", // 플랫폼 명시
+            "BP_JVM_VERSION": "21"
+    ]
 }

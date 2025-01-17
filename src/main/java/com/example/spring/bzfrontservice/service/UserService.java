@@ -4,6 +4,7 @@ import com.example.spring.bzfrontservice.client.AuthClient;
 import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
 //import com.example.spring.bzfrontservice.dto.StatusResponseDto;
+import com.example.spring.bzfrontservice.dto.MemberResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -104,4 +106,16 @@ public class UserService {
     public ResponseEntity<?> logout(String accessToken) {
         return authClient.logout(accessToken);
     }
+
+    public ResponseEntity<?> profileImage(String token, String field, MultipartFile file) {
+        return authClient.updateUserImage(token, field, file);
+    }
+
+    public List<Map<String, Object>> allMembers() {
+        return authClient.allMembers();
+    }
+
+//    public MemberResponseDTO findByEmailAndProvider(String email, String provider) {
+//        return authClient.findByEmailAndProvider(email, provider);
+//    }
 }
