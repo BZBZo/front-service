@@ -60,7 +60,7 @@ function deleteProduct(productId) {
         success: function(response) {
             if (response.success) {
                 alert(response.message);
-                window.location.href = '/product/list';
+                window.location.href = '/product/myMarket';
             } else {
                 alert(response.message);
             }

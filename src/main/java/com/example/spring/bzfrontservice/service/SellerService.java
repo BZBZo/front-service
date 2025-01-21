@@ -62,23 +62,53 @@ public class SellerService {
         }
     }
 
-    public void updateProduct(Long id, ProdUploadRequestDTO dto) {
-        // 외부 API를 통해 상품 정보를 조회 (기존 DB 조회 코드 제거)
-        ProdReadResponseDTO product = sellerClient.getProductEdit(id);
-
-        // 받은 데이터로 수정할 정보를 설정
+    public void updateProduct(Long id, ProdUploadRequestDTO dto, MultipartFile mainPicture) throws IOException {
+        // 설명 필터링
         String filteredDescription = filterDescription(dto.getDescription());
         dto.setDescription(filteredDescription);
+        log.info("Filtered Description: {}", filteredDescription);
+
+        // 이미지 파일이 있을 경우, 저장하고 경로를 DTO에 설정
+        if (mainPicture != null && !mainPicture.isEmpty()) {
+            log.info("New main picture uploaded. File name: {}", mainPicture.getOriginalFilename());
+            String mainPicturePath = saveFile(mainPicture); // 파일 저장
+            dto.setMainPicturePath(mainPicturePath); // DTO에 이미지 경로 설정
+            log.info("New image path set: {}", mainPicturePath);
+        } else {
+            // 이미지가 없을 경우 기존 경로 사용
+            String existingPicturePath = dto.getMainPicturePath(); // 기존 이미지 경로
+            if (existingPicturePath != null && !existingPicturePath.isEmpty()) {
+                log.info("No new image uploaded. Using existing image path: {}", existingPicturePath);
+                dto.setMainPicturePath(existingPicturePath); // 기존 경로를 그대로 사용
+            } else {
+                log.warn("No image provided and no existing image path found.");
+            }
+        }
+
+        log.info("Starting product update for ID: {}", id);
+        log.info("Updated DTO: {}", dto);
 
         // 외부 API를 통해 상품 수정 요청
-        ResponseEntity<Map<String, Object>> response = sellerClient.editProduct(id, dto);
+
+        log.info("Sending request to SellerClient.editProduct with data: {}", dto);
+        log.info("Main Picture: {}", mainPicture != null ? mainPicture.getOriginalFilename() : "No file uploaded");
+
+        ResponseEntity<Map<String, Object>> response = sellerClient.editProduct(id, mainPicture, dto);
+
+        log.info("Response from SellerClient: {}", response);
 
         if (!response.getStatusCode().is2xxSuccessful()) {
+            log.error("Failed to update product with ID: {}, Response: {}", id, response);
             throw new RuntimeException("상품 수정 실패");
         }
 
+        log.info("Product update API call successful for ID: {}", id);
+
         // 상품 수정 후 Congdong 상태 업데이트
         updateCongdong(id, dto);
+        log.info("Congdong status updated for product ID: {}", id);
+
+        log.info("Product update completed successfully for ID: {}", id);
     }
 
     // 상품 삭제
@@ -134,15 +164,6 @@ public class SellerService {
         }
     }
 
-    // 상품 상태 조회
-    public Map<String, Object> getProductStatus(Long id) {
-        ResponseEntity<Map<String, Object>> response = sellerClient.getProductStatus(id);
-        if (!response.getStatusCode().is2xxSuccessful()) {
-            throw new RuntimeException("상품 상태 조회 실패");
-        }
-        return response.getBody();
-    }
-
     // Congdong 저장
     private void saveCongdong(ProdUploadRequestDTO dto) {
         if (dto.isCong()) {
@@ -167,10 +188,9 @@ public class SellerService {
                     .productId(productId)
                     .condition(dto.getCondition())
                     .build();
-            sellerClient.updateCongdong(productId, congdongDTO); // 외부 API 호출하여 Congdong 업데이트
-            log.info("Congdong updated for product ID: {}", productId);
+            log.info("Congdong updated for Product ID: {}, Condition: {}", productId, congdongDTO.getCondition());
         } else {
-            log.info("No Congdong update for product ID: {} because isCong is false", productId);
+            log.info("No Congdong update for Product ID: {} because isCong is false", productId);
         }
     }
 
