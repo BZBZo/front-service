@@ -1,161 +1,84 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Quill 에디터 설정
-    let quill = new Quill('#editor', {
-        theme: 'snow',
-        modules: {
-            toolbar: [
-                ['bold', 'italic', 'underline'],
-                ['image']
-            ]
-        }
-    });
+document.addEventListener('DOMContentLoaded', function () {
+    const quill = initializeQuill(); // Quill 에디터 초기화
+    initializeConditionFields(); // 조건 필드 초기화
 
-    // 최대 파일 크기 설정 (2MB)
-    const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
-
-    // 에디터 초기화 시 기존 설명 로드
-    quill.root.innerHTML = document.getElementById('description').textContent;
-
-    // 폼 제출 시 Quill 내용 동기화 및 제출 처리
-    function submitForm() {
-        const description = quill.root.innerHTML;
-        document.getElementById('description').value = description;
-
-        const formData = new FormData(document.getElementById('productForm'));
-
-        fetch(document.getElementById('productForm').action, {
-            method: 'PUT',
-            body: formData
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('네트워크 응답에 문제가 있습니다.');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    alert('상품이 성공적으로 수정되었습니다!');
-                    window.location.href = '/seller/product/list';
-                } else {
-                    alert('상품 수정 중 오류가 발생했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('상품 수정 중 오류가 발생했습니다.');
-            });
-    }
-
-    // 이미지 압축 및 미리보기 처리 함수
-    window.previewMainImage = function(event) {
-        const input = event.target;
-        const imagePreview = document.getElementById('imagePreview');
-        const placeholderText = document.getElementById('placeholderText');
-
-        if (input.files && input.files[0]) {
-            const file = input.files[0];
-
-            // 파일 크기 확인
-            if (file.size > MAX_FILE_SIZE) {
-                alert('이미지 파일 크기가 너무 큽니다. 2MB 이하의 파일을 선택해 주세요.');
-                return;
-            }
-
-            // FileReader로 이미지 로드
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.src = e.target.result;
-
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const maxSize = 800; // 최대 가로/세로 크기 설정
-                    let width = img.width;
-                    let height = img.height;
-
-                    // 이미지 크기 조정
-                    if (width > height) {
-                        if (width > maxSize) {
-                            height *= maxSize / width;
-                            width = maxSize;
-                        }
-                    } else {
-                        if (height > maxSize) {
-                            width *= maxSize / height;
-                            height = maxSize;
-                        }
-                    }
-                    canvas.width = width;
-                    canvas.height = height;
-
-                    // Canvas에 이미지 그리기
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-
-                    // 압축된 이미지 데이터 URL 생성 (JPEG 형식, 80% 품질)
-                    canvas.toBlob((blob) => {
-                        const compressedFile = new File([blob], file.name, { type: "image/jpeg", lastModified: Date.now() });
-
-                        // 압축된 이미지 미리보기
-                        imagePreview.src = URL.createObjectURL(blob);
-                        imagePreview.style.display = 'block';
-                        placeholderText.style.display = 'none';
-
-                        // 압축된 파일을 formData에 설정
-                        const formData = new FormData(document.getElementById('productForm'));
-                        formData.set('mainPicture', compressedFile);
-                    }, "image/jpeg", 0.8);
-                };
-            };
-            reader.readAsDataURL(file);
-        } else {
-            // 파일이 선택되지 않은 경우 미리보기를 초기화
-            imagePreview.src = '';
-            imagePreview.style.display = 'none';
-            placeholderText.style.display = 'block';
-        }
-    };
-
-    // 전역에서 submitForm 함수 접근 가능하도록 설정
-    window.submitForm = submitForm;
+    // 전역에서 사용할 함수 설정
+    window.submitForm = () => handleFormSubmit(quill);
+    window.previewMainImage = previewMainImage;
 });
 
-function toggleFields(isVisible) {
-    const conditionTable = document.querySelector('.condition-container');
-    const addConditionBtn = document.getElementById('addConditionBtn');
-    const conditionTableBody = document.querySelector('#conditionTable tbody');
-    const conditionInput = document.querySelector('input[name="condition"]');
+/**
+ * Quill 에디터 초기화
+ */
+function initializeQuill() {
+    const quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [['bold', 'italic', 'underline'], ['image']],
+        },
+    });
+    const descriptionElement = document.getElementById('description');
+    quill.root.innerHTML = descriptionElement.textContent.trim(); // 기존 설명 로드
+    return quill;
+}
 
-    // 방어 코드: 필요한 DOM 요소가 없으면 함수 종료
-    if (!conditionTable || !addConditionBtn || !conditionTableBody || !conditionInput) {
-        console.error("toggleFields: 필요한 DOM 요소가 없습니다.");
-        return;
+/**
+ * 조건 필드 초기화
+ */
+function initializeConditionFields() {
+    const conditionInput = document.querySelector('input[name="condition"]');
+    const addConditionBtn = document.getElementById('addConditionBtn');
+    const isCongChecked = document.querySelector('input[name="isCong"]:checked')?.value === "true";
+
+    toggleFields(isCongChecked);
+
+    if (conditionInput?.value.trim()) {
+        conditionInput.value.split(',').forEach((cond) => {
+            const [people, discount] = cond.replace(/[{}]/g, '').split(':');
+            addConditionRow(people, discount);
+        });
+    } else {
+        addConditionRow(1, 0);
+        updateCondition();
     }
 
-    if (isVisible) {
-        conditionTable.style.display = "block";
-        addConditionBtn.style.display = "inline-block";
+    addConditionBtn?.addEventListener("click", () => {
+        addConditionRow(1, 0);
+        updateCondition();
+    });
+}
 
-        if (conditionTableBody.children.length === 0) {
-            addConditionRow(1, 0);
+/**
+ * 조건 필드 표시/숨기기
+ */
+function toggleFields(isCong, radioButton) {
+    const conditionContainer = document.querySelector('.condition-container');
+    const conditionInput = document.getElementById('condition');
+
+    if (isCong) {
+        // 'isCong'가 true일 경우 condition 테이블을 활성화
+        conditionContainer.style.display = 'block';
+
+        // 기존 condition 값을 유지하도록 설정 (필요한 경우 조건을 자동 생성)
+        if (!conditionInput.value) {
+            // 기본값이나 조건을 자동으로 추가하는 로직
+            conditionInput.value = JSON.stringify([{ minCount: 10, discount: 5 }]);  // 예시값
         }
     } else {
-        conditionTable.style.display = "none";
-        addConditionBtn.style.display = "none";
-        conditionTableBody.innerHTML = "";
-        conditionInput.value = "";
+        // 'isCong'가 false일 경우 condition 테이블을 숨기고 기본값 설정
+        conditionContainer.style.display = 'none';
+
+        // 기본값을 condition에 설정 (값이 없도록 설정)
+        conditionInput.value = JSON.stringify([]);  // 빈 배열로 기본값 처리
     }
 }
 
+/**
+ * 조건 행 추가
+ */
 function addConditionRow(people = 1, discount = 0) {
     const conditionTableBody = document.querySelector('#conditionTable tbody');
-    const conditionInput = document.querySelector('input[name="condition"]');
-
-    if (!conditionTableBody || !conditionInput) {
-        console.error("addConditionRow: 필요한 DOM 요소가 없습니다.");
-        return;
-    }
+    if (!conditionTableBody) return;
 
     const row = document.createElement('tr');
     row.innerHTML = `
@@ -176,114 +99,138 @@ function addConditionRow(people = 1, discount = 0) {
     conditionTableBody.appendChild(row);
 }
 
-// 전역으로 선언
+/**
+ * 조건 업데이트
+ */
 function updateCondition() {
     const conditionTableBody = document.querySelector('#conditionTable tbody');
     const conditionInput = document.querySelector('input[name="condition"]');
+    if (!conditionTableBody || !conditionInput) return;
 
-    if (!conditionTableBody || !conditionInput) {
-        console.error("updateCondition: 필요한 DOM 요소가 없습니다.");
-        return;
-    }
-
-    const rows = conditionTableBody.querySelectorAll('tr');
-    const conditionArray = Array.from(rows).map(row => {
+    const rows = Array.from(conditionTableBody.querySelectorAll('tr'));
+    conditionInput.value = rows.map(row => {
         const people = row.querySelector('.people-input').value || 1;
         const discount = row.querySelector('.discount-input').value || 0;
-        return `{${people}:${discount}}`;
-    });
-
-    conditionInput.value = conditionArray.join(',');
-    console.log('Updated condition:', conditionInput.value);
+        return `{"${people}":${discount}}`; // JSON 형식으로 수정
+    }).join(',');
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const conditionInput = document.querySelector('input[name="condition"]');
-    const addConditionBtn = document.getElementById('addConditionBtn');
+/**
+ * 메인 이미지 미리보기
+ */
+function previewMainImage(event) {
+    const input = event.target;
+    const imagePreview = document.getElementById('imagePreview');
+    const placeholderText = document.getElementById('placeholderText');
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 최대 파일 크기: 10MB
 
-    // 방어 코드: 필요한 DOM 요소가 없으면 함수 종료
-    if (!conditionInput || !addConditionBtn) {
-        console.error("초기화 과정에서 필요한 DOM 요소가 없습니다.");
-        return;
-    }
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        if (file.size > MAX_FILE_SIZE) {
+            alert('이미지 파일 크기가 너무 큽니다. 10MB 이하의 파일을 선택해 주세요.');
+            return;
+        }
 
-    // 기존 condition 값을 읽어와 테이블 초기화
-    if (conditionInput.value.trim()) {
-        conditionInput.value.split(',').forEach(cond => {
-            const [people, discount] = cond.replace(/[{}]/g, '').split(':');
-            addConditionRow(people, discount);
-        });
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+            if (placeholderText) {
+                placeholderText.style.display = 'none';
+            }
+        };
+        reader.readAsDataURL(file);
     } else {
-        addConditionRow(1, 0);
-        updateCondition();
+        imagePreview.src = '';
+        imagePreview.style.display = 'none';
+        if (placeholderText) {
+            placeholderText.style.display = 'block';
+        }
     }
-
-    const isCongCheckedElement = document.querySelector('input[name="isCong"]:checked');
-    const isCongChecked = isCongCheckedElement ? isCongCheckedElement.value === "true" : false;
-    toggleFields(isCongChecked);
-
-    addConditionBtn.addEventListener("click", () => {
-        addConditionRow(1, 0);
-        updateCondition();
-    });
-});
-
-// 입력값 검증 함수
-function validateInputs() {
-    const conditionInput = document.querySelector('input[name="condition"]');
-    const description = document.querySelector('#description').value.trim();
-
-    if (!conditionInput.value.trim()) {
-        alert("조건을 입력하세요.");
-        console.error("조건 없음:", conditionInput.value);
-        return false;
-    }
-
-    if (!description) {
-        alert("설명을 입력하세요.");
-        console.error("설명 없음:", description);
-        return false;
-    }
-
-    return true;
 }
 
-// 폼 제출 함수
-function submitForm() {
-    if (!validateInputs()) {
-        // 입력값이 유효하지 않은 경우 함수 종료
+// 폼 제출 처리
+function handleFormSubmit(quill) {
+    const form = document.getElementById('productForm');
+    const formData = new FormData(form);
+    formData.set('description', quill.root.innerHTML.trim());
+
+    const isCong = document.querySelector('input[name="isCong"]:checked').value === "true";
+    let condition = document.getElementById('condition').value;
+
+    // 'isCong'가 false일 때 기본값을 적용
+    if (!isCong) {
+        condition = '{"1":0}'; // 기본값
+    }
+
+    // condition 값이 비어 있거나 잘못된 경우 기본값을 설정
+    if (!condition || condition.trim() === "") {
+        condition = '{"1":0}'; // 기본값
+    }
+
+    // condition을 JSON 문자열로 변환하여 전송
+    try {
+        JSON.parse(condition); // 유효한 JSON인지 체크
+    } catch (e) {
+        alert('Condition 필드는 유효한 JSON 형식이어야 합니다.');
         return;
     }
 
-    const productId = document.getElementById('id').value;
-    const formData = new FormData(document.getElementById('productForm'));
+    const productData = JSON.stringify({
+        name: document.getElementById('name').value,
+        price: document.getElementById('price').value,
+        quantity: document.getElementById('quantity').value,
+        category: document.getElementById('category').value,
+        description: quill.root.innerHTML.trim(),
+        isCong: isCong,
+        condition: condition,  // JSON 포맷으로 그대로 전송
+        sellerId: document.getElementById("sellerId").value
+    });
 
-    console.log("Content-Type: multipart/form-data");
+    formData.append('productData', new Blob([productData], { type: 'application/json' }));
 
-    console.log([...formData.entries()]);
-    fetch('/product/' + productId, {
+    const mainPictureInput = document.querySelector('input[name="mainPicture"]');
+    const existingMainPicturePath = document.getElementById('mainPicturePath')?.value; // mainPicturePath가 없으면 undefined
+
+    if (mainPictureInput.files.length > 0) {
+        // 이미지가 선택되었으면 새 이미지로 설정
+        formData.append('mainPicture', mainPictureInput.files[0]);
+    } else if (existingMainPicturePath) {
+        // 이미지가 선택되지 않았다면 기존 이미지 경로를 그대로 추가
+        formData.append('mainPicturePath', existingMainPicturePath);
+    } else {
+        // 이미지도 없고 mainPicturePath도 없다면, 경고하고 폼 제출을 중지
+        alert('상품의 이미지 경로가 존재하지 않습니다.');
+        return;
+    }
+
+    // 비어있는 값이 포함되지 않도록 하기 위해 FormData를 다시 점검
+    if (!formData.has('mainPicture') && !formData.has('mainPicturePath')) {
+        alert('이미지가 없으면 수정할 수 없습니다.');
+        return;
+    }
+
+    console.log('상품 상품 그것은 상품.', formData, productData)
+
+    // 폼 전송 처리
+    fetch(form.action, {
         method: 'PUT',
         body: formData,
     })
         .then(response => {
-            if (!response.ok) {
-                console.error(`HTTP Error: ${response.status} - ${response.statusText}`);
-                alert("서버 오류가 발생했습니다.");
-                return;
-            }
+            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
             return response.json();
         })
         .then(data => {
             if (data.success) {
                 alert('상품이 성공적으로 수정되었습니다!');
-                window.location.href = '/seller/product/list';
+                window.location.href = '/product/myMarket';
             } else {
-                console.error("서버 응답 실패:", data.message);
                 alert('상품 수정 중 오류가 발생했습니다.');
             }
         })
         .catch(error => {
-            console.error("Network Error:", error);
-            alert('네트워크 오류가 발생했습니다.');
+            console.error('Error:', error);
+            alert('상품 수정 중 오류가 발생했습니다.');
         });
 }
