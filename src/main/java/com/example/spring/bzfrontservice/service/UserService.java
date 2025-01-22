@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.service;
 import com.example.spring.bzfrontservice.client.AuthClient;
 import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
+import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +112,10 @@ public class UserService {
 
     public List<Map<String, Object>> allMembers() {
         return authClient.allMembers();
+    }
+
+    public SecurityUserDTO loadMemberDetail(String token) {
+        return authClient.loadMemberDetail(token);
     }
 
 //    public MemberResponseDTO findByEmailAndProvider(String email, String provider) {

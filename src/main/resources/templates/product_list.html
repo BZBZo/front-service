@@ -49,7 +49,9 @@
                     <button class="add-to-cart" th:attr="data-product-id=${product.id}">장바구니 담기</button>
                     <!-- 주문하기 버튼 -->
                     <button class="order-now" type="button"
-                            th:onclick="'orderProduct(' + ${product.id} + ')'">주문하기</button>
+                            th:data-product-id="${product.id}"
+                            th:data-product-price="${product.price}">바로 구매</button>
+<!--                    th:onclick="'orderProduct(' + ${product.id} + ')'">주문하기</button>-->
                 </td>
             </tr>
             </tbody>
