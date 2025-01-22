@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/total_list.js}"></script>
+    <link th:href="@{/css/total_list.css}" rel="stylesheet">
+    <script th:src="@{/js/layout.js}"></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+
+    <title>상품 목록 페이지</title>
+</head>
+<body>
+<header>
+    <div th:replace="~{fragments/header :: header}"></div>
+</header>
+<main>
+    <div class="container">
+        <h2>전체 상품 목록</h2>
+        <div id="productGrid" class="product-grid">
+            <!-- 상품 목록 -->
+            <div id="productuu" class="product-uu">
+                <div th:each="product : ${products}">
+                    <img th:src="@{${product.mainPicturePath}}" th:alt="${product.name}" />
+                    <span th:text="${product.name}"></span>
+                    <span th:text="${#numbers.formatDecimal(product.price, 1, 0)}"></span><span> 원</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 페이징 UI -->
+        <div class="pagination-container">
+            <ul class="pagination">
+                <!-- 첫 페이지로 이동 -->
+                <li th:if="${currentPage > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/product/totallist(page=1)}">처음</a>
+                </li>
+
+                <!-- 이전 페이지 블록으로 이동 -->
+                <li th:if="${startPage > 1}" class="page-item">
+                    <a class="page-link" th:href="@{/product/totallist(page=${startPage - 1})}">이전</a>
+                </li>
+
+                <!-- 페이지 번호 -->
+                <li th:each="i : ${#numbers.sequence(startPage, endPage)}"
+                    th:classappend="${currentPage == i} ? 'active' : ''" class="page-item">
+                    <a class="page-link" th:href="@{/product/totallist(page=${i})}" th:text="${i}"></a>
+                </li>
+
+                <!-- 다음 페이지 블록으로 이동 -->
+                <li th:if="${endPage < totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/product/totallist(page=${endPage + 1})}">다음</a>
+                </li>
+
+                <!-- 마지막 페이지로 이동 -->
+                <li th:if="${currentPage < totalPages}" class="page-item">
+                    <a class="page-link" th:href="@{/product/totallist(page=${totalPages})}">마지막</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</main>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

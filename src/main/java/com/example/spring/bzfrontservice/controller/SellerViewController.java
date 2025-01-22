@@ -47,6 +47,52 @@ public class SellerViewController {
         return "product_list";
     }
 
+    @GetMapping("/totallist")
+    public String productTotalList(@RequestParam(defaultValue = "1") int page, Model model) {
+
+        int pageSize = 8;
+
+        log.info("Requested Page: {}", page);
+        log.info("Page Size: {}", pageSize);
+
+        int adjustedPage = page - 1; // 0 기반으로 변환
+        if (adjustedPage < 0) {
+            adjustedPage = 0; // 최소값 0 보장
+        }
+
+        log.info("Adjusted Page (0-based): {}", adjustedPage);
+
+        Page<ProdReadResponseDTO> productPage = sellerService.findAll(adjustedPage, pageSize);
+        log.info("Total Elements: {}", productPage.getTotalElements());
+        log.info("Total Pages: {}", productPage.getTotalPages());
+        log.info("Current Page: {}", productPage.getNumber() + 1); // 1 기반으로 출력
+        log.info("Number of Elements in Current Page: {}", productPage.getNumberOfElements());
+
+        List<ProdReadResponseDTO> products = productPage.getContent();
+        log.info("Products on Current Page: {}", products);
+
+        int totalPages = productPage.getTotalPages();
+        int pageBlock = 5; // 한 번에 표시할 페이지 번호 수
+        int startPage = ((page - 1) / pageBlock) * pageBlock + 1;
+        int endPage = Math.min(startPage + pageBlock - 1, totalPages);
+
+        log.info("Start Page: {}", startPage);
+        log.info("End Page: {}", endPage);
+
+        model.addAttribute("products", products);
+        model.addAttribute("currentPage", page); // 1 기반 현재 페이지
+        model.addAttribute("totalPages", totalPages); // 총 페이지 수
+        model.addAttribute("startPage", startPage); // 표시할 시작 페이지
+        model.addAttribute("endPage", endPage); // 표시할 끝 페이지
+        model.addAttribute("hasNext", productPage.hasNext());
+        model.addAttribute("hasPrevious", productPage.hasPrevious());
+
+        log.info("Has Next Page: {}", productPage.hasNext());
+        log.info("Has Previous Page: {}", productPage.hasPrevious());
+
+        return "total_list";
+    }
+
     // 상품 등록 페이지
     @GetMapping("/upload")
     public String uploadProduct() {

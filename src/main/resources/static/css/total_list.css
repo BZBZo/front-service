@@ -1,0 +1,109 @@
+body {
+    font-family: 'Pretendard-Regular', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+main {
+    background-color: white;
+    padding-top: 115px;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+    font-size: 30px;
+    font-weight: 600;
+}
+
+/* Container for the grid */
+.product-uu {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4개 열로 설정 */
+    gap: 20px; /* 항목 간격 */
+    margin-top: 20px;
+    max-height: 750px; /* 두 줄만 표시되도록 높이 제한 */
+    overflow-y: hidden; /* 초과 부분 숨기기 */
+}
+
+/* 상품 이미지 스타일링 */
+.product-uu img {
+    width: 200px;
+    height: 270px;
+    object-fit: cover; /* 이미지 비율 유지 */
+    border-radius: 8px;
+    display: block;
+    margin: 0 auto;
+}
+
+/* 상품 이름 스타일링 */
+.product-uu span {
+    display: block; /* 상품 이름은 블록으로 유지 */
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+}
+
+/* 가격과 '원'은 같은 줄에 나란히 표시 */
+.product-uu span + span,
+.product-uu span + span + span {
+    display: inline; /* 가격과 '원'은 인라인으로 설정 */
+    font-size: 14px;
+    color: #888;
+    margin-left: 2px; /* 가격과 '원' 사이에 약간의 간격을 둡니다. */
+}
+
+/* '더보기' 버튼 스타일 */
+.load-more-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination {
+    list-style: none;
+    display: flex;
+    gap: 5px;
+    padding: 0;
+}
+
+.page-item {
+    display: inline-block;
+}
+
+.page-link {
+    display: block;
+    padding: 5px 10px;
+    border: 1px solid #ddd;
+    text-decoration: none;
+    color: #007bff;
+    background-color: #fff;
+    border-radius: 3px;
+}
+
+.page-link:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.page-item.active .page-link {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bold;
+    pointer-events: none;
+}

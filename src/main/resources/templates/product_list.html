@@ -41,7 +41,9 @@
                 <td>
                     <span th:text="${product.name}"></span>
                 </td>
-                <td th:text="${#numbers.formatDecimal(product.price, 1, 0)}"></td>
+                <td>
+                    <span th:text="${#numbers.formatDecimal(product.price, 1, 0)}"></span> 원
+                </td>
                 <td>
                     <!-- 장바구니 담기 버튼 -->
                     <button class="add-to-cart" th:attr="data-product-id=${product.id}">장바구니 담기</button>
