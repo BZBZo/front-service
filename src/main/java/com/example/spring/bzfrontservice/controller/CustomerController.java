@@ -10,7 +10,6 @@ public class CustomerController {
 
     @GetMapping("/cart")
     public String cart(){
-
         return "cart";
     }
 
