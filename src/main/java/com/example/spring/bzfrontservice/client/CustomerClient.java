@@ -7,14 +7,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "CustomerClient", url = "${bzbzo.bz-edge-service-url}/customer/cart")
+@FeignClient(name = "CustomerClient", url = "${bzbzo.bz-edge-service-url}/customer")
 public interface CustomerClient {
 
-    @PostMapping("/add")
+    @PostMapping("/cart/add")
     void addToCart(@RequestBody CartRequestDTO cartRequest,
                    @RequestHeader("Authorization") String token);
 
-    @GetMapping("/list")
-    List<ProductQuantityDTO> getCartItems(@RequestHeader("Authorization") String token);
+    @GetMapping("/cart/list")
+    List<ProductQuantityDTO> getCartItems(Long memberNo);
 }
 

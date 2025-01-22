@@ -164,6 +164,43 @@ $(document).ready(() => {
     });
 
 
+
+
+    // '바로 구매' 버튼 클릭 이벤트
+    $('body').on('click', '.order-now', function () {
+        const productId = $(this).data('product-id');
+        const productPrice = $(this).data('product-price');
+        const token = localStorage.getItem('accessToken'); // 토큰 가져오기
+
+        if (!productId || !productPrice) {
+            console.error('Product information missing!');
+            return;
+        }
+
+        console.log('Redirecting to payment page with productId:', productId, 'and price:', productPrice);
+
+        $.ajax({
+            url: '/customer/payment',
+            type: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`, // 토큰을 헤더에 추가
+            },
+            data: {
+                productId: productId,
+                price: productPrice,
+            },
+            success: function (response) {
+                // 결제 페이지로 이동
+                window.location.href = '/checkout';
+            },
+            error: function (error) {
+                console.error('Error during payment request:', error);
+                alert('결제 요청 중 오류가 발생했습니다.');
+            }
+        });
+    });
+
+
     // // 동적 이벤트 바인딩: 페이지의 어느 시점에서든지 요소가 존재하면 이벤트가 실행됩니다.
     // $('body').on('click', '#button_red', function () {
     //     let selectedProducts = $('.checkbox:checked').map(function () {

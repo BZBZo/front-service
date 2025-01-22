@@ -15,9 +15,11 @@ import java.util.List;
 public class CartService {
     private final CustomerClient customerClient;
     private final SellerClient sellerClient;
+    private final UserService userService;
 
     public List<CartResponseDTO> getCartItems(String token) {
-        List<ProductQuantityDTO> cartItems = customerClient.getCartItems(token);
+        Long memberNo = userService.getMemberNo(token);
+        List<ProductQuantityDTO> cartItems = customerClient.getCartItems(memberNo);
 
         List<CartResponseDTO> response = new ArrayList<>();
         for (ProductQuantityDTO item : cartItems) {
