@@ -31,9 +31,9 @@ public class CustomerApiController {
 
     // 장바구니 목록 가져오기
     @GetMapping("/list")
-    public ResponseEntity<List<ProductQuantityDTO>> getCartItems(@RequestHeader("Authorization") String token) {
-        Long memberNo = userService.getMemberNo(token);
-        return ResponseEntity.ok(customerClient.getCartItems(memberNo));
+    public ResponseEntity<List<CartResponseDTO>> getCartItems(@RequestHeader("Authorization") String token) {
+        List<CartResponseDTO> cartItems = cartService.getCartItems(token);
+        return ResponseEntity.ok(cartItems);
     }
 }
 

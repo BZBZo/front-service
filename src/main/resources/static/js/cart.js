@@ -71,20 +71,36 @@ $(document).ready(function () {
             method: 'GET',
             headers: { 'Authorization': token },
             success: function (cartItems) {
+                console.log('Cart items:', cartItems); // 응답 데이터 확인
+
+                cartItems.forEach((item, index) => {
+                    console.log(`Item ${index + 1}:`, {
+                        productId: item.productId,
+                        name: item.name,
+                        price: item.price,
+                        quantity: item.quantity,
+                        imagePath: item.imagePath
+                    });
+                });
+
                 const $cartContent = $('#cart-content');
                 $cartContent.empty();
 
                 cartItems.forEach((item, index) => {
+                    const price = item.price || 0; // 가격
+                    const quantity = item.quantity || 0; // 수량
+
+                    // 테이블 행 생성
                     const row = `
-                        <tr data-product-id="${item.productId}" data-price="${item.price}">
-                            <td><input type="checkbox" class="checkbox" /></td>
-                            <td>${index + 1}</td>
-                            <td><img src="${item.imagePath}" alt="${item.name}" width="50" /></td>
-                            <td>${item.name}</td>
-                            <td>${item.price.toLocaleString()} 원</td>
-                            <td><input type="number" class="quantity-input" value="${item.quantity}" min="1" /></td>
-                            <td class="total-price">${(item.price * item.quantity).toLocaleString()} 원</td>
-                        </tr>`;
+                    <tr data-product-id="${item.productId}" data-price="${price}">
+                        <td><input type="checkbox" class="checkbox" /></td>
+                        <td>${index + 1}</td>
+                        <td><img src="${item.imagePath || ''}" alt="${item.name || ''}" width="50" /></td>
+                        <td>${item.name || '상품명 없음'}</td>
+                        <td>${price.toLocaleString()} 원</td>
+                        <td><input type="number" class="quantity-input" value="${quantity}" min="1" /></td>
+                        <td class="total-price">${(price * quantity).toLocaleString()} 원</td>
+                    </tr>`;
                     $cartContent.append(row);
                 });
 
@@ -95,4 +111,6 @@ $(document).ready(function () {
             }
         });
     }
+
+
 });

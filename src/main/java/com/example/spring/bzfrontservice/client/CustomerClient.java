@@ -15,6 +15,6 @@ public interface CustomerClient {
                    @RequestHeader("Authorization") String token);
 
     @GetMapping("/cart/list")
-    List<ProductQuantityDTO> getCartItems(Long memberNo);
+    List<ProductQuantityDTO> getCartItems(@RequestParam Long memberNo);
 }
 

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @FeignClient(name = "sellerClient", url = "${bzbzo.bz-edge-service-url}/product")
@@ -63,4 +64,7 @@ public interface SellerClient {
             @RequestParam("size") int size,
             @RequestHeader("Authorization") String token
     );
+
+    @PostMapping("/list/cart")
+    List<ProdReadResponseDTO> getProductsByIds(@RequestBody List<Long> productIds);
 }
