@@ -136,7 +136,20 @@ public class SellerService {
         return sellerClient.getProductEdit(id); // 클라이언트 메소드 호출
     }
 
-    // 찐 상품 상세 조회
+    // 기냥 상품 상세 조회
+    public ProdReadResponseDTO getProductDetails(Long id) {
+        try {
+            // 로그 추가: FeignClient 호출 전에 확인
+            System.out.println("FeignClient 호출: ID=" + id);
+
+            // FeignClient를 통해 상품 상세 정보 가져오기
+            return sellerClient.loadProductDetails(id);
+        } catch (FeignException e) {
+            throw new RuntimeException("Failed to fetch product details: " + e.getMessage(), e);
+        }
+    }
+
+    // 판매자 상품 상세 조회
     public ProdReadResponseDTO getProductDetailto(Long id, String token) {
         try {
             // 토큰 확인을 위한 로그
@@ -144,7 +157,7 @@ public class SellerService {
             // 로그 추가: FeignClient 호출 전에 확인
             System.out.println("FeignClient 호출: ID=" + id + ", Token=" + token);
 
-            return sellerClient.getProductDetaillli(id, token);
+            return sellerClient.loadProductDetail(id, token);
         } catch (FeignException e) {
             throw new RuntimeException("Failed to fetch product details: " + e.getMessage(), e);
         }

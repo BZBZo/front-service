@@ -43,7 +43,7 @@ public interface SellerClient {
 
     // 상품 상세 조회 (GET)
     @GetMapping("/detail/{id}")
-    ProdReadResponseDTO getProductDetail(@PathVariable Long id);
+    ProdReadResponseDTO loadProductDetails(@PathVariable Long id);
 
     // 상품 수정용 클라이언트
     @GetMapping("/edit/{id}")
@@ -51,7 +51,7 @@ public interface SellerClient {
 
     // 이제 얘가 상품 상세 조회 (GET)
     @GetMapping("/detail/po/{id}")
-    ProdReadResponseDTO getProductDetaillli(
+    ProdReadResponseDTO loadProductDetail(
             @PathVariable("id") Long id,
             @RequestHeader("Authorization") String token
     );

@@ -94,7 +94,7 @@ public class OotdIntegrationService {
                 .map(productId -> {
                     try {
                         Long id = Long.parseLong(productId.trim());
-                        ProdReadResponseDTO productDetail = sellerClient.getProductDetail(id);
+                        ProdReadResponseDTO productDetail = sellerClient.loadProductDetails(id);
                         return ProductDTO.builder()
                                 .name(productDetail.getName())
                                 .price(productDetail.getPrice())
