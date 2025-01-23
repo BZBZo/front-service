@@ -4,6 +4,7 @@ package com.example.spring.bzfrontservice.controller;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
 import com.example.spring.bzfrontservice.service.SellerService;
 import com.example.spring.bzfrontservice.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -131,6 +132,20 @@ public class SellerViewController {
         model.addAttribute("isOwner", isOwner);
 
         return "product_detail"; // product_detail.html 반환
+    }
+
+    // 상품 상세 페이지
+    @GetMapping("/detail/{id}")
+    public String productDetail(@PathVariable("id") Long productId, Model model) {
+            // 서비스 계층을 통해 상품 상세 정보 가져오기
+            ProdReadResponseDTO product = sellerService.getProductDetails(productId);
+            log.info("what is this?: {} ", product);
+
+            // 모델에 데이터 추가
+            model.addAttribute("product", product);
+
+            // product_detail_all.html 뷰 반환
+            return "product_detail_all";
     }
 
     // 상품 수정 페이지

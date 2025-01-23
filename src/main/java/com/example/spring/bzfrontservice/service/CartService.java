@@ -23,7 +23,7 @@ public class CartService {
 
         List<CartResponseDTO> response = new ArrayList<>();
         for (ProductQuantityDTO item : cartItems) {
-            var product = sellerClient.getProductDetail(item.getProductId());
+            var product = sellerClient.loadProductDetails(item.getProductId());
 
             var cartResponse = new CartResponseDTO(
                     item.getProductId(),
