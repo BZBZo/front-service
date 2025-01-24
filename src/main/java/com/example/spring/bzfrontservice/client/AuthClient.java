@@ -74,7 +74,7 @@ public interface AuthClient {
     List<Map<String, Object>> allMembers();
 
     @GetMapping("/member/detail")
-    SecurityUserDTO loadMemberDetail(String token);
+    SecurityUserDTO loadMemberDetail(@RequestParam Long memberNo);
 
 //    @GetMapping("/user/find")
 //    MemberResponseDTO findByEmailAndProvider(String email, String provider);

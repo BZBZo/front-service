@@ -1,5 +1,8 @@
 let memberNo = null; // 전역 변수
 let token = localStorage.getItem('accessToken');
+if (!token.startsWith('Bearer ')) {
+    token = `Bearer ${token}`; // Bearer 형식으로 변환
+}
 
 function loadUserInfo() {
     return new Promise((resolve, reject) => {
@@ -13,7 +16,7 @@ function loadUserInfo() {
                 console.log('User Info:', userInfo);
                 memberNo = userInfo.memberNo;
                 console.log('Extracted memberNo:', memberNo);
-                resolve(); // 성공적으로 memberNo를 설정했을 때 resolve 호출
+                resolve(memberNo); // 성공적으로 memberNo를 설정했을 때 resolve 호출
             },
             error: function () {
                 alert('사용자 정보를 불러오는데 실패했습니다.');
@@ -29,37 +32,34 @@ function addToCart(productId) {
         alert("올바른 수량을 입력해주세요.");
         return;
     }
+    if (!memberNo) {
+        alert('사용자 정보를 불러오고 있습니다. 잠시 후 다시 시도해주세요.');
+        return;
+    }
+    console.log('Adding to cart, productId:', productId);
+    console.log('Using memberNo:', memberNo);
 
-    loadUserInfo()
-        .then(() => {
-            console.log('Adding to cart, productId:', productId);
-            console.log('Using memberNo:', memberNo);
-
-            $.ajax({
-                type: 'POST',
-                url: '/cart/add',
-                contentType: 'application/json',
-                headers: {
-                    'Authorization': token
-                },
-                data: JSON.stringify({
-                    productId: productId,
-                    memberNo: memberNo,
-                    quantity: parseInt(quantity, 10) // 수량 추가
-                }),
-                success: function (response) {
-                    console.log('장바구니 추가 성공:', response);
-                    alert('장바구니에 상품이 추가되었습니다!');
-                },
-                error: function (error) {
-                    console.error('장바구니 추가 실패:', error);
-                    alert('장바구니 추가 중 오류가 발생했습니다.');
-                }
-            });
-        })
-        .catch((error) => {
-            console.error('Error in loading user info:', error);
-        });
+    $.ajax({
+        type: 'POST',
+        url: '/customer/cart/add',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': token
+        },
+        data: JSON.stringify({
+            productId: productId,
+            memberNo: memberNo,
+            quantity: parseInt(quantity, 10) // 수량 추가
+        }),
+        success: function (response) {
+            console.log('장바구니 추가 성공:', response);
+            alert('장바구니에 상품이 추가되었습니다!');
+        },
+        error: function (error) {
+            console.error('장바구니 추가 실패:', error);
+            alert('장바구니 추가 중 오류가 발생했습니다.');
+        }
+    });
 }
 
 
@@ -68,6 +68,7 @@ function addToCart(productId) {
 
 $(document).ready(() => {
     const start = performance.now();
+    loadUserInfo().catch(error => console.error('Error loading user info:', error));
 
     $('body').on('click', '#check_all', function () {
         $('input[type="checkbox"].checkbox').prop('checked', $(this).is(':checked'));
@@ -164,41 +165,36 @@ $(document).ready(() => {
     });
 
 
-
-
-    // '바로 구매' 버튼 클릭 이벤트
+// '바로 구매' 버튼 클릭 이벤트
     $('body').on('click', '.order-now', function () {
+        let quantity  = prompt("수량을 입력해주세요:", "1"); // 수량 입력 받기
+        if (!quantity || isNaN(quantity) || quantity <= 0) {
+            alert("올바른 수량을 입력해주세요.");
+            return;
+        }
+
+        quantity= parseInt(quantity, 10)
+
         const productId = $(this).data('product-id');
         const productPrice = $(this).data('product-price');
-        const token = localStorage.getItem('accessToken'); // 토큰 가져오기
 
         if (!productId || !productPrice) {
             console.error('Product information missing!');
             return;
         }
 
+        if (!memberNo) {
+            alert('사용자 정보를 불러오고 있습니다. 잠시 후 다시 시도해주세요.');
+            return;
+        }
+
         console.log('Redirecting to payment page with productId:', productId, 'and price:', productPrice);
 
-        $.ajax({
-            url: '/customer/payment',
-            type: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`, // 토큰을 헤더에 추가
-            },
-            data: {
-                productId: productId,
-                price: productPrice,
-            },
-            success: function (response) {
-                // 결제 페이지로 이동
-                window.location.href = '/checkout';
-            },
-            error: function (error) {
-                console.error('Error during payment request:', error);
-                alert('결제 요청 중 오류가 발생했습니다.');
-            }
-        });
+        // memberNo를 포함하여 GET 요청 URL 생성
+        const paymentUrl = `/customer/payment?productId=${productId}&price=${productPrice}&memberNo=${memberNo}&quantity=${quantity}`;
+        window.location.href = paymentUrl;
     });
+
 
 
     // // 동적 이벤트 바인딩: 페이지의 어느 시점에서든지 요소가 존재하면 이벤트가 실행됩니다.
@@ -267,7 +263,7 @@ $(document).ready(() => {
     //
     //     $.ajax({
     //         type: 'POST',
-    //         url: '/cart/add',
+    //         url: 'customer/cart/add',
     //         contentType: 'application/json',
     //         headers: { 'Authorization': `Bearer ${token}` },
     //         data: JSON.stringify({

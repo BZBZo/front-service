@@ -6,7 +6,7 @@
       rel="icon"
       href="https://static.toss.im/icons/png/4x/icon-toss-logo.png"
     />
-    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="stylesheet" type="text/css" href="/css/style.css" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>토스페이먼츠 샘플 프로젝트</title>
@@ -24,7 +24,9 @@
     <!-- 주문서 영역 -->
     <div class="wrapper">
       <p>상품 ID: <span id="product-id" th:text="${productId}"></span></p>
-      <p>결제 금액: <span id="product-price" th:text="${price}"></span> 원</p>
+      <p>상품 금액: <span id="product-price" th:text="${price}"></span> 원</p>
+      <p>상품 수량: <span id="product-quantity" th:text="${quantity}"></span> 개</p>
+      <p>총 금액: <span id="total-price" th:text="${totalPrice}"></span> 원</p>
       <div
         class="box_section"
         style="
@@ -62,12 +64,18 @@
     </div>
     <script>
       const productId = document.getElementById("product-id").innerText;
+      const quantity = document.getElementById("product-quantity").innerText;
       const productPrice = parseFloat(document.getElementById("product-price").innerText.replace(" 원", ""));
+      const totalPrice = parseFloat(document.getElementById("total-price").innerText.replace(" 원", ""));
       const button = document.getElementById("payment-button");
       const coupon = document.getElementById("coupon-box");
+      const selectedProducts = [
+        { productId: productId, quantity: quantity },
+              // 여러개 선택할 때의 로직 완성해야됨....
+      ];
       const generateRandomString = () =>
         window.btoa(Math.random()).slice(0, 20);
-      var amount = productPrice;
+      var amount = totalPrice;
       // ------  결제위젯 초기화 ------
       // TODO: clientKey는 개발자센터의 결제위젯 연동 키 > 클라이언트 키로 바꾸세요.
       // TODO: 구매자의 고유 아이디를 불러와서 customerKey로 설정하세요. 이메일・전화번호와 같이 유추가 가능한 값은 안전하지 않습니다.
@@ -111,9 +119,13 @@
           orderName: `상품 ID: ${productId}`,
           successUrl: window.location.origin + "/customer/payment/success",
           failUrl: window.location.origin + "/customer/payment/fail",
-          customerEmail: document.getElementById('member-email').innerText,
-          customerName: document.getElementById('member-nickname').innerText,
-          customerMobilePhone: document.getElementById('member-phone').innerText,
+          metadata: {
+            memberEmail: document.getElementById('member-email').innerText,
+            memberName: document.getElementById('member-nickname').innerText,
+            memberPhone: document.getElementById('member-phone').innerText,
+            memberNo: document.getElementById('member-no').innerText,
+            productList : JSON.stringify(selectedProducts),
+          }
         });
       });
     </script>
