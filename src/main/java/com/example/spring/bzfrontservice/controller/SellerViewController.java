@@ -94,13 +94,28 @@ public class SellerViewController {
         return "total_list";
     }
 
+    // 콩동 구매 리스트 페에지ㅣ
+    @GetMapping("/congdong")
+    public String loadCongDongPage(Model model) {
+        log.info("[Front Service] 콩동 페이지 로드 시작");
+
+        // FeignClient를 통해 데이터 가져오기
+        List<ProdReadResponseDTO> products = sellerService.getCongDongProducts();
+
+        log.info("[Front Service] 콩동 데이터 로드 완료. 상품 수: {}", products.size());
+        log.info("[Front Service] 상품 데이터: {}", products);
+
+        model.addAttribute("products", products);
+        return "congdongzone";
+    }
+
     // 상품 등록 페이지
     @GetMapping("/upload")
     public String uploadProduct() {
         return "product_upload";
     }
 
-    // 상품 상세 페이지
+    // 판매자의 상품 상세 페이지
     @GetMapping("/detail/po/{productId}")
     public String productDetail(
             @PathVariable Long productId,
