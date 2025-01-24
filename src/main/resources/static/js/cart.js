@@ -67,7 +67,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/cart/list',
+            url: '/customer/cart/list',
             method: 'GET',
             headers: { 'Authorization': token },
             success: function (cartItems) {

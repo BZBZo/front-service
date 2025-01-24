@@ -114,8 +114,8 @@ public class UserService {
         return authClient.allMembers();
     }
 
-    public SecurityUserDTO loadMemberDetail(String token) {
-        return authClient.loadMemberDetail(token);
+    public SecurityUserDTO loadMemberDetail(Long memberNo) {
+        return authClient.loadMemberDetail(memberNo);
     }
 
 //    public MemberResponseDTO findByEmailAndProvider(String email, String provider) {
