@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CustomerController {
     private final UserService userService;
 
-    @GetMapping("/cart")
+    @GetMapping("/cart/list")
     public String cart(){
         return "cart";
     }

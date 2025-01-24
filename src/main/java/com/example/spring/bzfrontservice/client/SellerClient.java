@@ -65,6 +65,6 @@ public interface SellerClient {
             @RequestHeader("Authorization") String token
     );
 
-    @PostMapping("/list/cart")
+    @PostMapping("/cart/list")
     List<ProdReadResponseDTO> getProductsByIds(@RequestBody List<Long> productIds);
 }
