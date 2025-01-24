@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.Map;
 
 
@@ -175,6 +176,13 @@ public class SellerService {
         } catch (FeignException e) {
             throw new RuntimeException("Failed to fetch product details: " + e.getMessage(), e);
         }
+    }
+
+    public List<ProdReadResponseDTO> getCongDongProducts() {
+        log.info("[Front Service] FeignClient 호출 시작");
+        List<ProdReadResponseDTO> products = sellerClient.getCongDongProducts();
+        log.info("[Front Service] FeignClient 호출 완료. 받은 데이터: {}", products);
+        return products;
     }
 
     // Congdong 저장

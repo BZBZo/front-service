@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/congdongzone.js}"></script>
+    <link th:href="@{/css/congdongzone.css}" rel="stylesheet">
+    <script th:src="@{/js/layout.js}"></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+
+    <title>공구리스트</title>
+</head>
+<body>
+<header>
+    <div th:replace="~{fragments/header :: header}"></div>
+</header>
+<main>
+    <header>공구리스트</header>
+
+    <div class="product-list" id="productList">
+        <!-- 상품 리스트 -->
+        <div class="product-item" th:each="product : ${products}" th:data-condition="${product.condition}">
+            <a th:href="@{/product/detail/{id}(id=${product.id})}">
+                <img th:src="@{${product.mainPicturePath}}" th:alt="${product.name}">
+            </a>
+            <div class="product-details">
+                <span class="related-products__badge">
+                    <img th:src="@{/images/group_yes.png}" alt="공구 가능 아이콘">
+                </span>
+                <!-- 상품명 -->
+                <div class="product-title" th:text="${product.name}"></div>
+                <!-- 공구가 정보 -->
+                <div class="product-price">
+                    <span class="discount"></span> <!-- 할인율 -->
+                    <span class="final-price"></span> <!-- 공구가 -->
+                    <span class="original-price" th:text="${#numbers.formatDecimal(product.price, 1, 0)}"></span> <!-- 원래 가격 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <button class="more-button" id="loadMore">더보기</button>
+
+</main>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

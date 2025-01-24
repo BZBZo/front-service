@@ -65,22 +65,30 @@ document.addEventListener('DOMContentLoaded', function () {
         updateCondition(); // 필드 추가 시 condition 값 업데이트
     }
 
-    // 필드 값 변경 감지 및 condition 업데이트
     window.updateCondition = () => {
         const peopleInputs = document.querySelectorAll('input[name="people[]"]');
         const discountInputs = document.querySelectorAll('input[name="discount[]"]');
 
         const conditions = [];
-        peopleInputs.forEach((peopleInput, index) => {
-            const peopleValue = parseInt(peopleInput.value || 0, 10);
-            const discountValue = parseInt(discountInputs[index]?.value || 0, 10);
+        discountInputs.forEach((discountInput, index) => {
+            const peopleValue = parseInt(peopleInputs[index]?.value || 0, 10);
+            let discountValue = parseInt(discountInput.value || 0, 10);
 
-            // 값 검증: 모집인원과 할인율이 올바른 경우만 추가
+            // 할인율이 100을 초과하면 경고 및 값 제한
+            if (discountValue > 100) {
+                alert("할인율은 최대 100%까지만 입력 가능합니다.");
+                discountValue = 100; // 값을 100으로 제한
+                discountInput.value = 100; // 입력 필드 값 수정
+            }
+
+            // 유효한 값만 추가
             if (peopleValue > 0 && discountValue >= 0) {
                 conditions.push(`{${peopleValue}:${discountValue}}`);
             }
         });
 
+        // 조건을 숨겨진 필드에 업데이트
+        const conditionInput = document.getElementById('condition');
         conditionInput.value = conditions.join(',');
         console.log('Updated condition:', conditionInput.value);
     };

@@ -118,7 +118,7 @@
         <div class="title-small">가장 참여해보세요</div>
     </div>
     <div class="more-link">
-        <a href="#">더보기 &nbsp; →</a>
+        <a href="/product/congdong">더보기 &nbsp; →</a>
     </div>
 </section>
 
@@ -130,7 +130,9 @@
                     <div class="related-products__card">
                         <div class="related-products__image">
                             <!-- 상품 이미지 -->
-                            <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
+                            <a th:href="@{/product/detail/{id}(id=${product.id})}">
+                                <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
+                            </a>
                         </div>
                         <span class="related-products__badge" th:if="${product.isCong}">
                             <img th:src="@{/images/group_yes.png}" alt="공구 가능 아이콘">
@@ -185,7 +187,9 @@
                     <div class="related-products__card">
                         <div class="related-products__image">
                             <!-- 상품 이미지 -->
-                            <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
+                            <a th:href="@{/product/detail/{id}(id=${product.id})}">
+                                <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
+                            </a>
                         </div>
                         <span class="related-products__badge" th:if="${product.isCong}">
                             <img th:src="@{/images/group_yes.png}" alt="공구 가능 아이콘">

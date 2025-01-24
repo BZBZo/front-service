@@ -67,4 +67,7 @@ public interface SellerClient {
 
     @PostMapping("/cart/list")
     List<ProdReadResponseDTO> getProductsByIds(@RequestBody List<Long> productIds);
+
+    @GetMapping("/congdong")
+    List<ProdReadResponseDTO> getCongDongProducts();
 }
