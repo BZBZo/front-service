@@ -188,11 +188,11 @@ $(document).ready(() => {
             return;
         }
 
-        console.log('Redirecting to payment page with productId:', productId, 'and price:', productPrice);
+        console.log('Redirecting to purchase page with productId:', productId, 'and price:', productPrice);
 
         // memberNo를 포함하여 GET 요청 URL 생성
-        const paymentUrl = `/customer/payment?productId=${productId}&price=${productPrice}&memberNo=${memberNo}&quantity=${quantity}`;
-        window.location.href = paymentUrl;
+        const purchaseUrl = `/customer/purchase/direct?productId=${productId}&price=${productPrice}&memberNo=${memberNo}&quantity=${quantity}`;
+        window.location.href = purchaseUrl;
     });
 
 

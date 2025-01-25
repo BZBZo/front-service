@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PurchaseHistoryDTO {
+    Long purchaseId;
     String orderId;
     String paymentKey;
     Long totalAmount;

@@ -1,32 +1,22 @@
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.dto.PurchaseHistoryDTO;
 import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
+import com.example.spring.bzfrontservice.service.PurchaseService;
 import com.example.spring.bzfrontservice.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Reader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/customer")
 public class CustomerController {
     private final UserService userService;
+    private final PurchaseService purchaseService;
 
     @GetMapping("/cart/list")
     public String cart(){
@@ -34,7 +24,7 @@ public class CustomerController {
     }
 
     // 바로 구매
-    @GetMapping("/payment")
+    @GetMapping("/purchase/direct")
     public String showPaymentPage(@RequestParam("productId") Long productId,
                                   @RequestParam("price") Double price,
                                   @RequestParam("memberNo") Long memberNo,
@@ -49,23 +39,33 @@ public class CustomerController {
         model.addAttribute("totalPrice", quantity * price);
         model.addAttribute("member", dto);
 
-        return "checkout";
+        return "payment";
     }
 
-    @GetMapping("/payment/success")
+    @GetMapping("/purchase/success")
     public String successPayment(@RequestParam String paymentKey,
                                  @RequestParam String orderId,
                                  @RequestParam String amount,
                                  @RequestParam String paymentType){
-        // paymentKey도 반드시 저장해야됨
-        return "success";
+        return "pay_success";
     }
 
-    @GetMapping("/payment/fail")
+    @GetMapping("/purchase/fail")
     public String failPayment(@RequestParam String code,
                               @RequestParam String message,
                               @RequestParam String orderId){
-        return "fail";
+        return "pay_fail";
+    }
+
+    @GetMapping("/history")
+    public String history(@RequestParam Long memberNo, Model model){
+        List<PurchaseHistoryDTO> purchases = purchaseService.getPurchaseListByMemberNo(memberNo);
+        // 리뷰 여부 매핑은 다음에 하겠음
+        // purchaseService.enrichPurchasesWithProducts(purchases);
+
+        model.addAttribute("purchases", purchases);
+
+        return "purchase_list";
     }
 
 }

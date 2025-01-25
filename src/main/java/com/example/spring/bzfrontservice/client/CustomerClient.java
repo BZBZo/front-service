@@ -4,6 +4,7 @@ import com.example.spring.bzfrontservice.dto.CartRequestDTO;
 import com.example.spring.bzfrontservice.dto.ProductQuantityDTO;
 import com.example.spring.bzfrontservice.dto.PurchaseHistoryDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,9 @@ public interface CustomerClient {
     List<ProductQuantityDTO> getCartItems(@RequestParam Long memberNo);
 
     @PostMapping("/history")
-    void savePurchaseHistory(@RequestBody PurchaseHistoryDTO dto);
+    ResponseEntity<String> savePurchaseHistory(@RequestBody PurchaseHistoryDTO dto);
+
+    @GetMapping("/history")
+    List<PurchaseHistoryDTO> getPurchaseListByMemberNo(@RequestParam Long memberNo);
 }
 
