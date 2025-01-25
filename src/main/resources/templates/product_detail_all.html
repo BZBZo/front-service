@@ -42,8 +42,10 @@
                 </p>
                 <div class="button-group">
                     <button id="addToCartBtn" class="action-button">장바구니 담기</button>
-                    <button id="purchaseBtn" class="action-button black-button">구매하기</button>
+                    <button id="purchaseBtn" class="action-button black-button order-now" type="button"
+                            th:data-product-id="${product.id}"  th:data-product-price="${#numbers.formatDecimal(product.price, 1, 0)}">바로구매</button>
                 </div>
+
                 <div class="button-group full-width">
                     <button id="congdongBtn" class="action-button red-button" th:if="${product.isCong}">공동구매</button>
                 </div>

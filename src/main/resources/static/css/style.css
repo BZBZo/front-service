@@ -267,3 +267,27 @@ body {
     position: fixed; !important; /* 항상 하단에 배치 */
     bottom: 0; !important;
 }
+
+.history-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 10px; /* 글씨 크기 */
+    font-weight: bold; /* 글씨 두께 */
+    color: white; /* 글자 색 */
+    text-decoration: none; /* 밑줄 제거 */
+    background-color: #4a90e2; /* 버튼 배경색 (파란색보다 연하고 하늘색보다 진한 색) */
+    border: none;
+    border-radius: 8px; /* 둥근 모서리 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 약간의 그림자 */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* 호버 효과 */
+}
+
+.history-button:hover {
+    background-color: #357ab8; /* 호버 시 더 진한 색 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* 호버 시 그림자 강조 */
+}
+
+.history-button:active {
+    background-color: #2a5a8f; /* 클릭 시 더 어두운 색 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* 클릭 시 그림자 줄이기 */
+}

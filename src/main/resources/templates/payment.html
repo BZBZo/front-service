@@ -117,8 +117,8 @@
         paymentWidget.requestPayment({
           orderId: generateRandomString(),
           orderName: `상품 ID: ${productId}`,
-          successUrl: window.location.origin + "/customer/payment/success",
-          failUrl: window.location.origin + "/customer/payment/fail",
+          successUrl: window.location.origin + "/customer/purchase/success",
+          failUrl: window.location.origin + "/customer/purchase/fail",
           metadata: {
             memberEmail: document.getElementById('member-email').innerText,
             memberName: document.getElementById('member-nickname').innerText,
