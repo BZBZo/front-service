@@ -40,8 +40,9 @@
                 <p class="product-detail">
                     판매가: <span th:text="${#numbers.formatDecimal(product.price, 1, 0)}"></span> 원
                 </p>
+
                 <div class="button-group">
-                    <button id="addToCartBtn" class="action-button">장바구니 담기</button>
+                    <button id="addToCartBtn" class="action-button add-to-cart" th:attr="data-product-id=${product.id}">장바구니 담기</button>
                     <button id="purchaseBtn" class="action-button black-button order-now" type="button"
                             th:data-product-id="${product.id}"  th:data-product-price="${#numbers.formatDecimal(product.price, 1, 0)}">바로구매</button>
                 </div>

@@ -4,32 +4,21 @@ if (!token.startsWith('Bearer ')) {
     token = `Bearer ${token}`; // Bearer 형식으로 변환
 }
 
-function loadUserInfo() {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: '/webs/user/info',
-            method: 'GET',
-            headers: {
-                'Authorization': token
-            },
-            success: function (userInfo) {
-                console.log('User Info:', userInfo);
-                memberNo = userInfo.memberNo;
-                console.log('Extracted memberNo:', memberNo);
-                resolve(memberNo); // 성공적으로 memberNo를 설정했을 때 resolve 호출
-            },
-            error: function () {
-                alert('사용자 정보를 불러오는데 실패했습니다.');
-                reject('Failed to load user info'); // 에러 발생 시 reject 호출
-            }
-        });
-    });
-}
-
 $(document).ready(function () {
     // 페이지 로드 후 추가 작업 필요 시 여기에 작성
     console.log('상세 페이지가 로드되었습니다.');
     loadUserInfo().catch(error => console.error('Error loading user info:', error));
+
+    // 이벤트 위임 방식으로 클릭 이벤트 처리
+    $('body').on('click', '.add-to-cart', function () {
+        const productId = $(this).data('product-id'); // data-product-id 속성 값 가져오기
+        if (!productId) {
+            console.error('Product ID not found!');
+            return;
+        }
+        console.log('Clicked productId:', productId);
+        addToCart(productId); // 정확한 productId로 addToCart 호출
+    });
 
     // '바로 구매' 버튼 클릭 이벤트
     $('body').on('click', '.order-now', function () {
@@ -143,3 +132,40 @@ document.addEventListener('DOMContentLoaded', () => {
     const categoryElement = document.getElementById('productCategory'); // 요소 선택
     categoryElement.textContent = categoryMap[categoryElement.textContent.trim()] || "기타";
 });
+
+
+function addToCart(productId) {
+    const quantity = prompt("수량을 입력해주세요:", "1"); // 수량 입력 받기
+    if (!quantity || isNaN(quantity) || quantity <= 0) {
+        alert("올바른 수량을 입력해주세요.");
+        return;
+    }
+    if (!memberNo) {
+        alert('사용자 정보를 불러오고 있습니다. 잠시 후 다시 시도해주세요.');
+        return;
+    }
+    console.log('Adding to cart, productId:', productId);
+    console.log('Using memberNo:', memberNo);
+
+    $.ajax({
+        type: 'POST',
+        url: '/customer/cart/add',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': token
+        },
+        data: JSON.stringify({
+            productId: productId,
+            memberNo: memberNo,
+            quantity: parseInt(quantity, 10) // 수량 추가
+        }),
+        success: function (response) {
+            console.log('장바구니 추가 성공:', response);
+            alert('장바구니에 상품이 추가되었습니다!');
+        },
+        error: function (error) {
+            console.error('장바구니 추가 실패:', error);
+            alert('장바구니 추가 중 오류가 발생했습니다.');
+        }
+    });
+}

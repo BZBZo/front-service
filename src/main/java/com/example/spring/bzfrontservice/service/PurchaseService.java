@@ -1,27 +1,20 @@
 package com.example.spring.bzfrontservice.service;
 
 import com.example.spring.bzfrontservice.client.CustomerClient;
-import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
-import com.example.spring.bzfrontservice.dto.PurchaseHistoryDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.spring.bzfrontservice.dto.PurchaseDTO;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class PurchaseService {
     private final CustomerClient customerClient;
 
-    public void savePurchaseHistory(PurchaseHistoryDTO dto) {
+    public void savePurchaseHistory(PurchaseDTO dto) {
         try {
 
             ResponseEntity<String> response = customerClient.savePurchaseHistory(dto);
@@ -48,15 +41,15 @@ public class PurchaseService {
         }
     }
 
-    public List<PurchaseHistoryDTO> getPurchaseListByMemberNo(Long memberNo) {
+    public List<PurchaseDTO> getPurchaseListByMemberNo(Long memberNo) {
         return customerClient.getPurchaseListByMemberNo(memberNo);
     }
 
 //    // 구매한 상품에 대한 리뷰 작성 여부를 매칭
-//    public void enrichPurchasesWithProducts(List<PurchaseHistoryDTO> purchases) {
+//    public void enrichPurchasesWithProducts(List<PurchaseDTO> purchases) {
 //        ObjectMapper objectMapper = new ObjectMapper();
 //
-//        for (PurchaseHistoryDTO purchase : purchases) {
+//        for (PurchaseDTO purchase : purchases) {
 //            try {
 //                Map<String, Integer> productMap = objectMapper.readValue(purchase.getProductList(), new TypeReference<Map<String, Integer>>() {});
 //                List<ProdReadResponseDTO> products = new ArrayList<>();

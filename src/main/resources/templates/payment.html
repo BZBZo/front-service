@@ -87,7 +87,7 @@
 
       // ------  결제 UI 렌더링 ------
       // @docs https://docs.tosspayments.com/reference/widget-sdk#renderpaymentmethods선택자-결제-금액-옵션
-      paymentMethodWidget = paymentWidget.renderPaymentMethods(
+      const paymentMethodWidget = paymentWidget.renderPaymentMethods(
         "#payment-method",
         { value: amount },
         // 렌더링하고 싶은 결제 UI의 variantKey
