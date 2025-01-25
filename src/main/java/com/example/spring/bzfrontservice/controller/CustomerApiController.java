@@ -3,17 +3,15 @@ package com.example.spring.bzfrontservice.controller;
 import com.example.spring.bzfrontservice.client.CustomerClient;
 import com.example.spring.bzfrontservice.dto.CartRequestDTO;
 import com.example.spring.bzfrontservice.dto.CartResponseDTO;
-import com.example.spring.bzfrontservice.dto.ProductQuantityDTO;
-import com.example.spring.bzfrontservice.dto.PurchaseHistoryDTO;
+import com.example.spring.bzfrontservice.dto.PurchaseDTO;
 import com.example.spring.bzfrontservice.service.CartService;
-import com.example.spring.bzfrontservice.service.PayService;
+import com.example.spring.bzfrontservice.service.PurchaseService;
 import com.example.spring.bzfrontservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +32,7 @@ public class CustomerApiController {
 
     private final CustomerClient customerClient;
     private final UserService userService;
-    private final PayService payService;
+    private final PurchaseService purchaseService;
     private final CartService cartService;
 
     @PostMapping("/cart/add")
@@ -46,13 +44,13 @@ public class CustomerApiController {
     }
 
     // 장바구니 목록 가져오기
-    @GetMapping("/cart/list")
+    @GetMapping("/cart/list/items")
     public ResponseEntity<List<CartResponseDTO>> getCartItems(@RequestHeader("Authorization") String token) {
         List<CartResponseDTO> cartItems = cartService.getCartItems(token);
         return ResponseEntity.ok(cartItems);
     }
 
-    @PostMapping("/payment/confirm")
+    @PostMapping("/purchase/confirm")
     public ResponseEntity<JSONObject> confirmPayment(@RequestBody String jsonBody) throws Exception {
 
         JSONParser parser = new JSONParser();
@@ -113,12 +111,15 @@ public class CustomerApiController {
             String method = (String) jsonObject.get("method");
             Long totalAmount = (Long) jsonObject.get("totalAmount");
             JSONObject metadata = (JSONObject) jsonObject.get("metadata");
-            String memberNo = metadata != null ? (String) metadata.get("memberNo") : null;
+            Long memberNo = metadata != null ? (Long) metadata.get("memberNo") : null;
             String productList = metadata != null ? (String) metadata.get("productList") : null;
 
             System.out.println(productList + " 구매 상품");
 
+            // 이걸 js에서 해도 될듯
             savePaymentDetails(orderId, paymentKey, totalAmount, approvedAt, method, memberNo, productList);
+
+            jsonObject.put("memberNo", memberNo);
 
             // 클라이언트로 성공 응답 반환
             return ResponseEntity.ok(jsonObject);
@@ -141,7 +142,7 @@ public class CustomerApiController {
     }
 
     // 결제 정보를 저장하는 메서드 예제
-    private void savePaymentDetails(String orderId, String paymentKey, Long totalAmount, String approvedAt, String method, String memberNo, String productList) {
+    private void savePaymentDetails(String orderId, String paymentKey, Long totalAmount, String approvedAt, String method, Long memberNo, String productList) {
         // 예: DB에 결제 정보 저장
         System.out.println("Saving payment details...");
         System.out.println("Order ID: " + orderId);
@@ -151,17 +152,17 @@ public class CustomerApiController {
         System.out.println("Payment Method: " + method);
         System.out.println("Member No: " + memberNo);
 
-        PurchaseHistoryDTO dto = PurchaseHistoryDTO.builder()
+        PurchaseDTO dto = PurchaseDTO.builder()
                 .orderId(orderId)
                 .paymentKey(paymentKey)
                 .totalAmount(totalAmount)
                 .approvedAt(approvedAt)
                 .method(method)
-                .memberNo(Long.parseLong(memberNo))
+                .memberNo(memberNo)
                 .productList(productList)
                 .build();
 
-        payService.savePurchaseHistory(dto);
+        purchaseService.savePurchaseHistory(dto);
 
     }
 }

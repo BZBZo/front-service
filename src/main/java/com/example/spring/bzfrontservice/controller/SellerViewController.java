@@ -23,32 +23,7 @@ public class SellerViewController {
     private final SellerService sellerService;
     private final UserService userService;
 
-    // 상품 목록 조회 (HTML 반환)
     @GetMapping("/list")
-    public String productList(@RequestParam(defaultValue = "0") int page, Model model) {
-        int pageSize = 5;
-
-        Page<ProdReadResponseDTO> productPage = sellerService.findAll(page, pageSize);
-        log.info("Response: {}", productPage);
-        List<ProdReadResponseDTO> products = productPage.getContent();
-        log.info("Products: {}", products);
-
-        int totalPages = productPage.getTotalPages();
-        int pageBlock = 10; // 페이지 블록 크기
-        int startPage = (page / pageBlock) * pageBlock;
-        int endPage = Math.min(startPage + pageBlock - 1, totalPages - 1);
-
-        model.addAttribute("products", products);
-        model.addAttribute("productPage", productPage);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
-        model.addAttribute("showPrevious", startPage > 0);
-        model.addAttribute("showNext", endPage < totalPages - 1);
-
-        return "product_list";
-    }
-
-    @GetMapping("/totallist")
     public String productTotalList(@RequestParam(defaultValue = "1") int page, Model model) {
 
         int pageSize = 8;
@@ -91,7 +66,7 @@ public class SellerViewController {
         log.info("Has Next Page: {}", productPage.hasNext());
         log.info("Has Previous Page: {}", productPage.hasPrevious());
 
-        return "total_list";
+        return "product_list";
     }
 
     // 콩동 구매 리스트 페에지ㅣ

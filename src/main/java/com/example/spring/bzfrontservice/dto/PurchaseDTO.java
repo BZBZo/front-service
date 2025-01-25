@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class PurchaseHistoryDTO {
+public class PurchaseDTO {
     Long purchaseId;
     String orderId;
     String paymentKey;
