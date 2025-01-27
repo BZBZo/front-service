@@ -4,6 +4,9 @@ import com.example.spring.bzfrontservice.dto.PurchaseDTO;
 import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
 import com.example.spring.bzfrontservice.service.PurchaseService;
 import com.example.spring.bzfrontservice.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -46,21 +50,32 @@ public class CustomerController {
 
     // 주문 요청 처리
     @GetMapping("/purchase/cart")
-    public String processCartPurchase(@RequestParam("totalAmount") Double totalAmount,
-                                      @RequestParam("selectedProducts") String productList,
+    public String processCartPurchase( @RequestParam(value = "orderId", required = false) String orderId,
+                                       @RequestParam("totalAmount") Double totalAmount,
+                                      @RequestParam("productList") String productListJson,
                                       @RequestParam("memberNo") Long memberNo,
                                       Model model) {
-        // 요청 데이터 로깅 (디버깅 용도)
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<Map<String, Object>> productList;
+        try {
+            productList = objectMapper.readValue(productListJson, new TypeReference<List<Map<String, Object>>>() {});
+            System.out.println("productListJson: " + productListJson + ", productList: " + productList);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Invalid productList format", e);
+        }
+
         System.out.println("Total Amount: " + totalAmount);
         System.out.println("Product List: " + productList);
+        System.out.println("Member No: " + memberNo);
 
         SecurityUserDTO dto = userService.loadMemberDetail(memberNo);
 
+        // 모델에 데이터 추가
         model.addAttribute("totalPrice", totalAmount);
         model.addAttribute("productList", productList);
         model.addAttribute("member", dto);
 
-        return "payment2.html";
+        return "payment2";
     }
 
     // 주문 데이터 저장 로직 (샘플 메서드)
