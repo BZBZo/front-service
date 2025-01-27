@@ -82,13 +82,15 @@ $(document).ready(function () {
 
         const totalAmount = parseFloat($('#total-price').text().replace(/,/g, ''));
 
+        // JSON 문자열로 변환
+        const productListJson = encodeURIComponent(JSON.stringify(selectedProducts));
+
         console.log('주문 상품:', selectedProducts);
         console.log('총 주문 금액:', totalAmount);
 
-        const purchaseUrl = `/customer/purchase/cart?totalAmount=${totalAmount}&productList=${selectedProducts}&memberNo=${memberNo}`;
+        // JSON 문자열을 URL에 포함
+        const purchaseUrl = `/customer/purchase/cart?totalAmount=${totalAmount}&productList=${productListJson}&memberNo=${memberNo}`;
         window.location.href = purchaseUrl;
-
-
     });
 
 });

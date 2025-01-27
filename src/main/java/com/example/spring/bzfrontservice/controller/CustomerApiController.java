@@ -111,7 +111,7 @@ public class CustomerApiController {
             String method = (String) jsonObject.get("method");
             Long totalAmount = (Long) jsonObject.get("totalAmount");
             JSONObject metadata = (JSONObject) jsonObject.get("metadata");
-            Long memberNo = metadata != null ? (Long) metadata.get("memberNo") : null;
+            Long memberNo = metadata != null ? Long.parseLong(metadata.get("memberNo").toString()) : null;
             String productList = metadata != null ? (String) metadata.get("productList") : null;
 
             System.out.println(productList + " 구매 상품");
