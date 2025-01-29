@@ -137,7 +137,7 @@ $(document).ready(function () {
 
                     setFieldValue('shopName', userInfo.nickname);
                     setFieldValue('shopPhone', userInfo.phone);
-                    setFieldValue('shopIntroduction', userInfo.introduce);
+                    setFieldValue('shopIntroduce', userInfo.introduce);
                 } else {
                     $('.seller-section').hide();
                     $('.customer-section').show();
@@ -148,7 +148,7 @@ $(document).ready(function () {
 
                     setFieldValue('nickname', userInfo.nickname);
                     setFieldValue('phone', userInfo.phone);
-                    setFieldValue('introduction', userInfo.introduce);
+                    setFieldValue('introduce', userInfo.introduce);
                 }
             },
             error: function() {
