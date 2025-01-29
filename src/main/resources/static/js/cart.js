@@ -110,7 +110,7 @@ function loadCartItems() {
                     name: item.name,
                     price: item.price,
                     quantity: item.quantity,
-                    imagePath: item.imagePath
+                    mainPicturePath: item.mainPicturePath
                 });
             });
 
@@ -126,7 +126,7 @@ function loadCartItems() {
                     <tr data-product-id="${item.productId}" data-price="${price}">
                         <td><input type="checkbox" class="checkbox" /></td>
                         <td>${index + 1}</td>
-                        <td><img src="${item.imagePath || ''}" alt="${item.name || ''}" width="50" /></td>
+                        <td><img src="${item.mainPicturePath || ''}" alt="${item.name || ''}" width="50" /></td>
                         <td>${item.name || '상품명 없음'}</td>
                         <td>${price.toLocaleString()} 원</td>
                         <td><input type="number" class="quantity-input" value="${quantity}" min="1" /></td>
