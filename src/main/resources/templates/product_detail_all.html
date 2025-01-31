@@ -23,6 +23,7 @@
         <div class="product-detail-row">
             <input type="hidden" id="productId" th:value="${product.id}">
             <input type="hidden" id="condition" th:value="${product.condition}">
+            <input type="hidden" id="selectedCondition" value="">
             <div class="product-col-md-4">
                 <img th:src="@{${product.mainPicturePath}}" th:alt="${product.name}" />
             </div>
@@ -66,12 +67,22 @@
     </div>
 </main>
 <div th:replace="~{fragments/footer :: footer}"></div>
+
 <div id="congdongModal" class="modal">
     <div class="modal-content">
         <h2>공동구매 모집</h2>
         <span class="close-button">&times;</span>
-        <div id="conditionList"></div> <!-- 조건 목록이 여기서 표시됨 -->
+        <p>조건 목록:</p>
+        <!-- 조건 목록이 표시되는 영역 -->
+        <div id="conditionList"></div>
+        <p id="noConditions" style="display: none; color: red;">공동구매 조건이 없습니다.</p>
+        <p>선택된 조건:</p>
+        <div id="selectedConditionDisplay" style="font-weight: bold; color: #007bff;"></div>
+        <!-- 공동구매 시작 버튼 -->
+        <button id="startCongdong" class="action-button" style="display: none;">공동구매 시작</button>
+        <button id="cancelCongdong" class="cancel-button" style="display: none;">아닝! 싫은뎅!</button>
     </div>
 </div>
+
 </body>
 </html>

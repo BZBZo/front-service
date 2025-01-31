@@ -1,5 +1,6 @@
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.ProdUploadRequestDTO;
 import com.example.spring.bzfrontservice.dto.ProdUploadResponseDTO;
 import com.example.spring.bzfrontservice.service.SellerService;
@@ -14,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -169,6 +172,39 @@ public class SellerApiController {
             response.put("message", "상품 삭제에 실패했습니다: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(response);
         }
+    }
+
+    @PostMapping("/congdong")
+    public ResponseEntity<CongDongIngDTO> startCongdong(
+            @RequestBody Map<String, Object> requestBody, // JSON 데이터 받기
+            @RequestHeader("Authorization") String token // Authorization 헤더 추가
+    ) {
+        log.info("Token received in Seller Controller: {}", token);
+
+        if (token == null || token.isEmpty()) {
+            throw new IllegalStateException("Authorization token is missing");
+        }
+
+        // 현재 사용자 memberNo 가져오기
+        Long memberNo = userService.getMemberNo(token);
+        log.info("Extracted memberNo: {}", memberNo);
+
+        // JSON 요청에서 productId와 condition 추출
+        Long productId = Long.valueOf(requestBody.get("productId").toString());
+        String condition = requestBody.get("condition").toString();
+
+        log.info("Received request to start CongDong: productId={}, condition={}", productId, condition);
+
+        // congs에 memberNo 추가 (처음 공동구매 참여자)
+        List<Long> congs = new ArrayList<>();
+        congs.add(memberNo);
+        log.info("공동구매 참여자 목록 (congs): {}", congs);
+
+
+        // 서비스 호출 (productId, condition, token 전달)
+        CongDongIngDTO congdong = sellerService.startCongdong(productId, condition, token, congs);
+
+        return ResponseEntity.ok(congdong);
     }
 
 }
