@@ -70,4 +70,11 @@ public interface SellerClient {
 
     @GetMapping("/congdong")
     List<ProdReadResponseDTO> getCongDongProducts();
+
+    // 공동구매 시작 (POST)
+    @PostMapping("/congdong")
+    ResponseEntity<CongDongIngDTO> startCongdong(
+            @RequestBody Map<String, Object> requestBody, // JSON 형태로 전달
+            @RequestHeader("Authorization") String token // 토큰 추가
+    );
 }

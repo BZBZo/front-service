@@ -4,6 +4,9 @@ if (!token.startsWith('Bearer ')) {
     token = `Bearer ${token}`; // Bearer 형식으로 변환
 }
 
+let modalOpenCount = 0;
+const maxModalOpens = 10;
+
 $(document).ready(function () {
     // 페이지 로드 후 추가 작업 필요 시 여기에 작성
     console.log('상세 페이지가 로드되었습니다.');
@@ -50,40 +53,138 @@ $(document).ready(function () {
         window.location.href = purchaseUrl;
     });
 
+    console.log('document.ready 실행됨'); // 디버깅 로그
+    getToken()
+        .then(() => {
+            console.log('getToken 성공');
+            setupAjax();
+            return checkToken();
+        })
+        .catch(error => {
+            console.error('토큰을 가져오는 데 실패했습니다:', error);
+        });
+
+    console.log('상세 페이지 로드됨.');
 
     // 공동구매 버튼 클릭 이벤트
     $('#congdongBtn').click(function () {
-        const modal = $('#congdongModal'); // 모달 선택
-        const conditionString = $('#condition').val(); // 히든 필드에서 condition 값 가져오기
-
-        if (conditionString) {
-            const conditionList = $('#conditionList'); // 조건 목록 영역 선택
-            conditionList.empty(); // 기존 내용 초기화
-
-            // condition 값 파싱
-            const conditions = conditionString.split(',');
-            conditions.forEach(condition => {
-                const [people, discount] = condition.replace(/{|}/g, '').split(':');
-                conditionList.append(`<p>${people}명 뭉치면 ${discount}% DC</p>`);
-            });
-        } else {
-            $('#conditionList').html('<p>공동구매 조건이 없습니다.</p>');
+        if (modalOpenCount >= maxModalOpens) {
+            alert(`공구는 이제 열 수 없습니다! (최대 ${maxModalOpens}번 열기 가능)`);
+            return;
         }
 
-        modal.show(); // 모달 표시
+        const modal = $('#congdongModal');
+        const conditionString = $('#condition').val(); // condition 값 가져오기
+        console.log('조건 목록 (condition):', conditionString);
+
+        const conditionList = $('#conditionList');
+        const noConditions = $('#noConditions');
+        conditionList.empty();
+
+        if (conditionString) {
+            const conditions = conditionString.split(',');
+            console.log('파싱된 조건 목록:', conditions);
+
+            conditions.forEach(condition => {
+                const [people, discount] = condition.replace(/{|}/g, '').split(':');
+                console.log('각 조건 - 인원:', people, '할인율:', discount);
+
+                conditionList.append(`
+                    <button type="button" class="condition-item" data-condition="${condition}">
+                        ${people}명 뭉치면 ${discount}% DC
+                    </button>
+                `);
+            });
+
+            noConditions.hide();
+        } else {
+            noConditions.show();
+        }
+
+        // 모달 초기화
+        $('#selectedConditionDisplay').text('');
+        $('#startCongdong').hide();
+        $('#cancelCongdong').hide();
+
+        modal.show();
+        modalOpenCount++;
+
+        if (modalOpenCount > 5) {
+            const message = modalOpenCount > 9
+                ? `또예요? 이번이 마지막이에요. (열기 횟수: ${modalOpenCount}번)`
+                : `또 열었어요? 이번에도 안하려구? (열기 횟수: ${modalOpenCount}번)`;
+
+            $('#selectedConditionDisplay').html(`<p style="color: gray; font-size: 14px;">${message}</p>`);
+        }
+    });
+
+    // 조건 클릭 이벤트
+    $('#conditionList').on('click', '.condition-item', function () {
+        const selectedCondition = $(this).data('condition');
+        console.log('선택한 조건 (원본):', selectedCondition);
+
+        if (!selectedCondition) {
+            alert('조건 데이터를 가져오지 못했습니다. 다시 시도해주세요.');
+            return;
+        }
+
+        const [people, discount] = selectedCondition.replace(/{|}/g, '').split(':');
+        console.log('선택한 조건 - 인원:', people, '할인율:', discount);
+
+        $('#selectedConditionDisplay').html(`
+            인원: <strong>${people}</strong>명 - 할인율: <strong>${discount}%</strong>
+        `);
+
+        $('#selectedCondition').val(selectedCondition);
+        $('#startCongdong').show();
+        $('#cancelCongdong').show();
+    });
+
+    // 공동구매 시작 버튼 클릭 이벤트
+    $('#startCongdong').click(function () {
+        const productId = $('#productId').val();
+        const selectedCondition = $('#selectedCondition').val();
+        const token = localStorage.getItem('accessToken');
+
+        console.log('공동구매 시작 - 상품 ID:', productId, '조건:', selectedCondition);
+
+        if (!selectedCondition) {
+            alert('공동구매 조건을 선택해주세요!');
+            return;
+        }
+
+        $.ajax({
+            type: "POST",
+            url: "/product/congdong",
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`, // 템플릿 리터럴 수정
+            },
+            data: JSON.stringify({
+                productId: productId,
+                condition: selectedCondition
+            }),
+            success: function (response) {
+                alert('공동구매가 성공적으로 시작되었습니다!');
+                console.log('Response:', response);
+                $('#congdongModal').hide();
+            },
+            error: function (xhr, status, error) {
+                alert('공동구매 시작에 실패했습니다. 다시 시도해주세요.');
+                console.error('Error:', error);
+            }
+        });
     });
 
     // 모달 닫기 버튼 클릭 이벤트
-    $('.close-button').click(function () {
-        const modal = $('#congdongModal'); // 모달 선택
-        modal.hide(); // 모달 숨기기
+    $('#cancelCongdong').click(function () {
+        $('#congdongModal').hide();
     });
 
     // 모달 외부 클릭 시 닫기
     $(window).click(function (event) {
-        const modal = $('#congdongModal');
-        if ($(event.target).is(modal)) {
-            modal.hide(); // 모달 숨기기
+        if ($(event.target).is('#congdongModal')) {
+            $('#congdongModal').hide();
         }
     });
 
