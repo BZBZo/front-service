@@ -60,7 +60,7 @@
         <div class="product-description">
             <h2>상세정보</h2>
             <div class="description-image">
-                <div th:utext="${#strings.replace(product.description.substring(1), 'src/main/resources/static', '')}"
+                <div th:utext="${#strings.replace(product.description.substring(0), 'src/main/resources/static', '')}"
                      class="product-description-content"></div>
             </div>
         </div>

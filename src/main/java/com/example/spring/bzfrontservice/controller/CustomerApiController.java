@@ -109,7 +109,7 @@ public class CustomerApiController {
             // 필수 데이터 추출
             String approvedAt = (String) jsonObject.get("approvedAt");
             String method = (String) jsonObject.get("method");
-            Long totalAmount = (Long) jsonObject.get("totalAmount");
+            Double totalAmount = Double.parseDouble(jsonObject.get("totalAmount").toString());
             JSONObject metadata = (JSONObject) jsonObject.get("metadata");
             Long memberNo = metadata != null ? Long.parseLong(metadata.get("memberNo").toString()) : null;
             String productList = metadata != null ? (String) metadata.get("productList") : null;
@@ -142,7 +142,7 @@ public class CustomerApiController {
     }
 
     // 결제 정보를 저장하는 메서드 예제
-    private void savePaymentDetails(String orderId, String paymentKey, Long totalAmount, String approvedAt, String method, Long memberNo, String productList) {
+    private void savePaymentDetails(String orderId, String paymentKey, Double totalAmount, String approvedAt, String method, Long memberNo, String productList) {
         // 예: DB에 결제 정보 저장
         System.out.println("Saving payment details...");
         System.out.println("Order ID: " + orderId);

@@ -1,18 +1,28 @@
 package com.example.spring.bzfrontservice.service;
 
 import com.example.spring.bzfrontservice.client.CustomerClient;
+import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
+import com.example.spring.bzfrontservice.dto.ProductQuantityDTO;
 import com.example.spring.bzfrontservice.dto.PurchaseDTO;
+import com.example.spring.bzfrontservice.dto.ReviewDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class PurchaseService {
     private final CustomerClient customerClient;
+    private final SellerService sellerService;
 
     public void savePurchaseHistory(PurchaseDTO dto) {
         try {
@@ -45,38 +55,48 @@ public class PurchaseService {
         return customerClient.getPurchaseListByMemberNo(memberNo);
     }
 
-//    // 구매한 상품에 대한 리뷰 작성 여부를 매칭
-//    public void enrichPurchasesWithProducts(List<PurchaseDTO> purchases) {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//
-//        for (PurchaseDTO purchase : purchases) {
-//            try {
-//                Map<String, Integer> productMap = objectMapper.readValue(purchase.getProductList(), new TypeReference<Map<String, Integer>>() {});
-//                List<ProdReadResponseDTO> products = new ArrayList<>();
-//                List<Review> reviews = reviewRepository.findByPurchaseId(purchase.getId());
-//
-//                // 각 제품 ID에 대한 리뷰 여부를 매핑
-//                Map<Long, Boolean> reviewedProductIds = new HashMap<>();
-//                for (Review review : reviews) {
-//                    reviewedProductIds.put(review.getProduct().getId(), true);
-//                }
-//
-//                for (Map.Entry<String, Integer> entry : productMap.entrySet()) {
-//                    Long productId = Long.valueOf(entry.getKey());
-//                    Integer quantity = entry.getValue();
-//                    ProdReadResponseDTO product = sellerService.getProductById(productId);
-//                    product.setQuantity(String.valueOf(quantity));
-//
-//                    // 각 Product 객체에 현재 Purchase의 리뷰 상태 저장
-//                    boolean isReviewed = reviewedProductIds.getOrDefault(productId, false);
-//                    product.setReviewedForPurchase(purchase.getPurchaseId(), isReviewed);
-//
-//                    products.add(product);
-//                }
-//                purchase.setProducts(products);
-//            } catch (JsonProcessingException e) {
-//                throw new RuntimeException("Error processing product list from purchase", e);
-//            }
-//        }
-//    }
+    public void enrichPurchasesWithProducts(List<PurchaseDTO> purchases) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        for (PurchaseDTO purchase : purchases) {
+            System.out.println("여기서 문제인가? "+purchase.toString()+"  "+purchase.getPurchaseId()+"  "+purchase.getProductList());
+            try {
+                // JSON 배열을 DTO 리스트로 변환
+                List<ProductQuantityDTO> productList = objectMapper.readValue(
+                        purchase.getProductList(), new TypeReference<List<ProductQuantityDTO>>() {}
+                );
+
+                List<ProdReadResponseDTO> products = new ArrayList<>();
+                List<ReviewDTO> reviews = customerClient.findReviewsByPurchaseId(purchase.getPurchaseId());
+
+                // 리뷰 여부를 매핑
+                Map<Long, Boolean> reviewedProductIds = new HashMap<>();
+                for (ReviewDTO review : reviews) {
+                    reviewedProductIds.put(review.getProductId(), true);
+                }
+
+                // 변환된 DTO 리스트를 활용
+                for (ProductQuantityDTO productInfo : productList) {
+                    Long productId = productInfo.getProductId();
+                    Integer quantity = productInfo.getQuantity();
+
+                    ProdReadResponseDTO product = sellerService.getProductDetails(productId);
+                    product.setQuantity(String.valueOf(quantity));
+
+                    // Null 체크 후 초기화 (여기가 핵심)
+                    if (product.getReviewedPurchases() == null) {
+                        product.setReviewedPurchases(new HashMap<>());
+                    }
+                    product.setReviewedForPurchase(purchase.getPurchaseId(), reviewedProductIds.getOrDefault(productId, false));
+
+                    products.add(product);
+                }
+
+                purchase.setProducts(products);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Error processing product list from purchase", e);
+            }
+        }
+    }
+
 }

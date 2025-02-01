@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.client;
 import com.example.spring.bzfrontservice.dto.CartRequestDTO;
 import com.example.spring.bzfrontservice.dto.ProductQuantityDTO;
 import com.example.spring.bzfrontservice.dto.PurchaseDTO;
+import com.example.spring.bzfrontservice.dto.ReviewDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,5 +28,8 @@ public interface CustomerClient {
 
     @GetMapping("/history")
     List<PurchaseDTO> getPurchaseListByMemberNo(@RequestParam Long memberNo);
+
+    @GetMapping("/history/review")
+    List<ReviewDTO> findReviewsByPurchaseId(@RequestParam Long purchaseId);
 }
 
