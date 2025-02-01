@@ -1,0 +1,97 @@
+/* 기본 테이블 스타일 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+/* 테이블 헤더 스타일 */
+th {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-bottom: 2px solid #ddd;
+    text-align: center;
+}
+
+/* 테이블 셀 스타일 */
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+/* 상품 이미지 크기 조정 */
+.product-image {
+    width: 80px;  /* 가로 크기 제한 */
+    height: 80px; /* 세로 크기 제한 */
+    object-fit: cover; /* 이미지 비율 유지하면서 크기 조정 */
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 주문 내역 스타일 */
+.order-status {
+    width: 80%;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 상품명 스타일 */
+.product-name {
+    font-weight: bold;
+    color: #333;
+}
+
+/* 버튼 스타일 */
+.review-button, .reviewed-button {
+    display: inline-block;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: 0.3s ease;
+}
+
+/* 리뷰 작성 버튼 */
+.review-button {
+    background-color: #007bff;
+    color: white;
+    border: 1px solid #007bff;
+}
+
+.review-button:hover {
+    background-color: #0056b3;
+    border: 1px solid #0056b3;
+}
+
+/* 작성 완료 버튼 */
+.reviewed-button {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #28a745;
+}
+
+.reviewed-button:hover {
+    background-color: #218838;
+    border: 1px solid #218838;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    table {
+        font-size: 14px;
+    }
+    .product-image {
+        width: 60px;
+        height: 60px;
+    }
+    .review-button, .reviewed-button {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}

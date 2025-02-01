@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -104,8 +105,8 @@ public class CustomerController {
     @GetMapping("/history")
     public String history(@RequestParam Long memberNo, Model model){
         List<PurchaseDTO> purchases = purchaseService.getPurchaseListByMemberNo(memberNo);
-        // 리뷰 여부 매핑은 다음에 하겠음
-        // purchaseService.enrichPurchasesWithProducts(purchases);
+        System.out.println(Arrays.toString(purchases.toArray())+"  "+purchases.getFirst().getPurchaseId());
+        purchaseService.enrichPurchasesWithProducts(purchases);
 
         model.addAttribute("purchases", purchases);
 
