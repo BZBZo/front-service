@@ -7,6 +7,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const b2NavMenu = document.querySelector('.b2-nav-menu');
     const b2NavMenuItems = b2NavMenu ? b2NavMenu.querySelectorAll('ul > li') : [];
 
+    const purchaseHistoryLink = document.getElementById("purchase-history-link");
+
+    if (purchaseHistoryLink && memberNo) {
+        purchaseHistoryLink.addEventListener("click", function (event) {
+            event.preventDefault(); // 기본 동작 막기
+            console.log(memberNo, " 가져옴")
+            window.location.href = `/customer/history/${memberNo}`;
+        });
+    }
+
     console.log("Mega Menu Button:", megaMenuButton);
     console.log("Mega Menu:", megaMenu);
     console.log("Close Mega Menu Button:", closeMegaMenuButton);
