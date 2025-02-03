@@ -68,10 +68,10 @@ $(document).ready(function () {
 
     // 공동구매 버튼 클릭 이벤트
     $('#congdongBtn').click(function () {
-        if (modalOpenCount >= maxModalOpens) {
-            alert(`공구는 이제 열 수 없습니다! (최대 ${maxModalOpens}번 열기 가능)`);
-            return;
-        }
+        // if (modalOpenCount >= maxModalOpens) {
+        //     alert(`공구는 이제 열 수 없습니다! (최대 ${maxModalOpens}번 열기 가능)`);
+        //     return;
+        // }
 
         const modal = $('#congdongModal');
         const conditionString = $('#condition').val(); // condition 값 가져오기
@@ -109,13 +109,13 @@ $(document).ready(function () {
         modal.show();
         modalOpenCount++;
 
-        if (modalOpenCount > 5) {
-            const message = modalOpenCount > 9
-                ? `또예요? 이번이 마지막이에요. (열기 횟수: ${modalOpenCount}번)`
-                : `또 열었어요? 이번에도 안하려구? (열기 횟수: ${modalOpenCount}번)`;
-
-            $('#selectedConditionDisplay').html(`<p style="color: gray; font-size: 14px;">${message}</p>`);
-        }
+        // if (modalOpenCount > 5) {
+        //     const message = modalOpenCount > 9
+        //         ? `또예요? 이번이 마지막이에요. (열기 횟수: ${modalOpenCount}번)`
+        //         : `또 열었어요? 이번에도 안하려구? (열기 횟수: ${modalOpenCount}번)`;
+        //
+        //     $('#selectedConditionDisplay').html(`<p style="color: gray; font-size: 14px;">${message}</p>`);
+        // }
     });
 
     // 조건 클릭 이벤트
