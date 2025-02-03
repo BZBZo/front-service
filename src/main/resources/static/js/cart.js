@@ -1,10 +1,4 @@
-let token = localStorage.getItem('accessToken');
-if (!token.startsWith('Bearer ')) {
-    token = `Bearer ${token}`; // Bearer 형식으로 변환
-}
-
 $(document).ready(function () {
-
     getToken()
         .then(() => {
             setupAjax();
