@@ -192,7 +192,7 @@ function loadUserInfo() {
                 console.log('User Info:', userInfo);
                 memberNo = userInfo.memberNo;
                 console.log('Extracted memberNo:', memberNo);
-                resolve(memberNo); // 성공적으로 memberNo를 설정했을 때 resolve 호출
+                resolve({userInfo, memberNo}); // 성공적으로 memberNo를 설정했을 때 resolve 호출
             },
             error: function () {
                 alert('사용자 정보를 불러오는데 실패했습니다.');

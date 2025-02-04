@@ -14,7 +14,6 @@ $(document).ready(function () {
             return loadUserInfo(); // 사용자 정보 로드
         })
         .then(() => {
-            console.log('멤버 번호:', memberNo); // memberNo 확인
             if (!memberNo) {
                 alert('사용자 정보를 불러오고 있습니다. 잠시 후 다시 시도해주세요.');
                 return;
@@ -32,6 +31,29 @@ $(document).ready(function () {
     dynamicMegaMenu.id = 'dynamicMegaMenu';
     const b2NavMenu = document.querySelector('.b2-nav-menu');
     const b2NavMenuItems = b2NavMenu ? b2NavMenu.querySelectorAll('ul > li') : [];
+
+    document.addEventListener("click", function (event) {
+        if (event.target && event.target.id === "purchase-history-link") {
+            event.preventDefault(); // 기본 동작 막기
+
+            if (memberNo) {
+                window.location.href = `/customer/history?memberNo=${memberNo}`;  // 쿼리 파라미터 사용
+            } else {
+                alert("로그인이 필요한 서비스입니다.");
+                window.location.href = '/webs/signin';
+            }
+        }
+    });
+
+    console.log("Mega Menu Button:", megaMenuButton);
+    console.log("Mega Menu:", megaMenu);
+    console.log("Close Mega Menu Button:", closeMegaMenuButton);
+
+    // 요소가 제대로 선택되었는지 확인
+    if (!megaMenu || !megaMenuButton || !closeMegaMenuButton) {
+        console.error("Mega Menu elements are missing.");
+        return;
+    }
 
     // 화면 크기 변경에 따라 동적으로 b2-nav-menu 항목을 megaMenu에 추가/제거
     const updateMegaMenu = () => {
@@ -118,4 +140,43 @@ $(document).ready(function () {
             console.error('권한이 없습니다.');
         }
     }
+
+    // "MY MARKET" 클릭 이벤트
+    document.querySelector('body').addEventListener('click', function (event) {
+        // 클릭된 요소가 "MY MARKET" 링크인지 확인
+        if (event.target.matches('.my-market-link')) {
+            event.preventDefault(); // 기본 동작 방지
+            const token = localStorage.getItem('accessToken'); // 토큰 가져오기
+            console.log("Token before fetch:", token);
+            if (!token) {
+                alert("로그인이 필요한 서비스입니다.");
+                window.location.href = '/webs/signin';
+                return;
+            }
+            // fetch로 서버에 요청
+            fetch('/product/myMarket', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`, // 토큰 헤더에 포함
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch MY MARKET data');
+                    }
+                    return response.text(); // HTML 응답 처리
+                })
+                .then((html) => {
+                    history.pushState(null, '', '/product/myMarket'); // URL 업데이트
+                    document.open();
+                    document.write(html); // HTML 렌더링
+                    document.close();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('MY MARKET 데이터를 가져오는 중 문제가 발생했습니다.');
+                });
+        }
+    });
 });
