@@ -11,8 +11,9 @@
     <title>회원 정보 수정</title>
 </head>
 <body>
-<div th:replace="fragments/header :: header"></div>
-
+<header>
+    <div th:replace="~{fragments/header :: header}"></div>
+</header>
 <main>
     <h2>회원 정보 수정</h2>
     <form class="edit-form">

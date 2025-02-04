@@ -1,7 +1,4 @@
-let token = localStorage.getItem('accessToken');
 $(document).ready(function () {
-    // 사용자 정보 로드
-    loadUserInfo();
     const profileImage = document.getElementById('profileImage');
     const previewImage = document.getElementById('previewImage');
 
@@ -10,6 +7,17 @@ $(document).ready(function () {
         window.location.href = '/webs/signin';
         return;
     }
+
+    Promise.all([loadUserInfo(), loadProfileInfo()])
+        .then(([memberNo, profileInfo]) => {
+            console.log("모든 정보가 정상적으로 로드됨");
+            console.log("회원번호:", memberNo);
+            console.log("프로필 정보:", profileInfo);
+        })
+        .catch(error => {
+            console.error("데이터 로딩 실패", error);
+        });
+
 
     // '등록' 버튼 클릭 처리
     $('.action-btn').click(function() {
@@ -57,7 +65,7 @@ $(document).ready(function () {
                 } else {
                     alert('수정되었습니다.');
                 }
-                loadUserInfo();  // 사용자 정보 새로 불러오기
+                loadProfileInfo();  // 사용자 정보 새로 불러오기
             },
             error: function() {
                 if (action === '등록') {
@@ -85,7 +93,7 @@ $(document).ready(function () {
             contentType: false,
             success: function(response) {
                 alert('이미지가 업로드되었습니다.');
-                loadUserInfo();
+                loadProfileInfo(); // 사용자 정보 새로 불러오기
             },
             error: function() {
                 alert('이미지 업로드에 실패했습니다.');
@@ -116,46 +124,46 @@ $(document).ready(function () {
     }
 
     // 사용자 정보 로드 함수
-    function loadUserInfo() {
-        $.ajax({
-            url: '/webs/user/info',
-            method: 'GET',
-            headers: {
-                'Authorization': token
-            },
-            success: function(userInfo) {
-                if (userInfo.role === 'ROLE_SELLER') {
-                    $('.customer-section').hide();
-                    $('.seller-section').show();
+    function loadProfileInfo() {
+        return loadUserInfo().then(({ userInfo, memberNo }) => {  // 구조 분해 할당
+            console.log("로드된 사용자 정보:", userInfo);
+            console.log("로드된 memberNo:", memberNo); // 필요하면 사용 가능
 
-                    // 판매자 이메일을 readonly로 설정하고 제공자 정보 표시
-                    $('#seller-email').val(userInfo.email).prop('readonly', true);
-                    $('#seller-email-provider').text(userInfo.provider ? `(${userInfo.provider} 로그인)` : '');
-
-                    // 사업자 번호를 readonly로 설정
-                    $('#businessNumber').val(userInfo.businessNumber).prop('readonly', true);
-
-                    setFieldValue('shopName', userInfo.nickname);
-                    setFieldValue('shopPhone', userInfo.phone);
-                    setFieldValue('shopIntroduce', userInfo.introduce);
-                } else {
-                    $('.seller-section').hide();
-                    $('.customer-section').show();
-
-                    // 고객 이메일을 readonly로 설정하고 제공자 정보 표시
-                    $('#email').val(userInfo.email).prop('readonly', true);
-                    $('#email-provider').text(userInfo.provider ? `(${userInfo.provider} 로그인)` : '');
-
-                    setFieldValue('nickname', userInfo.nickname);
-                    setFieldValue('phone', userInfo.phone);
-                    setFieldValue('introduce', userInfo.introduce);
-                }
-            },
-            error: function() {
-                alert('사용자 정보를 불러오는데 실패했습니다.');
+            if (!userInfo) {
+                alert('사용자 정보를 불러오지 못했습니다.');
+                return Promise.reject("사용자 정보 없음");
             }
+
+            if (userInfo.role === 'ROLE_SELLER') {
+                $('.customer-section').hide();
+                $('.seller-section').show();
+                $('#seller-email').val(userInfo.email).prop('readonly', true);
+                $('#seller-email-provider').text(userInfo.provider ? `(${userInfo.provider} 로그인)` : '');
+                $('#businessNumber').val(userInfo.businessNumber).prop('readonly', true);
+                setFieldValue('shopName', userInfo.nickname);
+                setFieldValue('shopPhone', userInfo.phone);
+                setFieldValue('shopIntroduce', userInfo.introduce);
+            } else {
+                $('.seller-section').hide();
+                $('.customer-section').show();
+                $('#email').val(userInfo.email).prop('readonly', true);
+                $('#email-provider').text(userInfo.provider ? `(${userInfo.provider} 로그인)` : '');
+                setFieldValue('nickname', userInfo.nickname);
+                setFieldValue('phone', userInfo.phone);
+                setFieldValue('introduce', userInfo.introduce);
+            }
+
+            console.log("적용된 닉네임:", userInfo.nickname);
+            return userInfo;  // userInfo 반환 (Promise 체이닝 유지)
+        }).catch(error => {
+            alert('사용자 정보를 불러오는데 실패했습니다.');
+            console.error("프로필 정보 로딩 실패:", error);
+            return Promise.reject(error);
         });
     }
+
+
+
 
     // 입력값 변경 시 버튼 상태 변경
     function setFieldValue(field, value) {
@@ -249,7 +257,7 @@ $(document).ready(function () {
                 data: JSON.stringify({[field]: inputValue}),
                 success: function () {
                     alert('수정되었습니다.');
-                    loadUserInfo();
+                    loadProfileInfo();
                 },
                 error: function () {
                     alert('수정에 실패했습니다.');
