@@ -1,9 +1,3 @@
-let memberNo = null; // 전역 변수
-let token = localStorage.getItem('accessToken');
-if (!token.startsWith('Bearer ')) {
-    token = `Bearer ${token}`; // Bearer 형식으로 변환
-}
-
 let modalOpenCount = 0;
 const maxModalOpens = 10;
 
