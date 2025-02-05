@@ -1,0 +1,151 @@
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+h2 {
+    text-align: center;
+}
+
+.ootd-registration-body {
+    font-family: 'Pretendard-Regular', sans-serif;
+    background-color: #f7f7f7;
+}
+
+#ootdForm {
+    display: flex;
+    flex-direction: column;
+    width: 1200px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin: 20px 10px;
+}
+
+.ootd-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.ootd-col-md-4{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    padding: 10px;
+}
+
+/* 이미지 업로드 박스 스타일 */
+.review-image-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.review-file-input {
+    padding: 10px;
+    font-size: 12px;
+    border: none;
+}
+
+
+.content-input {
+    padding: 10px;
+    border: 1px solid #dddddd;
+    border-radius: 30px;
+    font-size: 20px;
+    margin: 30px 0;
+    text-align: center;
+    width: 450px;
+    height: 220px;
+}
+
+.close-btn {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.image-preview {
+    width: 100%;
+    height: 264px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    color: #999;
+    text-align: center;
+    border-radius: 10px;
+}
+
+#previewImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.image-preview-item {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.delete-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.review-button-container {
+    display: flex;
+    justify-content: center; /* 🔥 수평 가운데 정렬 */
+    align-items: center; /* 🔥 수직 가운데 정렬 */
+    width: 100%;
+}
+
+/* 🔥 리뷰 등록 버튼 디자인 */
+.review-button {
+    width: 50%;
+    padding: 15px;
+    background: linear-gradient(to right, #ff7e5f, #feb47b); /* 🔥 그라데이션 적용 */
+    color: white;
+    border: none;
+    border-radius: 30px; /* 🔥 둥근 버튼 */
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.review-button:hover {
+    background: linear-gradient(to right, #ff6f61, #ffb199);
+    transform: scale(1.05); /* 🔥 호버 시 크기 증가 */
+}

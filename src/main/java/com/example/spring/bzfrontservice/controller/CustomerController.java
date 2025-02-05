@@ -113,4 +113,15 @@ public class CustomerController {
         return "purchase_list";
     }
 
+    @GetMapping("/history/review/{productId}/{purchaseId}")
+    public String writeReview(@PathVariable Long productId,
+                              @PathVariable Long purchaseId,
+                              Model model) {
+
+        model.addAttribute("productId", productId);
+        model.addAttribute("purchaseId", purchaseId);
+
+        return "review_write";
+    }
+
 }
