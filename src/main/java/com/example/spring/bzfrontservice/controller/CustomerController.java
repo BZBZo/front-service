@@ -1,7 +1,9 @@
 package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.dto.PurchaseDTO;
+import com.example.spring.bzfrontservice.dto.ReviewDTO;
 import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
+import com.example.spring.bzfrontservice.service.CustomerService;
 import com.example.spring.bzfrontservice.service.PurchaseService;
 import com.example.spring.bzfrontservice.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,6 +25,7 @@ import java.util.Map;
 @RequestMapping("/customer")
 public class CustomerController {
     private final UserService userService;
+    private final CustomerService customerService;
     private final PurchaseService purchaseService;
 
     @GetMapping("/cart/list")
@@ -122,6 +125,22 @@ public class CustomerController {
         model.addAttribute("purchaseId", purchaseId);
 
         return "review_write";
+    }
+
+    @GetMapping("/history/review/detail/{productId}/{purchaseId}/{memberNo}")
+    public String detailReview(@PathVariable Long productId,
+                               @PathVariable Long purchaseId,
+                               @PathVariable Long memberNo,
+                               Model model) {
+
+        model.addAttribute("productId", productId);
+        model.addAttribute("purchaseId", purchaseId);
+        model.addAttribute("memberNo", memberNo);
+
+        ReviewDTO review = customerService.findReviewByIds(purchaseId, productId, memberNo);
+        model.addAttribute("review", review);
+
+        return "review_detail";
     }
 
 }
