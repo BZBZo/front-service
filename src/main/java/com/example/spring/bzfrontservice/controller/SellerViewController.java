@@ -1,8 +1,10 @@
 
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
 import com.example.spring.bzfrontservice.service.CustomerService;
+import com.example.spring.bzfrontservice.service.CongdongService;
 import com.example.spring.bzfrontservice.service.SellerService;
 import com.example.spring.bzfrontservice.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +24,7 @@ import java.util.List;
 public class SellerViewController {
 
     private final SellerService sellerService;
+    private final CongdongService congdongService;
     private final UserService userService;
     private final CustomerService customerService;
 
@@ -77,7 +80,7 @@ public class SellerViewController {
         log.info("[Front Service] 콩동 페이지 로드 시작");
 
         // FeignClient를 통해 데이터 가져오기
-        List<ProdReadResponseDTO> products = sellerService.getCongDongProducts();
+        List<ProdReadResponseDTO> products = congdongService.getCongDongProducts();
 
         log.info("[Front Service] 콩동 데이터 로드 완료. 상품 수: {}", products.size());
         log.info("[Front Service] 상품 데이터: {}", products);
@@ -129,17 +132,24 @@ public class SellerViewController {
     // 상품 상세 페이지
     @GetMapping("/detail/{id}")
     public String productDetail(@PathVariable("id") Long productId, Model model) {
-            // 서비스 계층을 통해 상품 상세 정보 가져오기
-            ProdReadResponseDTO product = sellerService.getProductDetails(productId);
-            log.info("what is this?: {} ", product);
-            Integer count = customerService.countReview(productId);
+        // 서비스 계층을 통해 상품 상세 정보 가져오기
+        ProdReadResponseDTO product = sellerService.getProductDetails(productId);
+        log.info("what is this?: {} ", product);
+        Integer count = customerService.countReview(productId);
+        log.info("상품 상세 정보: {}", product);
+
+        // **공동구매 진행 정보 가져오기**
+        List<CongDongIngDTO> congdongIngList = congdongService.getCongDongIngByProductId(productId);
+        log.info("공동구매 진행 목록: {}", congdongIngList);
 
             // 모델에 데이터 추가
             model.addAttribute("product", product);
             model.addAttribute("reviewCount", count);
+        // 모델에 데이터 추가
+        model.addAttribute("product", product);
+        model.addAttribute("congdongIngList", congdongIngList); // congsList → congdongIngList 변경
 
-            // product_detail_all.html 뷰 반환
-            return "product_detail_all";
+        return "product_detail_all";
     }
 
     // 상품 수정 페이지

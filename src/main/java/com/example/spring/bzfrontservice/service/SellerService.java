@@ -175,38 +175,6 @@ public class SellerService {
         }
     }
 
-    public List<ProdReadResponseDTO> getCongDongProducts() {
-        log.info("[Front Service] FeignClient 호출 시작");
-        List<ProdReadResponseDTO> products = sellerClient.getCongDongProducts();
-        log.info("[Front Service] FeignClient 호출 완료. 받은 데이터: {}", products);
-        return products;
-    }
-
-    public CongDongIngDTO startCongdong(Long productId, String condition, String token, List<Long> congs) {
-        log.info("Starting CongDong for productId: {}, condition: {}, congs={}", productId, condition, congs);
-
-        // JSON 형태의 요청 데이터 생성
-        Map<String, Object> requestBody = Map.of(
-                "productId", productId,
-                "condition", condition,
-                "congs", congs
-        );
-
-        log.info("Request body: {}, Token: {}", requestBody, token);
-
-        // FeignClient를 통해 seller-service 호출 (토큰 포함)
-        ResponseEntity<CongDongIngDTO> response = sellerClient.startCongdong(requestBody, token);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            log.info("CongDong started successfully: {}", response.getBody());
-            return response.getBody();
-        } else {
-            log.error("Failed to start CongDong: {}", response.getStatusCode());
-            throw new RuntimeException("공동구매 시작에 실패했습니다.");
-        }
-    }
-
-
     // Congdong 저장
     private void saveCongdong(ProdUploadRequestDTO dto) {
         if (dto.isCong()) {

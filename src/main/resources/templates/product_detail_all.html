@@ -26,6 +26,10 @@
             <input type="hidden" id="productId" th:value="${product.id}">
             <input type="hidden" id="condition" th:value="${product.condition}">
             <input type="hidden" id="selectedCondition" value="">
+            <input type="hidden" id="congdongIngList"
+                   th:value="${congdongIngList != null and not #lists.isEmpty(congdongIngList)
+                 ? #strings.listJoin(congdongIngList, '|') : ''}">
+
             <div class="product-col-md-4">
                 <img th:src="@{${product.mainPicturePath}}" th:alt="${product.name}" />
             </div>
@@ -80,8 +84,8 @@
         <p id="noConditions" style="display: none; color: red;">공동구매 조건이 없습니다.</p>
         <p>선택된 조건:</p>
         <div id="selectedConditionDisplay" style="font-weight: bold; color: #007bff;"></div>
-        <!-- 공동구매 시작 버튼 -->
-        <button id="startCongdong" class="action-button" style="display: none;">모집하기</button>
+        <!-- 공동구매 액션 버튼 (모집하기/참여하기 동적 변경) -->
+        <button id="congdongActionBtn" class="action-button" style="display: none;"></button>
         <button id="cancelCongdong" class="cancel-button" style="display: none;">닫기</button>
     </div>
 </div>
