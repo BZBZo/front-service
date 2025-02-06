@@ -6,6 +6,10 @@ $(document).ready(function () {
     console.log('상세 페이지가 로드되었습니다.');
     loadUserInfo().catch(error => console.error('Error loading user info:', error));
 
+    // 공동구매 진행 목록 값 가져오기
+    let congdongIngListValue = document.getElementById("congdongIngList")?.value || "값 없음";
+    console.log("📌 공동구매 진행 목록 (input hidden 값):", congdongIngListValue);
+
     // 이벤트 위임 방식으로 클릭 이벤트 처리
     $('body').on('click', '.add-to-cart', function () {
         const productId = $(this).data('product-id'); // data-product-id 속성 값 가져오기
@@ -112,62 +116,161 @@ $(document).ready(function () {
         // }
     });
 
-    // 조건 클릭 이벤트
+    // 공동구매 참여 인원 정보 가져오기 (조건별로 필터링)
+    function getParticipantCountForCondition(selectedPeople) {
+        let rawCongdongIngList = $('#congdongIngList').val();
+        console.log('🔎 [공동구매 진행 목록] congdongIngList 값:', rawCongdongIngList);
+
+        if (!rawCongdongIngList || rawCongdongIngList.trim() === "") {
+            console.log('⚠ [공동구매 진행 목록] 데이터 없음, 0 반환');
+            return 0;
+        }
+
+        // `|` 기준으로 나눠서 배열로 변환
+        let congdongIngArray = rawCongdongIngList.split('|');
+        console.log('✅ [파싱된 공동구매 목록]:', congdongIngArray);
+
+        // 선택한 조건에 해당하는 공동구매 데이터 필터링 (find → filter 변경)
+        let matchingGroups = congdongIngArray.filter(entry => {
+            let match = entry.match(/condition=\{(\d+):\d+\}/); // 정규식으로 condition 값 추출
+            if (match) {
+                let conditionPeople = match[1]; // 숫자 부분만 추출 (예: 10, 5, 6)
+                return conditionPeople === selectedPeople; // 숫자가 일치하는지 비교
+            }
+            return false;
+        });
+
+        if (matchingGroups.length === 0) {
+            console.log(`❌ [조건 불일치] 해당 조건(${selectedPeople})의 진행 중인 공동구매 없음`);
+            return 0;
+        }
+
+        console.log('🎯 [조건 일치하는 공동구매 데이터]:', matchingGroups);
+
+        // 모든 공동구매에서 참여자 목록을 합침 (set을 사용해서 중복 제거 가능)
+        let participantsSet = new Set();
+
+        matchingGroups.forEach(group => {
+            let match = group.match(/congs=\[(.*?)\]/);
+            if (match) {
+                let participants = match[1].split(',').map(p => p.trim()).filter(p => p !== '');
+                participants.forEach(p => participantsSet.add(p)); // 중복 방지
+            }
+        });
+
+        console.log(`✔ [공동구매 참여] 조건(${selectedPeople}명)에 맞는 현재 참여 인원:`, participantsSet.size);
+
+        return participantsSet.size; // 중복 제거된 참여자 수 반환
+    }
+
+    // 조건 클릭 이벤트 (현재 선택한 조건에 맞는 참여자 수 계산 + 버튼 텍스트 변경)
     $('#conditionList').on('click', '.condition-item', function () {
         const selectedCondition = $(this).data('condition');
-        console.log('선택한 조건 (원본):', selectedCondition);
 
         if (!selectedCondition) {
-            alert('조건 데이터를 가져오지 못했습니다. 다시 시도해주세요.');
+            alert('❌ 조건 데이터를 가져오지 못했습니다. 다시 시도해주세요.');
             return;
         }
 
         const [people, discount] = selectedCondition.replace(/{|}/g, '').split(':');
-        console.log('선택한 조건 - 인원:', people, '할인율:', discount);
+
+        // 현재 선택한 조건에 맞는 참여 인원 수 가져오기
+        let currentParticipants = getParticipantCountForCondition(people);
+
+        console.log('✔ [공동구매 조건 선택] 조건:', selectedCondition, '현재 참여 인원:', currentParticipants);
 
         $('#selectedConditionDisplay').html(`
-            인원: <strong>${people}</strong>명 - 할인율: <strong>${discount}%</strong>
-        `);
-
+        인원: <strong>${people}</strong>명 - 할인율: <strong>${discount}%</strong>
+        <br>
+        현재 참여 인원: <strong>${currentParticipants}</strong>명
+    `);
         $('#selectedCondition').val(selectedCondition);
-        $('#startCongdong').show();
+
+        // 공동구매 진행 여부 확인 후 버튼 변경
+        let rawCongdongIngList = $('#congdongIngList').val();
+        let isOngoing = false;
+
+        if (rawCongdongIngList && rawCongdongIngList.trim() !== "") {
+            let congdongIngArray = rawCongdongIngList.split('|');
+
+            // 현재 선택한 조건에 해당하는 공동구매가 존재하는지 확인
+            isOngoing = congdongIngArray.some(entry => {
+                let match = entry.match(/condition=\{(\d+):\d+\}/);
+                return match && match[1] === people;
+            });
+        }
+
+        let actionBtn = $('#congdongActionBtn'); // 버튼 ID 변경 반영
+        if (isOngoing) {
+            console.log(`🎯 [공동구매 진행 중] 조건(${people}명) → "참여하기" 버튼 표시`);
+            actionBtn.text("참여하기").data("action", "join").show();
+        } else {
+            console.log(`🚀 [공동구매 없음] 조건(${people}명) → "모집하기" 버튼 표시`);
+            actionBtn.text("모집하기").data("action", "start").show();
+        }
+
         $('#cancelCongdong').show();
     });
 
-    // 공동구매 시작 버튼 클릭 이벤트
-    $('#startCongdong').click(function () {
+    // 공동구매 버튼 클릭 이벤트 (모집하기 & 참여하기)
+    $('#congdongActionBtn').click(function () {  // 변경된 버튼 ID 적용
+        const actionType = $(this).data("action");
         const productId = $('#productId').val();
         const selectedCondition = $('#selectedCondition').val();
         const token = localStorage.getItem('accessToken');
-
-        console.log('공동구매 시작 - 상품 ID:', productId, '조건:', selectedCondition);
 
         if (!selectedCondition) {
             alert('공동구매 조건을 선택해주세요!');
             return;
         }
 
-        $.ajax({
-            type: "POST",
-            url: "/product/congdong",
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${token}`, // 템플릿 리터럴 수정
-            },
-            data: JSON.stringify({
-                productId: productId,
-                condition: selectedCondition
-            }),
-            success: function (response) {
-                alert('공동구매가 성공적으로 시작되었습니다!');
-                console.log('Response:', response);
-                $('#congdongModal').hide();
-            },
-            error: function (xhr, status, error) {
-                alert('공동구매 시작에 실패했습니다. 다시 시도해주세요.');
-                console.error('Error:', error);
-            }
-        });
+        if (actionType === "start") {
+            console.log('공동구매 시작 - 상품 ID:', productId, '조건:', selectedCondition);
+            $.ajax({
+                type: "POST",
+                url: "/product/congdong",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                data: JSON.stringify({
+                    productId: productId,
+                    condition: selectedCondition
+                }),
+                success: function (response) {
+                    alert('공동구매가 성공적으로 시작되었습니다!');
+                    console.log('Response:', response);
+                    $('#congdongModal').hide();
+                },
+                error: function (xhr, status, error) {
+                    alert('공동구매 시작에 실패했습니다. 다시 시도해주세요.');
+                    console.error('Error:', error);
+                }
+            });
+        } else if (actionType === "join") {
+            console.log('공동구매 참여 - 상품 ID:', productId, '조건:', selectedCondition, '참여자:', memberNo);
+            $.ajax({
+                type: "PUT",
+                url: "/product/congdong",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`, // 토큰만 보냄
+                },
+                data: JSON.stringify({
+                    productId: productId,
+                    condition: selectedCondition
+                }),
+                success: function (response) {
+                    alert("공동구매 참여 완료!");
+                    console.log("Response:", response);
+                    $("#congdongModal").hide();
+                },
+                error: function (xhr, status, error) {
+                    alert("공동구매 참여에 실패했습니다. 다시 시도해주세요.");
+                    console.error("Error:", error);
+                }
+            });
+        }
     });
 
     // 모달 닫기 버튼 클릭 이벤트

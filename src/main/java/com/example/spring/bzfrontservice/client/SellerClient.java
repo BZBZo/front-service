@@ -50,7 +50,7 @@ public interface SellerClient {
     @GetMapping("/edit/{id}")
     ProdReadResponseDTO getProductEdit(@PathVariable("id") Long id);
 
-    // 이제 얘가 상품 상세 조회 (GET)
+    // 판매자 상품 상세 조회 (GET)
     @GetMapping("/detail/po/{id}")
     ProdReadResponseDTO loadProductDetail(
             @PathVariable("id") Long id,
@@ -77,4 +77,15 @@ public interface SellerClient {
             @RequestBody Map<String, Object> requestBody, // JSON 형태로 전달
             @RequestHeader("Authorization") String token // 토큰 추가
     );
+
+    // 공동구매 참여 (PUT)
+    @PutMapping("/congdong")
+    ResponseEntity<CongDongIngDTO> joinCongdong(
+            @RequestBody Map<String, Object> requestBody,
+            @RequestHeader("Authorization") String token
+    );
+
+    // **상품 ID로 공동구매 진행 정보(congdongIng) 가져오기**
+    @GetMapping("/{productId}/congdongIng")
+    ResponseEntity<List<CongDongIngDTO>> getCongDongIngByProductId(@PathVariable("productId") Long productId);
 }
