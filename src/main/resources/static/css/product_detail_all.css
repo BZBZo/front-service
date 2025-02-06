@@ -140,6 +140,9 @@ body {
 
 .product-description {
     margin-top: 30px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .product-description h2 {
@@ -149,6 +152,7 @@ body {
 
 .product-description-content {
     line-height: 1.5;
+    margin-bottom: 30px;
 }
 
 .product-detail {

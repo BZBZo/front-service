@@ -1,0 +1,214 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 15px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    text-align: center;
+    padding: 12px;
+    border-bottom: 1px solid #ccc;
+}
+
+
+th {
+    background-color: #eeeeee;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #007BFF;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+#longtext{
+    width: 150px;
+    word-wrap: break-word;
+    word-break: break-all;
+    white-space: normal;
+}
+.review-image{
+    max-width: 100px; /* 최대 너비를 100픽셀로 제한 */
+    max-height: 100px; /* 최대 높이를 100픽셀로 제한 */
+    width: auto; /* 원본 비율 유지 */
+    height: auto; /* 원본 비율 유지 */
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.pagination-container {
+    width: 100%; /* 전체 너비를 차지 */
+    text-align: center; /* 중앙 정렬 */
+    margin-top: 20px; /* 테이블과의 여백 */
+    margin-bottom: 20px; /* 페이지 하단 여백 */
+}
+
+.pagination li a {
+    margin-right: 4px; /* 링크 간 간격 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+.pagination li a:hover {
+    text-decoration: underline; /* 마우스 오버 시 밑줄 표시 */
+}
+
+.pagination .page-item {
+    display: inline-block;
+}
+
+.pagination .page-link {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: black;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 15%
+}
+
+.pagination .page-item.active .page-link {
+    font-weight: bold;
+    color: cornflowerblue;
+}
+
+
+h2 {
+    text-align: center;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 300px auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* 모달 내부의 닫기 버튼 - 콘텐츠 내부 오른쪽 상단 */
+.modal-content .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #333;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+
+.ootd-col-md-4{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    padding: 10px;
+}
+
+/* 이미지 업로드 박스 스타일 */
+.review-image-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 컨테이너 설정: flex layout으로 자식들이 가로로 나열되고, 높이는 300px로 고정 */
+.review-image-placeholder {
+    display: flex;
+    width: 100%;
+    height: 300px;     /* 컨테이너의 고정 높이 */
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    border-radius: 10px;
+}
+
+/* 자식 div에 대해 flex:1로 균등 분배 */
+.review-image-placeholder > div {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;   /* 컨테이너 높이에 맞추어 이미지 높이를 설정 */
+    width: auto;
+    object-fit: contain;
+}
+
+.content-input {
+    padding: 10px;
+    border: 1px solid #dddddd;
+    border-radius: 30px;
+    font-size: 20px;
+    margin: 30px 0;
+    text-align: center;
+    width: 450px;
+    height: 220px;
+}
+
+/* 리뷰 이미지가 없을 때 내용 영역 전체 너비 */
+.full-width-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* 예시: full-width 클래스가 있는 input은 기본 content-input 스타일에 추가 수정 */
+.content-input.full-width {
+    width: 100%;
+    /* 필요에 따라 높이나 폰트 크기 등 추가 스타일 적용 */
+}
+
+.ootd-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* review-image-flex: 이미지들을 가로로 배치하는 flex 컨테이너 */
+.review-image-flex {
+    display: flex;
+    width: 100%;
+    height: 300px;  /* 원하는 고정 세로 높이 (예: 300px; 필요에 따라 조정) */
+    gap: 5px;       /* 이미지 사이의 간격 (선택 사항) */
+}
+
+/* review-image-item: 각 이미지가 차지할 flex 아이템 */
+.review-image-item {
+    flex: 1;                    /* 가로 공간을 균등하게 분배 */
+    overflow: hidden;           /* 이미지가 영역을 넘으면 숨김 처리 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 각 이미지 스타일 */
+.review-image-item img {
+    height: 100%;   /* 컨테이너 높이에 맞추어 이미지 높이를 설정 */
+    width: auto;    /* 가로는 자동 조절 (비율 유지) */
+    /* object-fit 사용도 고려 가능:
+       object-fit: cover;  -> 컨테이너를 꽉 채우지만 좌우가 잘릴 수 있음.
+       object-fit: contain; -> 전체 이미지가 보이지만 빈 공간이 생길 수 있음.
+    */
+}

@@ -2,6 +2,7 @@
 package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
+import com.example.spring.bzfrontservice.service.CustomerService;
 import com.example.spring.bzfrontservice.service.SellerService;
 import com.example.spring.bzfrontservice.service.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +23,7 @@ public class SellerViewController {
 
     private final SellerService sellerService;
     private final UserService userService;
+    private final CustomerService customerService;
 
     @GetMapping("/list")
     public String productTotalList(@RequestParam(defaultValue = "1") int page, Model model) {
@@ -130,9 +132,11 @@ public class SellerViewController {
             // 서비스 계층을 통해 상품 상세 정보 가져오기
             ProdReadResponseDTO product = sellerService.getProductDetails(productId);
             log.info("what is this?: {} ", product);
+            Integer count = customerService.countReview(productId);
 
             // 모델에 데이터 추가
             model.addAttribute("product", product);
+            model.addAttribute("reviewCount", count);
 
             // product_detail_all.html 뷰 반환
             return "product_detail_all";
