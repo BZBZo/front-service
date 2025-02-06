@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/layout.js}"></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+    <script th:src="@{/js/review_detail.js}"></script>
+    <link th:href="@{/css/review_write.css}" rel="stylesheet">
+    <title>리뷰상세 페이지</title>
+</head>
+<body class="ootd-registration-body">
+<header>
+    <div th:replace="~{fragments/header :: header}"></div>
+</header>
+<main>
+    <form id="ootdForm">
+        <input type="hidden" id="customerId" name="customerId" th:value="${memberNo}">
+        <input type="hidden" id="productId" name="productId" th:value="${productId}">
+        <input type="hidden" id="purchaseId" name="purchaseId" th:value="${purchaseId}">
+        <h2>리뷰 상세</h2>
+        <div class="ootd-row">
+            <div class="ootd-col-md-4">
+                <div class="review-image-upload">
+                    <div class="review-image-placeholder">
+                        <div th:each="imgUrl : ${review.imgUrls.split(',')}">
+                            <img th:src="${imgUrl}"
+                                 alt="리뷰 이미지"
+                                 class="review-image"
+                                 th:style="${imgUrl != null} ? 'display: block;' : 'display: none;'" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="text" id="content" name="content" th:value="${review.content}" class="content-input" readonly>
+        </div>
+        <div class="review-button-container">
+            <a class="review-button" th:href="@{/review/edit/{prodid}/{purchid}(prodid=${productId}, purchid=${purchaseId})}">수정</a>
+            <button class="review-button delete-button" id="deleteButton" type="button">삭제하기</button>
+        </div>
+    </form>
+</main>
+<footer>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</footer>
+
+<div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <div class="modal-nav">
+        <span class="prev">&#10094;</span>
+        <img class="modal-content" id="modalImage" alt="확대 이미지">
+        <span class="next">&#10095;</span>
+    </div>
+</div>
+
+</body>
+</html>

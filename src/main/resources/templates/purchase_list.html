@@ -6,7 +6,7 @@
   <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
   <script th:src="@{/js/common.js}"></script>
   <script th:src="@{/js/layout.js}"></script>
-<!--  <script th:src="@{/js/purchase_list.js}"></script>-->
+  <script th:src="@{/js/purchase_list.js}"></script>
   <link th:href="@{/css/layout.css}" rel="stylesheet">
   <link th:href="@{/css/purchase_list.css}" rel="stylesheet">
   <title>장바구니</title>
@@ -17,7 +17,7 @@
 </header>
 <main>
   <div class="order-status">
-    <h2>주문현황</h2>
+    <h2>구매 내역</h2>
     <table>
       <thead>
       <tr>
@@ -43,7 +43,9 @@
               <td th:text="${product.price}"></td>
               <td>
                 <div th:if="${product.isReviewedForPurchase(purchase.purchaseId)}">
-                  <a th:href="@{|/customer/history/review/detail/${product.id}/${purchase.purchaseId}|}" class="reviewed-button">작성 완료</a>
+                  <a href="#" class="reviewed-button"
+                     th:data-product-id="${product.id}"
+                     th:data-purchase-id="${purchase.purchaseId}">작성 완료</a>
                 </div>
                 <div th:unless="${product.isReviewedForPurchase(purchase.purchaseId)}">
                   <a th:href="@{|/customer/history/review/${product.id}/${purchase.purchaseId}|}" class="review-button">리뷰 작성</a>

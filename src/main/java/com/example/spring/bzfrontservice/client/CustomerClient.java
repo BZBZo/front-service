@@ -45,5 +45,10 @@ public interface CustomerClient {
             @RequestPart(value = "reviewImg", required = false) List<MultipartFile> images
     );
 
+    @GetMapping("/history/review/detail")
+    ReviewDTO findReviewByIds(
+            @RequestParam("purchaseId") Long purchaseId,
+            @RequestParam("productId") Long productId,
+            @RequestParam("memberNo") Long memberNo);
 }
 

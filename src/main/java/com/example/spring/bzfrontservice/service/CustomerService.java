@@ -2,6 +2,7 @@ package com.example.spring.bzfrontservice.service;
 
 import com.example.spring.bzfrontservice.client.CustomerClient;
 import com.example.spring.bzfrontservice.dto.CartRequestDTO;
+import com.example.spring.bzfrontservice.dto.ReviewDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -22,5 +23,9 @@ public class CustomerService {
 
     public ResponseEntity<Map<String, String>> writeReview(Long memberNo, Long productId, Long purchaseId, String content, List<MultipartFile> images) {
         return customerClient.writeReview(memberNo, productId, purchaseId, content, images);
+    }
+
+    public ReviewDTO findReviewByIds(Long purchaseId, Long productId, Long memberNo) {
+        return customerClient.findReviewByIds(purchaseId,productId,memberNo);
     }
 }
