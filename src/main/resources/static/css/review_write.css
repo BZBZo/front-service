@@ -65,11 +65,21 @@ h2 {
     height: 220px;
 }
 
-.close-btn {
-    float: right;
-    font-size: 20px;
-    cursor: pointer;
+/* 리뷰 이미지가 없을 때 내용 영역 전체 너비 */
+.full-width-content {
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
+
+/* 예시: full-width 클래스가 있는 input은 기본 content-input 스타일에 추가 수정 */
+.content-input.full-width {
+    width: 100%;
+    /* 필요에 따라 높이나 폰트 크기 등 추가 스타일 적용 */
+}
+
+
+
 
 .image-preview {
     width: 100%;
@@ -107,23 +117,6 @@ h2 {
     border-radius: 10px;
 }
 
-.delete-button {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .review-button-container {
     display: flex;
     justify-content: center; /* 🔥 수평 가운데 정렬 */
@@ -148,6 +141,26 @@ h2 {
 
 .review-button:hover {
     background: linear-gradient(to right, #ff6f61, #ffb199);
+    transform: scale(1.05); /* 🔥 호버 시 크기 증가 */
+}
+
+
+.delete-button {
+    text-align: center;
+    width: 50%;
+    padding: 15px;
+    background: linear-gradient(to right, #2c2c2c, #757575); /* 🔥 그라데이션 적용 */
+    color: white;
+    border: none;
+    border-radius: 30px; /* 🔥 둥근 버튼 */
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.delete-button:hover {
+    background: linear-gradient(to right, #474747, #8f8f8f);
     transform: scale(1.05); /* 🔥 호버 시 크기 증가 */
 }
 

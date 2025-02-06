@@ -23,8 +23,10 @@
         <input type="hidden" id="productId" name="productId" th:value="${productId}">
         <input type="hidden" id="purchaseId" name="purchaseId" th:value="${purchaseId}">
         <h2>리뷰 상세</h2>
+
         <div class="ootd-row">
-            <div class="ootd-col-md-4">
+            <!-- 리뷰 이미지가 있을 경우에만 왼쪽 컬럼에 이미지 영역 렌더링 -->
+            <div th:if="${!#strings.isEmpty(review.imgUrls)}" class="ootd-col-md-4">
                 <div class="review-image-upload">
                     <div class="review-image-placeholder">
                         <div th:each="imgUrl : ${review.imgUrls.split(',')}">
@@ -36,10 +38,16 @@
                     </div>
                 </div>
             </div>
-            <input type="text" id="content" name="content" th:value="${review.content}" class="content-input" readonly>
+            <!-- 이미지 유무에 따라 오른쪽 컬럼의 클래스가 동적으로 적용됩니다.
+                 이미지가 있으면 ootd-col-md-8, 없으면 full-width-content 클래스 적용 -->
+            <div th:class="${!#strings.isEmpty(review.imgUrls)} ? 'ootd-col-md-8' : 'full-width-content'">
+                <input type="text" id="content" name="content" th:value="${review.content}" class="content-input"
+                       readonly>
+            </div>
         </div>
+
         <div class="review-button-container">
-            <a class="review-button" th:href="@{/review/edit/{prodid}/{purchid}(prodid=${productId}, purchid=${purchaseId})}">수정</a>
+            <a class="review-button" th:href="@{/review/edit/{prodid}/{purchid}(prodid=${productId}, purchid=${purchaseId})}">수정하기</a>
             <button class="review-button delete-button" id="deleteButton" type="button">삭제하기</button>
         </div>
     </form>

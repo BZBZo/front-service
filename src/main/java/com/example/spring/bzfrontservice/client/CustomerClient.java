@@ -1,10 +1,9 @@
 package com.example.spring.bzfrontservice.client;
 
-import com.example.spring.bzfrontservice.dto.CartRequestDTO;
-import com.example.spring.bzfrontservice.dto.ProductQuantityDTO;
-import com.example.spring.bzfrontservice.dto.PurchaseDTO;
-import com.example.spring.bzfrontservice.dto.ReviewDTO;
+import com.example.spring.bzfrontservice.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +35,24 @@ public interface CustomerClient {
     @GetMapping("/history/review")
     List<ReviewDTO> findReviewsByPurchaseId(@RequestParam Long purchaseId);
 
+    @GetMapping("/product/review/list")
+    Page<ReviewDTO> findReviewsByProductId(
+            @RequestParam Long productId,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestHeader("Accept") String acceptHeader // Accept 헤더 추가
+    );
+
+    @GetMapping("/product/review/count")
+    Integer countReview(@RequestParam Long productId);
+
     @PostMapping(value = "/history/review", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<Map<String, String>> writeReview(
             @RequestParam("memberNo") Long memberNo,  // 일반 텍스트 데이터는 @RequestParam으로 변경
             @RequestParam("productId") Long productId,
             @RequestParam("purchaseId") Long purchaseId,
             @RequestParam("content") String content,
-            @RequestPart(value = "reviewImg", required = false) List<MultipartFile> images
+            @RequestPart(value = "reviewImg", required = false) MultipartFile[] images
     );
 
     @GetMapping("/history/review/detail")

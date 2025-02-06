@@ -1,10 +1,7 @@
 package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.client.CustomerClient;
-import com.example.spring.bzfrontservice.dto.CartRequestDTO;
-import com.example.spring.bzfrontservice.dto.CartResponseDTO;
-import com.example.spring.bzfrontservice.dto.PurchaseDTO;
-import com.example.spring.bzfrontservice.dto.ReviewWriteRequestDTO;
+import com.example.spring.bzfrontservice.dto.*;
 import com.example.spring.bzfrontservice.service.CartService;
 import com.example.spring.bzfrontservice.service.CustomerService;
 import com.example.spring.bzfrontservice.service.PurchaseService;
@@ -15,6 +12,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +27,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -170,33 +172,43 @@ public class CustomerApiController {
 
 
     @PostMapping(value = "/history/review/{productId}/{purchaseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Map<String, String>> uploadReview(@RequestParam("memberNo") Long memberNo,
-                                                            @PathVariable("productId") Long productId, // 변경 (PathVariable 사용)
-                                                            @PathVariable("purchaseId") Long purchaseId, // 변경 (PathVariable 사용)
-                                                            @RequestParam("content") String content,
-                                                            @RequestPart(value = "reviewImg", required = false) List<MultipartFile> reviewImages) {  // required = false 설정
+    public ResponseEntity<Map<String, String>> uploadReview(
+            @RequestParam("memberNo") Long memberNo,
+            @PathVariable("productId") Long productId,
+            @PathVariable("purchaseId") Long purchaseId,
+            @RequestParam("content") String content,
+            @RequestPart(value = "reviewImg", required = false) MultipartFile[] reviewImages) {
+
         Map<String, String> response = new HashMap<>();
 
         try {
             log.info("📌 리뷰 작성 요청 - memberNo: {}, productId: {}, purchaseId: {}, content: {}",
                     memberNo, productId, purchaseId, content);
 
-            // 이미지가 없을 경우 빈 리스트로 초기화
+            // reviewImages가 null인 경우 빈 배열로 초기화
             if (reviewImages == null) {
-                reviewImages = new ArrayList<>();
+                reviewImages = new MultipartFile[0];
             }
-            log.info("📌 업로드된 이미지 개수: {}", reviewImages.size());
 
-            // 서비스 호출 - FeignClient 연결
-            ResponseEntity<Map<String, String>> serverResponse = customerService.writeReview(memberNo, productId, purchaseId, content, reviewImages);
+            // 빈 파일 제거 (배열을 리스트로 변환 후 필터링하거나 배열에서 직접 처리)
+            List<MultipartFile> validImages = Arrays.stream(reviewImages)
+                    .filter(file -> file.getSize() > 0)
+                    .collect(Collectors.toList());
+
+            log.info("📌 업로드된 이미지 개수: {}", validImages.size());
+
+            // 서비스 호출 - FeignClient 연결 (필요에 따라 배열이나 리스트 중 한 타입을 사용)
+            ResponseEntity<Map<String, String>> serverResponse = customerService.writeReview(
+                    memberNo, productId, purchaseId, content, validImages.toArray(new MultipartFile[0]));
 
             // 서버 응답이 OK일 경우 처리
             if (serverResponse.getStatusCode() == HttpStatus.OK) {
-                response.put("url", "/customer/history?memberNo="+memberNo);
+                response.put("url", "/customer/history?memberNo=" + memberNo);
                 response.put("message", "리뷰 등록이 완료되었습니다.");
                 return ResponseEntity.ok(response);
             } else {
-                response.put("message", "서버에서 리뷰 등록이 실패했습니다: " + serverResponse.getBody().get("message"));
+                response.put("message", "서버에서 리뷰 등록이 실패했습니다: " +
+                        serverResponse.getBody().get("message"));
                 return ResponseEntity.status(serverResponse.getStatusCode()).body(response);
             }
 
@@ -210,5 +222,38 @@ public class CustomerApiController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
+    @GetMapping("/review/list/{productId}")
+    public ResponseEntity<Map<String, Object>> getReviewsByProductId(
+            @PathVariable Long productId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        long startTime = System.currentTimeMillis(); // 시작 시간 기록
+
+        Page<ReviewDTO> reviewPage = customerService.findReviewsByProductId(productId, page, size);
+        List<ReviewDTO> reviews = reviewPage.getContent();
+
+        int totalPages = reviewPage.getTotalPages();
+        int pageBlock = 10;
+        int startPage = (page / pageBlock) * pageBlock;
+        int endPage = Math.min(startPage + pageBlock - 1, totalPages - 1);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("reviews", reviews);
+        response.put("startPage", startPage);
+        response.put("endPage", endPage);
+        response.put("totalPages", totalPages);
+        response.put("showPrevious", startPage > 0);
+        response.put("showNext", endPage < totalPages - 1);
+
+        long endTime = System.currentTimeMillis(); // 종료 시간 기록
+        long loadTime = endTime - startTime; // 로드 시간 계산
+
+        System.out.println("Page load time: " + loadTime + " ms"); // 로드 시간 출력
+
+        return ResponseEntity.ok(response);
+    }
+
 }
 

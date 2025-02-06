@@ -1,6 +1,7 @@
 function submitForm() {
     const form = document.getElementById("ootdForm");
     const formData = new FormData(form); // ✅ 자동으로 form 내부 데이터 포함됨
+    formData.append("memberNo", memberNo);
 
     console.log([...formData.entries()]); // 🔥 formData 확인
 
