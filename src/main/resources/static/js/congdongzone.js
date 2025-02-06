@@ -1,83 +1,154 @@
 $(document).ready(() => {
-    console.log('공구 리스트 페이지 로드됨.');
+    console.log('공동구매 페이지 로드됨.');
 
-    // // 모든 상품 요소 가져오기
-    // const $productItems = $('.product-item');
-    //
-    // // 처음 9개만 표시
-    // $productItems.hide().slice(0, 9).show();
+    const $allProducts = $('.all-products'); // 공구 리스트
+    const $activeProducts = $('.active-products'); // 진행 중인 공구 리스트
+    const itemsPerPage = 9;
+    let currentIndex = 0;
 
-    const $productItems = $('.product-item'); // 모든 상품 요소 가져오기
-    const itemsPerPage = 9; // 한 번에 표시할 상품 개수
-    let currentIndex = 0; // 현재 표시된 상품의 마지막 인덱스
+    $activeProducts.hide();
+    showMoreProducts($allProducts);
 
-    // 초기에는 모든 상품 숨기기
-    $productItems.hide();
-
-    // 처음 페이지 로드 시 9개의 상품만 표시
-    showMoreProducts();
-
-    // "더보기" 버튼 클릭 이벤트
-    $('#loadMore').on('click', () => {
-        console.log(`"더보기" 클릭 - 현재 인덱스: ${currentIndex}`);
-        showMoreProducts();
-    });
-
-    function showMoreProducts() {
-        const nextIndex = currentIndex + itemsPerPage; // 다음에 보여줄 상품 범위
-        $productItems.slice(currentIndex, nextIndex).fadeIn(); // 현재 인덱스부터 다음 인덱스까지 표시
-        currentIndex = nextIndex; // 현재 인덱스를 업데이트
-
-        // 더 이상 표시할 상품이 없으면 "더보기" 버튼 숨기기
-        if (currentIndex >= $productItems.length) {
-            console.log('더 이상 로드할 상품이 없습니다.');
-            $('#loadMore').hide();
-        }
+    function switchTab(tab) {
+        $('.tab').removeClass('selected');
+        tab.addClass('selected');
     }
 
-    $('.product-item').each(function () {
-        try {
-            // 원래 가격 추출
-            const originalPriceText = $(this).find('.original-price').text();
-            console.log('Original Price Text:', originalPriceText);
-
-            const originalPrice = parseFloat(originalPriceText.replace(/,/g, ''));
-            console.log('Parsed Original Price:', originalPrice);
-
-            // 조건 데이터 추출
-            const conditionData = $(this).data('condition');
-            console.log('Original Condition Data:', conditionData);
-
-            if (!conditionData) {
-                console.warn('Condition Data가 비어있습니다. 기본값 처리 중...');
-                return;
-            }
-
-            // 첫 번째 조건 추출 시도
-            const conditions = conditionData.split(',');
-            console.log('Split Conditions:', conditions);
-
-            const firstCondition = conditions[0];
-            console.log('First Condition:', firstCondition);
-
-            const match = firstCondition.match(/:(\d+)/);
-            if (!match) {
-                console.warn('할인율을 찾을 수 없습니다. 조건 데이터 형식 확인 필요:', firstCondition);
-                return;
-            }
-
-            // 할인율 추출 및 계산
-            const discountRate = parseInt(match[1], 10);
-            console.log('Parsed Discount Rate:', discountRate);
-
-            const discountedPrice = originalPrice - (originalPrice * (discountRate / 100));
-            console.log(`Original Price: ${originalPrice}, Discount Rate: ${discountRate}%, Final Price: ${discountedPrice}`);
-
-            // HTML 업데이트
-            $(this).find('.discount').text(`${discountRate}%`); // 할인율 표시
-            $(this).find('.final-price').text(`${Math.round(discountedPrice).toLocaleString()}원`); // 공구가 표시
-        } catch (error) {
-            console.error('조건 처리 중 오류 발생:', error);
-        }
+    // "공구리스트" 클릭 시
+    $('#showAllProducts').on('click', function () {
+        console.log('공구리스트 클릭됨');
+        switchTab($(this));
+        $activeProducts.hide();
+        $allProducts.show();
+        currentIndex = 0;
+        showMoreProducts($allProducts);
     });
+
+    // "진행중인 공구" 클릭 시
+    $('#showActiveProducts').on('click', function () {
+        console.log('진행중인 공구 클릭됨');
+        switchTab($(this));
+        $allProducts.hide();
+        $activeProducts.show();
+        currentIndex = 0;
+        showMoreProducts($activeProducts);
+    });
+
+    $('#loadMore').on('click', () => {
+        showMoreProducts($('.all-products:visible, .active-products:visible'));
+    });
+
+    function showMoreProducts($products) {
+        $products.hide();
+        const nextIndex = currentIndex + itemsPerPage;
+        $products.slice(currentIndex, nextIndex).fadeIn();
+        currentIndex = nextIndex;
+        if (currentIndex >= $products.length) $('#loadMore').hide();
+    }
+
+    $(document).ready(() => {
+        console.log('공동구매 페이지 로드됨.');
+
+        $('.all-products, .active-products').each(function () {
+            console.log("📌 [DEBUG] 데이터 속성 확인:", $(this).data()); // 전체 data-* 속성 출력
+            try {
+                const originalPriceText = $(this).find('.original-price').text();
+                const originalPrice = parseFloat(originalPriceText.replace(/,/g, ''));
+                let conditionData = $(this).data('condition'); // 모집 인원 & 할인율
+                const congsData = $(this).data('congs'); // 참여자 목록
+                const startAt = $(this).data('startat'); // 시작 시간
+
+                console.log("📌 conditionData 원본:", conditionData);
+                console.log("📌 congsData 원본:", congsData);
+
+                // ✅ 모집 인원 & 할인율 추출
+                let totalParticipants = 0;
+                let discountRate = 0;
+
+                if (conditionData) {
+                    try {
+                        if (typeof conditionData === "string") {
+                            // 여러 개의 {key:value} 쌍이 있을 경우, JSON 배열 형태로 변환
+                            conditionData = `[${conditionData.replace(/},\s*{/g, '},{')}]`;
+                            conditionData = JSON.parse(conditionData.replace(/(\d+):/g, '"$1":'));
+                        }
+
+                        console.log("✅ 변환된 conditionData:", conditionData);
+
+                        if (Array.isArray(conditionData) && conditionData.length > 0) {
+                            // 모집 인원 기준으로 정렬 후 가장 큰 값을 가져옴
+                            conditionData.sort((a, b) => Object.keys(b)[0] - Object.keys(a)[0]);
+                            const bestCondition = conditionData[0]; // 가장 높은 모집 인원 데이터
+                            totalParticipants = parseInt(Object.keys(bestCondition)[0], 10);
+                            discountRate = parseInt(Object.values(bestCondition)[0], 10);
+                        }
+                    } catch (error) {
+                        console.error("❌ conditionData 파싱 오류:", error);
+                    }
+                }
+
+                console.log(`✅ 총 모집 인원: ${totalParticipants}, 할인율: ${discountRate}`);
+
+                // ✅ 할인율 적용
+                if (!isNaN(discountRate)) {
+                    const discountedPrice = originalPrice - (originalPrice * (discountRate / 100));
+                    $(this).find('.discount').text(`${discountRate}%`);
+                    $(this).find('.final-price').text(`${Math.round(discountedPrice).toLocaleString()}원`);
+                } else {
+                    console.warn("🚨 할인율 데이터가 올바르지 않음:", discountRate);
+                }
+
+                // ✅ 참가자 수 계산
+                let participantCount = 0;
+
+                if (congsData) {
+                    try {
+                        if (typeof congsData === "string" && congsData.startsWith("[")) {
+                            const parsedArray = JSON.parse(congsData);
+                            participantCount = parsedArray.length;
+                        } else if (!isNaN(parseInt(congsData, 10))) {
+                            participantCount = 1;
+                        }
+                    } catch (error) {
+                        console.error("❌ 참여자 데이터 처리 중 오류 발생:", error);
+                        participantCount = 1;
+                    }
+                }
+
+                console.log(`✅ 참가자 수: ${participantCount}, 총 모집 인원: ${totalParticipants}`);
+                $(this).find('.participants').text(`(${participantCount}/${totalParticipants}명)`);
+
+// ✅ 시작 및 종료 날짜 설정
+                if (startAt) {
+                    console.log("📌 startAt 원본 데이터:", startAt);
+
+                    // 밀리초까지 포함된 경우, 공백을 'T'로 변경해 ISO 형식으로 변환
+                    let formattedStartAt = startAt.replace(" ", "T").split(".")[0]; // "2025-02-03T08:15:36"
+
+                    const startDate = new Date(formattedStartAt);
+                    console.log("📌 변환된 startDate:", startDate);
+
+                    if (isNaN(startDate.getTime())) {
+                        console.error("❌ 잘못된 날짜 형식입니다:", formattedStartAt);
+                    } else {
+                        const endDate = new Date(startDate);
+                        endDate.setDate(startDate.getDate() + 7);
+                        console.log("📌 종료일 (endDate):", endDate);
+
+                        $(this).find('.start-time').text(startDate.toLocaleDateString());
+                        $(this).find('.end-time').text(endDate.toLocaleDateString());
+                    }
+                }
+
+
+            } catch (error) {
+                console.error('❌ 공구 데이터 처리 중 오류 발생:', error);
+            }
+        });
+    });
+
+
 });
+
+
+

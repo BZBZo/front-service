@@ -82,10 +82,13 @@ public class SellerViewController {
         // FeignClient를 통해 데이터 가져오기
         List<ProdReadResponseDTO> products = congdongService.getCongDongProducts();
 
+        List<CongDongIngDTO> activeProducts = sellerService.getCongDongActiveProducts();
+
         log.info("[Front Service] 콩동 데이터 로드 완료. 상품 수: {}", products.size());
         log.info("[Front Service] 상품 데이터: {}", products);
 
         model.addAttribute("products", products);
+        model.addAttribute("activeProducts", activeProducts);
         return "congdongzone";
     }
 

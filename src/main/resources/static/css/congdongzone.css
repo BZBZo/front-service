@@ -19,7 +19,7 @@ header {
     margin: 0 auto; /* 가운데 정렬 */
     padding: 20px;
 }
-.product-item {
+.all-products {
     flex: 0 1 calc(33.33% - 20px); /* 한 줄에 3개씩 배치 */
     box-sizing: border-box; /* 패딩 포함 크기 계산 */
     background: #fff;
@@ -32,7 +32,7 @@ header {
     align-items: center;
     justify-content: space-between;
 }
-.product-item img {
+.all-products img {
     width: 200px; /* 이미지의 가로 크기 고정 */
     height: 270px; /* 이미지의 세로 크기 고정 */
     object-fit: cover; /* 비율 유지하면서 이미지가 잘릴 수 있도록 설정 */
@@ -83,4 +83,137 @@ header {
     height: 24px;
     width: auto;
     display: block;
+}
+
+.tab-header {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.tab {
+    font-size: 22px; /* 글씨 크기 */
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: color 0.3s, border-bottom 0.3s;
+    border-bottom: 3px solid transparent; /* 기본적으로 투명 */
+}
+
+.tab:hover {
+    color: #0056b3;
+}
+
+.tab.selected {
+    color: #007bff;
+    border-bottom: 3px solid #007bff; /* 선택된 탭 강조 */
+}
+
+
+/* 진행 중인 공구 리스트 (active-products) */
+.active-products {
+    flex: 0 1 calc(33.33% - 20px); /* 한 줄에 3개 배치 */
+    box-sizing: border-box;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column; /* 상품 리스트와 동일한 구조 */
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+/* 이미지 크기 통일 */
+.active-products img {
+    width: 200px; /* 상품 리스트와 동일한 크기 */
+    height: 270px;
+    object-fit: cover;
+    border-radius: 8px;
+    background: #ddd;
+}
+
+/* 배지 아이콘 크기 통일 */
+.related-products__badge img {
+    height: 24px;
+    width: auto;
+    display: block;
+}
+
+/* 진행 중인 공구의 제목 스타일 */
+.active-products .product-title {
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 진행 중인 공구 가격 정보 스타일 */
+.active-products .product-price {
+    margin-top: 5px;
+    font-size: 14px;
+}
+
+/* 할인율, 원래 가격 스타일 통일 */
+.active-products .discount {
+    color: #ff5722;
+    font-weight: bold;
+}
+
+.active-products .original-price {
+    text-decoration: line-through;
+    margin-left: 10px;
+    color: #999;
+}
+
+/* 공구 참여 상태 정보 */
+.active-products .group-status {
+    font-size: 14px;
+    color: #ff5722;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 진행 시간 표시 */
+.active-products .product-time {
+    font-size: 13px;
+    color: #666;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* 진행 중인 공구 리스트의 상세 정보 정렬 */
+.active-products .product-details {
+    flex: 1;
+    margin-left: 15px; /* 상품 리스트와 동일한 여백 */
+    text-align: center; /* 가운데 정렬 */
+}
+
+/* 지금 참여하기 버튼 스타일 */
+.join-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    background: #ff5722; /* 🔥 강조되는 오렌지 계열 색상 */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+/* 버튼 호버 효과 */
+.join-button:hover {
+    background: #e64a19;
+    transform: translateY(-2px);
+}
+
+/* 버튼 클릭 효과 */
+.join-button:active {
+    background: #d84315;
+    transform: translateY(0);
 }

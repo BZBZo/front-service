@@ -71,6 +71,9 @@ public interface SellerClient {
     @GetMapping("/congdong")
     List<ProdReadResponseDTO> getCongDongProducts();
 
+    @GetMapping("/congdonging")
+    List<CongDongIngDTO> getCongDongActiveProducts();
+
     // 공동구매 시작 (POST)
     @PostMapping("/congdong")
     ResponseEntity<CongDongIngDTO> startCongdong(
@@ -88,4 +91,5 @@ public interface SellerClient {
     // **상품 ID로 공동구매 진행 정보(congdongIng) 가져오기**
     @GetMapping("/{productId}/congdongIng")
     ResponseEntity<List<CongDongIngDTO>> getCongDongIngByProductId(@PathVariable("productId") Long productId);
+
 }

@@ -18,11 +18,14 @@
     <div th:replace="~{fragments/header :: header}"></div>
 </header>
 <main>
-    <header>공구리스트</header>
+    <header class="tab-header">
+        <span id="showAllProducts" class="tab selected">공구리스트</span>
+        <span id="showActiveProducts" class="tab">진행중인 공구</span>
+    </header>
 
     <div class="product-list" id="productList">
         <!-- 상품 리스트 -->
-        <div class="product-item" th:each="product : ${products}" th:data-condition="${product.condition}">
+        <div class="all-products" th:each="product : ${products}" th:data-condition="${product.condition}">
             <a th:href="@{/product/detail/{id}(id=${product.id})}">
                 <img th:src="@{${product.mainPicturePath}}" th:alt="${product.name}">
             </a>
@@ -42,6 +45,34 @@
         </div>
     </div>
 
+    <!-- 진행 중인 공구 리스트 -->
+    <div class="active-products" th:each="active : ${activeProducts}" th:data-condition="${active.condition}"
+         th:data-congs="${active.congs}" th:data-startAt="${active.startAt}" style="display: none;">
+        <a th:href="@{/product/detail/{id}(id=${active.productId})}">
+            <img th:src="@{${active.mainPicturePath}}" th:alt="${active.name}">
+        </a>
+        <div class="product-details">
+                <span class="related-products__badge">
+                    <img th:src="@{/images/group_yes.png}" alt="공구 가능 아이콘">
+                </span>
+            <div class="product-title" th:text="${active.name}"></div>
+            <div class="product-info">
+                <div class="group-status">
+                    <span class="participants"></span>
+                </div>
+                <div class="product-time">
+                    <span class="start-time"></span> ~ <span class="end-time"></span>
+                </div>
+            </div>
+            <div class="product-price">
+                <span class="discount"></span>
+                <span class="final-price"></span>
+                <span class="original-price" th:text="${#numbers.formatDecimal(active.price, 1, 0)}"></span>
+            </div>
+            <!-- ✅ 지금 참여하기 버튼 추가 -->
+            <button class="join-button">지금 참여하기</button>
+        </div>
+    </div>
 
     <button class="more-button" id="loadMore">더보기</button>
 
