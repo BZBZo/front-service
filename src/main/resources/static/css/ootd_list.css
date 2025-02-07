@@ -1,3 +1,59 @@
+/* OOTD가 없을 때 메시지 중앙 정렬 */
+.nullInfo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
+    width: 100%;
+    height: 50vh; /* 화면 높이의 절반을 차지하도록 설정 */
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    white-space: normal; /* 텍스트 줄바꿈 허용 */
+}
+
+/* 푸터가 항상 바닥에 붙도록 설정 */
+.foot {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 100;
+}
+
+/* 컨텐츠 영역: 푸터와 겹치지 않도록 설정 */
+.ootd-grid-container {
+    min-height: calc(100vh - 150px); /* 화면 높이에서 푸터 높이만큼 빼서 최소 높이 설정 */
+    padding: 20px;
+    padding-bottom: 80px; /* 푸터와 겹치지 않도록 여유 공간 추가 */
+    box-sizing: border-box;
+}
+
+.ootd-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.ootd-write-btn {
+    background-color: #97510b;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.ootd-write-btn:hover {
+    background-color: #b3600c;
+}
+
+
 /* 상단 프로필 영역 */
 .ootd-header {
     display: flex;
@@ -53,6 +109,7 @@
     display: block;
     margin: 0 auto;
 }
+
 .ootd-title-section span {
     color: #676767;
     font-size: 13px;
@@ -77,8 +134,6 @@
 }
 
 /* 상품 목록 */
-
-
 .ootd-product-list {
     padding: 0 10px;
 }
@@ -92,12 +147,12 @@
 }
 
 .ootd-product-item-img {
-
-    width:100%;
-    max-width:60px;
-    margin:10px;
+    width: 100%;
+    max-width: 60px;
+    margin: 10px;
     border-radius: 5px;
 }
+
 .ootd-product-item:last-child {
     border-bottom: none; /* 마지막 연관상품 border 제거 */
 }
@@ -133,23 +188,10 @@
     font-weight: bold;
     margin: 0; /* 불필요한 마진 제거 */
 }
+
 .ootd-product-price strong {
     margin-right: 5px;
     color: #333;
-}
-
-
-
-/* 전체 그리드 컨테이너 */
-.ootd-grid-container {
-    column-count: 3;
-    column-gap: 15px;
-    gap: 10px; /* 항목 간 간격 */
-    width: 100%;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-    max-width: 1200px;
 }
 
 /* 각 OOTD 항목 */
@@ -195,15 +237,18 @@
         gap: 10px; /* 항목 간 간격 */
     }
 }
-.group-ing-icon-price{
+
+.group-ing-icon-price {
     width: 100%;
 }
+
 .group-ing-icon img {
     width: 30%;
     max-width: 160px;
     display: inline-block;
     float: left;
 }
+
 #price-text {
     font-size: 16px;
     font-weight: 700;
@@ -211,6 +256,7 @@
     width: 70%;
     padding: 0 0 0 10px;
 }
+
 span.product-name {
     padding: 0 0 10px 0;
     display: block;

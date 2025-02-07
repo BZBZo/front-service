@@ -1,4 +1,3 @@
-let token = localStorage.getItem('accessToken');
 $(document).ready(function () {
     let token = localStorage.getItem('accessToken');
 
@@ -19,7 +18,6 @@ $(document).ready(function () {
                 'Authorization': `Bearer ${token}` // 토큰 추가
             },
             success: function (userInfo) {
-                console.log("사용자 정보: ", userInfo);
                 // 닉네임과 프로필 이미지 업데이트
                 $('#userNickname').text(userInfo.nickname);
                 $('#userProfilePic').attr('src', userInfo.profilePic || '/images/default-profile.png');

@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.service;
 import com.example.spring.bzfrontservice.client.AuthClient;
 import com.example.spring.bzfrontservice.client.OotdClient;
 import com.example.spring.bzfrontservice.client.SellerClient;
+import com.example.spring.bzfrontservice.dto.OotdRequestDTO;
 import com.example.spring.bzfrontservice.dto.OotdResponseDTO;
 import com.example.spring.bzfrontservice.dto.ProductDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
@@ -11,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ public class OotdIntegrationService {
     private final OotdClient ootdClient;
     private final SellerClient sellerClient;
     private final AuthClient authClient;
+    private final UserService userService;
 
     @Value("${bzbzo.bz-edge-service-url}/product")
     private String sellerServiceBaseUrl; // Seller 서비스 URL
@@ -41,7 +44,8 @@ public class OotdIntegrationService {
         log.info("Fetched OOTD List: {}", ootdList);
 
         // 사용자 정보 가져오기
-        Map<String, String> userInfo = fetchUserInfo(authorization);
+        Map<String, String> userInfo = userService.fetchUserInfo(authorization);
+        log.info("Fetched user info: {}", userInfo);
 
         // 각 OOTD 항목에 사용자 및 상품 정보 추가
         return ootdList.stream().map(ootd -> {
@@ -51,9 +55,9 @@ public class OotdIntegrationService {
             ootd.setProfilePic(profilePic.startsWith("http") ? profilePic : authServiceBaseUrl + "/uploads/" + profilePic);
 
             // OOTD 이미지 URL 처리
-            String image = ootd.getImage();
+            String image = ootd.getImgUrls();
             if (image != null && !image.startsWith("http")) {
-                ootd.setImage(ootdServiceBaseUrl + image);
+                ootd.setImgUrls(image);
             }
 
             // 상품 정보 처리
@@ -62,29 +66,6 @@ public class OotdIntegrationService {
 
             return ootd;
         }).collect(Collectors.toList());
-    }
-
-    private Map<String, String> fetchUserInfo(String authorization) {
-        if (authorization == null || authorization.isBlank()) {
-            log.warn("Authorization 헤더가 비어 있습니다.");
-            return Map.of("nickname", "Guest", "profilePic", "default-profile.png");
-        }
-
-        try {
-            ResponseEntity<?> response = authClient.loadUserInfo(authorization);
-            if (response.getBody() instanceof Map<?, ?> body) {
-                Map<String, Object> userInfoMap = (Map<String, Object>) body;
-                log.info("AuthClient에서 받은 응답: {}", userInfoMap);
-
-                String nickname = userInfoMap.getOrDefault("nickname", "Guest").toString();
-                String profilePic = userInfoMap.getOrDefault("profilePic", "default-profile.png").toString();
-
-                return Map.of("nickname", nickname, "profilePic", profilePic);
-            }
-        } catch (Exception e) {
-            log.error("Error fetching user info", e);
-        }
-        return Map.of("nickname", "Guest", "profilePic", "default-profile.png");
     }
 
     private List<ProductDTO> processProductList(String relProd) {
@@ -99,7 +80,8 @@ public class OotdIntegrationService {
                                 .name(productDetail.getName())
                                 .price(productDetail.getPrice())
                                 .isCong(productDetail.isCong())
-                                .mainPicturePath(sellerServiceBaseUrl + productDetail.getMainPicturePath())
+                                .mainPicturePath(productDetail.getMainPicturePath())
+                                .description(productDetail.getDescription())
                                 .build();
                     } catch (Exception e) {
                         log.error("Error fetching product details for ID: {}", productId, e);
@@ -109,6 +91,10 @@ public class OotdIntegrationService {
                                 .build();
                     }
                 }).collect(Collectors.toList());
+    }
+
+    public ResponseEntity<String> createOotd(Long memberNo, String tags, String relProd, MultipartFile image, String authorization) {
+        return ootdClient.createOotd(memberNo,tags,relProd,image,authorization);
     }
 }
 

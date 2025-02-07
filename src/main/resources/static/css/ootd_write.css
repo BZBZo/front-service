@@ -76,12 +76,12 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    font-size: 18px;
-    color: #e60000;
+    font-size: 35px;
+    color: #ef9999;
     cursor: pointer;
     font-weight: bold;
     background: none;
-    border: none;
+    border: 1px white;
     display: none; /* 기본적으로 숨김 */
 }
 
@@ -124,7 +124,13 @@
     color: #333;
 }
 
+#productList h2{
+    font-size: 17px;
+}
 
+#productList span{
+    font-size: 13px;
+}
 
 /* 모달 스타일 */
 .modal {
@@ -168,8 +174,8 @@
 }
 
 .product-item img {
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 100px;
     object-fit: cover;
     border-radius: 5px;
     margin-right: 10px;
@@ -181,22 +187,23 @@
 }
 
 .product-info h3 {
-    font-size: 14px;
+    font-size: 17px;
     margin: 0;
 }
 
-.product-info span {
-    font-size: 12px;
+.ootd-product-info span {
+    font-size: 14px;
     color: #777;
 }
 
 .select-btn {
     padding: 5px 10px;
-    background-color: #007bff;
+    background-color: #007bf1;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    text-align: right;
 }
 
 .select-btn:hover {
@@ -204,6 +211,16 @@
 }
 
 
+.close-btn {
+    display: flex;
+    top: 20px;
+    right: 5px;
+    color: #202020;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+}
 
 /* 상품 목록 */
 .ootd-product-list {
@@ -254,7 +271,41 @@
 .search-results {
     display: flex;
     flex-direction: column;
+    margin-top: 15px;
     gap: 10px;
     max-height: 300px;
     overflow-y: auto;
+}
+
+#submitBtn {
+    width: 100%;
+    max-width: 150px;
+    padding: 12px 20px;
+    background-color: rgba(102, 143, 85, 0.92);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+}
+
+/* 마우스 호버 효과 */
+#submitBtn:hover {
+    background-color: rgba(79, 117, 60, 0.92);
+}
+
+/* 클릭 시 약간 눌리는 효과 */
+#submitBtn:active {
+    transform: scale(0.95);
+}
+
+/* 버튼 비활성화 스타일 */
+#submitBtn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }

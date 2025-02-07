@@ -69,7 +69,7 @@ public class UserApiController {
     }
 
     @GetMapping("/user/info")
-    public ResponseEntity<?> loadUserInfo(@RequestHeader(value = HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+    public ResponseEntity<?> loadUserInfo(@CookieValue(value = "Authorization", required = false) String authorizationHeader) {
         // 요청 받은 Authorization 헤더 로그
         return userService.loadUserInfo(authorizationHeader);
     }

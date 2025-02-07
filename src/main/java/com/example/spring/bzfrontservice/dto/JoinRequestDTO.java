@@ -13,6 +13,6 @@ public class JoinRequestDTO {
     private String nickname;
     private String phone;
     private String provider;
-    private String role;
+    private String userRole;
     private String businessNumber;
 }

@@ -5,6 +5,7 @@ import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
 import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
     private final AuthClient authClient;
@@ -121,4 +123,28 @@ public class UserService {
 //    public MemberResponseDTO findByEmailAndProvider(String email, String provider) {
 //        return authClient.findByEmailAndProvider(email, provider);
 //    }
+
+    public Map<String, String> fetchUserInfo(String authorization) {
+        if (authorization == null || authorization.isBlank()) {
+            log.warn("Authorization 헤더가 비어 있습니다.");
+            return Map.of("nickname", "Guest", "profilePic", "default-profile.png");
+        }
+
+        try {
+            ResponseEntity<?> response = authClient.loadUserInfo(authorization);
+            if (response.getBody() instanceof Map<?, ?> body) {
+                Map<String, Object> userInfoMap = (Map<String, Object>) body;
+                log.info("AuthClient에서 받은 응답: {}", userInfoMap);
+
+                String nickname = userInfoMap.getOrDefault("nickname", "Guest").toString();
+                String profilePic = userInfoMap.getOrDefault("profilePic", "default-profile.png").toString();
+
+                return Map.of("nickname", nickname, "profilePic", profilePic);
+            }
+        } catch (Exception e) {
+            log.error("Error fetching user info", e);
+        }
+        return Map.of("nickname", "Guest", "profilePic", "default-profile.png");
+    }
+
 }
