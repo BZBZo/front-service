@@ -178,7 +178,7 @@ $(document).ready(() => {
             let formData = {
                 email: $('#email').val(),
                 provider: $('#provider').val(),
-                role: roleValue // role 값 포함
+                userRole: roleValue // role 값 포함
             };
 
             console.log("가입 버튼이 클릭되었습니다.");  // 테스트 로그 추가

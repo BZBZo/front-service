@@ -1,6 +1,6 @@
-let token = localStorage.getItem('accessToken');
-if (!token.startsWith('Bearer ')) {
-    token = `Bearer ${token}`; // Bearer 형식으로 변환
+let token = localStorage.getItem('accessToken') || "";  // ✅ null이면 빈 문자열로 대체
+if (!token.startsWith('Bearer ') && token !== "") {
+    token = `Bearer ${token}`;
 }
 
 $(document).ready(function () {

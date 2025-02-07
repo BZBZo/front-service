@@ -10,43 +10,50 @@
     <link th:href="@{/css/layout.css}" rel="stylesheet">
     <link th:href="@{/css/ootd_write.css}" rel="stylesheet">
 
-    <title>OOTD 목록 페이지</title>
+    <title>OOTD 작성</title>
 </head>
 <body>
 <header>
     <div th:replace="~{fragments/header :: header}"></div>
 </header>
-<div class="ootd-container">
-    <!-- 상단 프로필 영역 -->
-    <div class="ootd-header">
-        <div class="ootd-profile">
-            <img th:src="${user.profileImageUrl ?: '/images/default-profile.png'}" alt="프로필 이미지" class="ootd-profile-img">
-            <span class="ootd-nickname" th:text="${user.nickname ?: 'Guest'}"></span>
+
+<form id="ootdForm" enctype="multipart/form-data">
+    <!-- OOTD 컨테이너 -->
+    <div class="ootd-container">
+        <!-- 상단 프로필 영역 -->
+        <div class="ootd-header">
+            <div class="ootd-profile">
+                <img th:src="${user.profilePic != 'default-profile.png' ? user.profilePic : '/images/default-profile.png'}"
+                     alt="프로필 이미지" class="ootd-profile-img">
+                <span class="ootd-nickname" th:text="${user.nickname ?: 'Guest'}"></span>
+            </div>
         </div>
-    </div>
 
-    <div class="ootd-image-preview" id="imagePreview">
-        <img src="/images/sample_image_icon.png" alt="이미지 아이콘" id="sampleIcon" class="ootd-sample-icon">
-        <input type="file" id="imageUpload" class="ootd-file-input" accept="image/*">
-        <button class="preview-delete-btn" id="imageDeleteBtn" style="display: none;">&times;</button>
-    </div>
-    <!-- 게시글 내용 -->
-    <div class="ootd-post-description">
-        <textarea placeholder="태그를 입력하세요 예) #강아지용품 #애완용품" class="ootd-tag-input" name="title"></textarea>
-    </div>
-
-    <!-- 상품 추가 -->
-    <div class="ootd-product-section">
-        <div id="productList" class="ootd-product-list">
-            <!-- 상품이 여기에 추가됩니다 -->
-            <h2>+버튼을 눌러 관련 상품을 추가해주세요. <span>최대 3개까지 등록 가능</span></h2>
-            <div class="ootd-plus-icon" id="addProductBtn">+</div>
+        <!-- 이미지 업로드 -->
+        <div class="ootd-image-preview" id="imagePreview">
+            <img src="/images/sample_image_icon.png" alt="이미지 아이콘" id="sampleIcon" class="ootd-sample-icon">
+            <input type="file" id="imageUpload" class="ootd-file-input" accept="image/*" multiple>
+            <button class="preview-delete-btn" id="imageDeleteBtn" style="display: none;">&times;</button>
         </div>
-    </div>
 
-    <!-- 등록 버튼 -->
-    <button type="submit" id="submitBtn">등록</button>
-</div>
+        <!-- 게시글 내용 -->
+        <div class="ootd-post-description">
+            <textarea placeholder="태그를 입력하세요 예) #ootd #애완용품 #헤드폰" class="ootd-tag-input" name="title"></textarea>
+        </div>
+
+        <!-- 상품 추가 -->
+        <div class="ootd-product-section">
+            <div id="productList" class="ootd-product-list">
+                <h2>+ 버튼을 눌러 연관 상품을 추가해주세요. <span>최대 3개까지 등록 가능</span></h2>
+                <div class="ootd-plus-icon" id="addProductBtn">+</div>
+            </div>
+        </div>
+
+        <!-- 등록 버튼 -->
+        <button type="submit" id="submitBtn">등록</button>
+    </div>
+</form>
+
 
 <!-- 상품 검색 모달 -->
 <div id="productModal" class="modal">

@@ -13,12 +13,12 @@ import java.util.List;
 @Setter
 public class OotdResponseDTO {
     private Long id;
+    private Long memberNo;
     private String profilePic;
     private String nickname;
-    private String image;
+    private String imgUrls;
     private String title;
     private Integer heartNum;
     private String relProd; // 상품 ID 리스트
     private List<ProductDTO> products; // ProductDTO 리스트로 정의
-
 }

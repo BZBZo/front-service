@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('searchInput');
     const searchBtn = document.getElementById('searchBtn');
     const searchResults = document.getElementById('searchResults');
-
+    const submitBtn = document.getElementById('submitBtn');
+    const tagInput = document.querySelector('.ootd-tag-input');
     const imageUpload = document.getElementById('imageUpload'); // 파일 업로드 input
     const imagePreview = document.getElementById('imagePreview'); // 이미지 미리보기 영역
     const sampleIcon = document.getElementById('sampleIcon'); // 기본 이미지 아이콘
@@ -148,4 +149,74 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModalBtn.addEventListener('click', () => {
         productModal.style.display = 'none';
     });
+
+    submitBtn.addEventListener('click', async (e) => {
+        e.preventDefault(); // 기본 제출 동작 방지
+
+        let token = localStorage.getItem('accessToken'); // Authorization 토큰
+        if (!token) {
+            alert("로그인이 필요합니다.");
+            window.location.href = '/webs/signin';
+            return;
+        }
+
+        loadUserInfo().then(({ userInfo, memberNo }) => {  // 구조 분해 할당 사용
+            if (!memberNo) {
+                alert('사용자 정보를 불러오고 있습니다. 잠시 후 다시 시도해주세요.');
+                return;
+            }
+            window.memberNo = memberNo; // 전역 변수로 저장
+        }).catch(error => console.error('Error loading user info:', error));
+
+        let tags = tagInput.value.trim();
+        if (!tags) {
+            alert("태그를 입력해주세요.");
+            return;
+        }
+
+        // 선택된 상품 정보 수집
+        let selectedProducts = [];
+        document.querySelectorAll('.ootd-product-item').forEach(product => {
+            let productId = product.querySelector('.delete-btn').dataset.id;
+            if (productId) selectedProducts.push(productId);
+        });
+        let relProd = selectedProducts.join(',');
+
+        // 이미지 파일 가져오기
+        let imageFile = imageUpload.files[0];
+        if (!imageFile) {
+            alert("이미지를 업로드해주세요.");
+            return;
+        }
+
+        // FormData 생성
+        let formData = new FormData();
+        formData.append("memberNo", memberNo);
+        formData.append("tags", tags);
+        formData.append("relProd", relProd);
+        formData.append("image", imageFile);
+
+        // 서버로 전송
+        try {
+            let response = await fetch('/ootd/write', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
+            });
+
+            if (response.ok) {
+                alert("OOTD가 등록되었습니다!");
+                window.location.href = '/ootd/list';
+            } else {
+                let errorMessage = await response.text();
+                alert(`등록 실패: ${errorMessage}`);
+            }
+        } catch (error) {
+            console.error("등록 중 오류 발생:", error);
+            alert("등록 중 오류가 발생했습니다.");
+        }
+    });
+
 });
