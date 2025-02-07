@@ -1,5 +1,6 @@
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
 import com.example.spring.bzfrontservice.service.SellerService;
 import lombok.RequiredArgsConstructor;
@@ -27,21 +28,30 @@ public class UserController {
 
     @GetMapping("/loginSuccess")
     public String home(Model model) {
-        // findAll 메서드를 사용하여 상품 목록을 가져옵니다.
-        Page<ProdReadResponseDTO> products = sellerService.findAll(0, 10); // 페이지 번호와 사이즈를 설정하여 데이터 가져오기
+        // 전체 상품 가져오기
+        Page<ProdReadResponseDTO> products = sellerService.findAll(0, 10);
 
-        // 공구 가능 상품만 필터링
+        // 공구 가능 상품 필터링
         List<ProdReadResponseDTO> congproducts = products.getContent().stream()
                 .filter(ProdReadResponseDTO::isCong)
-                .collect(Collectors.toList()); // isCong이 true인 상품만 필터링
+                .collect(Collectors.toList());
 
-        // 데이터를 모델에 추가
-        model.addAttribute("products", products); // 전체 상품 목록
-        model.addAttribute("congproducts", congproducts); // 공구 가능 상품만 필터링한 목록
+        // 진행 중인 공구 상품 가져오기
+        List<CongDongIngDTO> activeProducts = sellerService.getCongDongActiveProducts();
 
-        // home 페이지로 이동
+        // 로그 확인
+        System.out.println("✅ 총 상품 개수: " + products.getTotalElements());
+        System.out.println("✅ 공구 가능 상품 개수: " + congproducts.size());
+        System.out.println("✅ 진행 중인 공구 개수: " + activeProducts.size());
+
+        // 모델에 데이터 추가
+        model.addAttribute("products", products);
+        model.addAttribute("congproducts", congproducts);
+        model.addAttribute("activeProducts", activeProducts); // ✅ 추가된 부분
+
         return "home";
     }
+
 
     @GetMapping("/join")
     public String join(@RequestParam String email, @RequestParam String provider, @RequestParam String role, Model model){

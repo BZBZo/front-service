@@ -14,40 +14,9 @@ $(document).ready(() => {
         tab.addClass('selected');
     }
 
-    // "공구리스트" 클릭 시
-    $('#showAllProducts').on('click', function () {
-        console.log('공구리스트 클릭됨');
-        switchTab($(this));
-        $activeProducts.hide();
-        $allProducts.show();
-        currentIndex = 0;
-        showMoreProducts($allProducts);
-    });
-
-    // "진행중인 공구" 클릭 시
-    $('#showActiveProducts').on('click', function () {
-        console.log('진행중인 공구 클릭됨');
-        switchTab($(this));
-        $allProducts.hide();
-        $activeProducts.show();
-        currentIndex = 0;
-        showMoreProducts($activeProducts);
-    });
-
-    $('#loadMore').on('click', () => {
-        showMoreProducts($('.all-products:visible, .active-products:visible'));
-    });
-
-    function showMoreProducts($products) {
-        $products.hide();
-        const nextIndex = currentIndex + itemsPerPage;
-        $products.slice(currentIndex, nextIndex).fadeIn();
-        currentIndex = nextIndex;
-        if (currentIndex >= $products.length) $('#loadMore').hide();
-    }
-
-    $(document).ready(() => {
-        console.log('공동구매 페이지 로드됨.');
+    // ✅ 데이터를 다시 로드하는 함수 추가
+    function loadProducts() {
+        console.log('🔄 데이터 갱신 중...');
 
         $('.all-products, .active-products').each(function () {
             console.log("📌 [DEBUG] 데이터 속성 확인:", $(this).data()); // 전체 data-* 속성 출력
@@ -68,7 +37,6 @@ $(document).ready(() => {
                 if (conditionData) {
                     try {
                         if (typeof conditionData === "string") {
-                            // 여러 개의 {key:value} 쌍이 있을 경우, JSON 배열 형태로 변환
                             conditionData = `[${conditionData.replace(/},\s*{/g, '},{')}]`;
                             conditionData = JSON.parse(conditionData.replace(/(\d+):/g, '"$1":'));
                         }
@@ -76,7 +44,6 @@ $(document).ready(() => {
                         console.log("✅ 변환된 conditionData:", conditionData);
 
                         if (Array.isArray(conditionData) && conditionData.length > 0) {
-                            // 모집 인원 기준으로 정렬 후 가장 큰 값을 가져옴
                             conditionData.sort((a, b) => Object.keys(b)[0] - Object.keys(a)[0]);
                             const bestCondition = conditionData[0]; // 가장 높은 모집 인원 데이터
                             totalParticipants = parseInt(Object.keys(bestCondition)[0], 10);
@@ -100,13 +67,16 @@ $(document).ready(() => {
 
                 // ✅ 참가자 수 계산
                 let participantCount = 0;
-
                 if (congsData) {
                     try {
-                        if (typeof congsData === "string" && congsData.startsWith("[")) {
+                        if (Array.isArray(congsData)) {
+                            participantCount = congsData.length;
+                        } else if (typeof congsData === "string" && congsData.startsWith("[") && congsData.endsWith("]")) {
                             const parsedArray = JSON.parse(congsData);
-                            participantCount = parsedArray.length;
-                        } else if (!isNaN(parseInt(congsData, 10))) {
+                            if (Array.isArray(parsedArray)) {
+                                participantCount = parsedArray.length;
+                            }
+                        } else {
                             participantCount = 1;
                         }
                     } catch (error) {
@@ -118,13 +88,10 @@ $(document).ready(() => {
                 console.log(`✅ 참가자 수: ${participantCount}, 총 모집 인원: ${totalParticipants}`);
                 $(this).find('.participants').text(`(${participantCount}/${totalParticipants}명)`);
 
-// ✅ 시작 및 종료 날짜 설정
+                // ✅ 시작 및 종료 날짜 설정
                 if (startAt) {
                     console.log("📌 startAt 원본 데이터:", startAt);
-
-                    // 밀리초까지 포함된 경우, 공백을 'T'로 변경해 ISO 형식으로 변환
-                    let formattedStartAt = startAt.replace(" ", "T").split(".")[0]; // "2025-02-03T08:15:36"
-
+                    let formattedStartAt = startAt.replace(" ", "T").split(".")[0];
                     const startDate = new Date(formattedStartAt);
                     console.log("📌 변환된 startDate:", startDate);
 
@@ -140,15 +107,49 @@ $(document).ready(() => {
                     }
                 }
 
-
             } catch (error) {
                 console.error('❌ 공구 데이터 처리 중 오류 발생:', error);
             }
         });
+    }
+
+    // "공구리스트" 클릭 시
+    $('#showAllProducts').on('click', function () {
+        console.log('공구리스트 클릭됨');
+        switchTab($(this));
+        $('.product-list').css('display', 'flex'); // ✅ 부모 요소 다시 표시
+        $('.active-products').hide();
+        $('.all-products').show();
+        currentIndex = 0;
+        showMoreProducts($('.all-products'));
+        loadProducts();
+    });
+
+// "진행중인 공구" 클릭 시
+    $('#showActiveProducts').on('click', function () {
+        console.log('진행중인 공구 클릭됨');
+        switchTab($(this));
+        $('.product-list').css('display', 'flex'); // ✅ 부모 요소 다시 표시
+        $('.all-products').hide();
+        $('.active-products').show();
+        currentIndex = 0;
+        showMoreProducts($('.active-products'));
+        loadProducts();
     });
 
 
+    $('#loadMore').on('click', () => {
+        showMoreProducts($('.all-products:visible, .active-products:visible'));
+    });
+
+    function showMoreProducts($products) {
+        $products.hide();
+        const nextIndex = currentIndex + itemsPerPage;
+        $products.slice(currentIndex, nextIndex).fadeIn();
+        currentIndex = nextIndex;
+        if (currentIndex >= $products.length) $('#loadMore').hide();
+    }
+
+    // 페이지 로드 시 초기 데이터 설정
+    loadProducts();
 });
-
-
-

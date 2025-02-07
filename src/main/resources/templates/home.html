@@ -1,3 +1,4 @@
+<!-- 기존 코드 유지, 수정사항 추가된 전체 HTML -->
 <!DOCTYPE html>
 <html lang="ko">
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
@@ -10,11 +11,11 @@
     <link th:href="@{/css/layout.css}" rel="stylesheet">
     <script th:src="@{/js/home.js}"></script>
     <link th:href="@{/css/home.css}" rel="stylesheet">
-
     <title>home</title>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
+
 <section class="main-slider">
     <div class="slider-track">
         <div class="slide"><img th:src="@{/images/main_bn_01.jpg}" alt="슬라이드 1"></div>
@@ -25,96 +26,45 @@
     </div>
 </section>
 
-
 <section class="titles-section">
     <div class="title-wrapper">
         <div class="title-large">지금 공구중 제품이에요</div>
         <div class="title-small">바로 참여해보세요</div>
     </div>
     <div class="more-link">
-        <a href="#">더보기 &nbsp; →</a>
+        <a th:href="@{/product/congdong}">더보기 &nbsp; →</a>
     </div>
 </section>
+
+<!-- ✅ 진행 중인 공구 상품 슬라이드 -->
 <section class="related-products">
     <div class="related-products__carousel">
-
         <div class="related-products__track-container">
-            <ul class="related-products__track">
-                <li class="related-products__slide">
+            <ul class="active-products__track">
+                <li class="related-products__slide" th:each="active : ${activeProducts}">
                     <div class="related-products__card">
                         <div class="related-products__image">
-                            <img th:src="@{/images/list_00.jpg}" alt="리스트 이미지 1">
+                            <a th:href="@{/product/detail/{id}(id=${active.productId})}">
+                                <img th:src="@{${active.mainPicturePath}}" alt="공구 상품 이미지">
+                            </a>
                         </div>
-                        <span class="related-products__badge related-products__badge--ongoing">
+                        <span class="related-products__badge">
                             <img th:src="@{/images/group_ing.png}" alt="공구중 아이콘">
                         </span>
-                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
-                        <p class="related-products__price">1,980 원</p>
+                        <p class="related-products__name" th:text="${active.name}">상품명</p>
+                        <p class="related-products__price" th:text="${#numbers.formatDecimal(active.price, 1, 0)} + ' 원'">가격</p>
+                        <button class="join-button">지금 참여하기</button>
                     </div>
                 </li>
-                <li class="related-products__slide">
-                    <div class="related-products__card">
-                        <div class="related-products__image">
-                            <img th:src="@{/images/list_01.jpg}" alt="리스트 이미지 2">
-                        </div>
-                        <span class="related-products__badge related-products__badge--available">
-                            <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
-                        </span>
-                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
-                        <p class="related-products__price">1,980 원</p>
-                    </div>
-                </li>
-                <li class="related-products__slide">
-                    <div class="related-products__card">
-                        <div class="related-products__image">
-                            <img th:src="@{/images/list_02.jpg}" alt="리스트 이미지 2">
-                        </div>
-                        <span class="related-products__badge related-products__badge--available">
-                          <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
-                      </span>
-                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
-                        <p class="related-products__price">1,980 원</p>
-                    </div>
-                </li>
-                <li class="related-products__slide">
-                    <div class="related-products__card">
-                        <div class="related-products__image">
-                            <img th:src="@{/images/list_03.jpg}" alt="리스트 이미지 2">
-                        </div>
-                        <span class="related-products__badge related-products__badge--available">
-                        <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
-                    </span>
-                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
-                        <p class="related-products__price">1,980 원</p>
-                    </div>
-                </li>
-                <li class="related-products__slide">
-                    <div class="related-products__card">
-                        <div class="related-products__image">
-                            <img th:src="@{/images/list_04.jpg}" alt="리스트 이미지 2">
-                        </div>
-                        <span class="related-products__badge related-products__badge--available">
-                      <img th:src="@{/images/group_yes.png}" alt="공구중 아이콘">
-                  </span>
-                        <p class="related-products__name">노브랜드 굿모닝머핀 140g</p>
-                        <p class="related-products__price">1,980 원</p>
-                    </div>
-                </li>
-                <!-- 추가적인 슬라이드 -->
             </ul>
         </div>
-
     </div>
-</section>
-<section>
-    <div class="mid_ad">
-        <img th:src="@{/images/mid_ad.jpg}"></div>
 </section>
 
 <section class="titles-section">
     <div class="title-wrapper">
         <div class="title-large">공구 가능 제품이에요</div>
-        <div class="title-small">가장 참여해보세요</div>
+        <div class="title-small">가장 먼저 참여해보세요</div>
     </div>
     <div class="more-link">
         <a href="/product/congdong">더보기 &nbsp; →</a>
@@ -128,7 +78,6 @@
                 <li class="related-products__slide" th:each="product : ${congproducts}">
                     <div class="related-products__card">
                         <div class="related-products__image">
-                            <!-- 상품 이미지 -->
                             <a th:href="@{/product/detail/{id}(id=${product.id})}">
                                 <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
                             </a>
@@ -154,8 +103,8 @@
         <a href="#">더보기 &nbsp; →</a>
     </div>
 </section>
-<section class="ootd-slider">
 
+<section class="ootd-slider">
     <div class="ootd-slider-track-container">
         <div class="ootd-slider-track">
             <div class="ootd-slide"><img th:src="@{/images/ootd_list01.jpg}" alt="슬라이드 1"></div>
@@ -165,9 +114,7 @@
             <div class="ootd-slide"><img th:src="@{/images/ootd_list05.jpg}" alt="슬라이드 5"></div>
         </div>
     </div>
-
 </section>
-
 
 <section class="titles-section">
     <div class="title-wrapper">
@@ -178,6 +125,7 @@
         <a href="/product/list">더보기 &nbsp; →</a>
     </div>
 </section>
+
 <section class="related-products">
     <div class="related-products__carousel">
         <div class="related-products__track-container">
@@ -185,14 +133,10 @@
                 <li class="related-products__slide" th:each="product : ${products}">
                     <div class="related-products__card">
                         <div class="related-products__image">
-                            <!-- 상품 이미지 -->
                             <a th:href="@{/product/detail/{id}(id=${product.id})}">
                                 <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
                             </a>
                         </div>
-                        <span class="related-products__badge" th:if="${product.isCong}">
-                            <img th:src="@{/images/group_yes.png}" alt="공구 가능 아이콘">
-                        </span>
                         <p class="related-products__name" th:text="${product.name}">상품명</p>
                         <p class="related-products__price" th:text="${product.price} + ' 원'">가격</p>
                     </div>
@@ -202,14 +146,6 @@
     </div>
 </section>
 
-
-<section>
-    <div class="floating-banner">
-        <a href="/promotion" target="_blank">
-            <img src="/images/side_ad_01.png" alt="프로모션 배너">
-        </a>
-    </div>
-</section>
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>
