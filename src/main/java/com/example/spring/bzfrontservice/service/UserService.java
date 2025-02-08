@@ -138,8 +138,9 @@ public class UserService {
 
                 String nickname = userInfoMap.getOrDefault("nickname", "Guest").toString();
                 String profilePic = userInfoMap.getOrDefault("profilePic", "default-profile.png").toString();
+                String memberNo = userInfoMap.getOrDefault("memberNo", "").toString();
 
-                return Map.of("nickname", nickname, "profilePic", profilePic);
+                return Map.of("nickname", nickname, "profilePic", profilePic, "memberNo", memberNo);
             }
         } catch (Exception e) {
             log.error("Error fetching user info", e);

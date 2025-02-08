@@ -1,8 +1,6 @@
 package com.example.spring.bzfrontservice.controller;
 
-import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
-import com.example.spring.bzfrontservice.dto.ProdUploadRequestDTO;
-import com.example.spring.bzfrontservice.dto.ProdUploadResponseDTO;
+import com.example.spring.bzfrontservice.dto.*;
 import com.example.spring.bzfrontservice.service.CongdongService;
 import com.example.spring.bzfrontservice.service.SellerService;
 import com.example.spring.bzfrontservice.service.UserService;
@@ -28,6 +26,12 @@ public class SellerApiController {
     private final SellerService sellerService;
     private final CongdongService congdongService;
     private final UserService userService;
+
+    @GetMapping("/list/search")
+    public ResponseEntity<List<ProdReadResponseDTO>> getAllProducts() {
+        List<ProdReadResponseDTO> products = sellerService.getAllProducts();
+        return ResponseEntity.ok(products);
+    }
 
     // 상품 등록 (POST)
     @PostMapping(consumes = "multipart/form-data")

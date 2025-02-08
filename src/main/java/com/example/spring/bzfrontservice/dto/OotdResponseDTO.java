@@ -17,7 +17,7 @@ public class OotdResponseDTO {
     private String profilePic;
     private String nickname;
     private String imgUrls;
-    private String title;
+    private String tags;
     private Integer heartNum;
     private String relProd; // 상품 ID 리스트
     private List<ProductDTO> products; // ProductDTO 리스트로 정의

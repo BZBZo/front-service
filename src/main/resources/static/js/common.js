@@ -195,7 +195,6 @@ function loadUserInfo() {
                 resolve({userInfo, memberNo}); // 성공적으로 memberNo를 설정했을 때 resolve 호출
             },
             error: function () {
-                alert('사용자 정보를 불러오는데 실패했습니다.');
                 reject('Failed to load user info'); // 에러 발생 시 reject 호출
             }
         });
