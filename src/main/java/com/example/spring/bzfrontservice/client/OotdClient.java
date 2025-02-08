@@ -31,4 +31,7 @@ public interface OotdClient {
 
     @PostMapping("/heart")
     boolean toggleLike(@RequestParam Long memberNo, @RequestParam Long ootdId);
+
+    @GetMapping("/recent")
+    List<OotdResponseDTO> getRecentOotds(@RequestParam int i);
 }

@@ -107,14 +107,13 @@
 <section class="ootd-slider">
     <div class="ootd-slider-track-container">
         <div class="ootd-slider-track">
-            <div class="ootd-slide"><img th:src="@{/images/ootd_list01.jpg}" alt="슬라이드 1"></div>
-            <div class="ootd-slide"><img th:src="@{/images/ootd_list02.jpg}" alt="슬라이드 2"></div>
-            <div class="ootd-slide"><img th:src="@{/images/ootd_list03.jpg}" alt="슬라이드 3"></div>
-            <div class="ootd-slide"><img th:src="@{/images/ootd_list04.jpg}" alt="슬라이드 4"></div>
-            <div class="ootd-slide"><img th:src="@{/images/ootd_list05.jpg}" alt="슬라이드 5"></div>
+            <div class="ootd-slide" th:each="ootd : ${ootdList}" th:data-id="${ootd.id}">
+                <img th:src="@{${ootd.imgUrls}}" th:alt="${ootd.tags}">
+            </div>
         </div>
     </div>
 </section>
+
 
 <section class="titles-section">
     <div class="title-wrapper">

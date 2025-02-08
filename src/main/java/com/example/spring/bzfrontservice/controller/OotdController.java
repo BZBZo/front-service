@@ -24,9 +24,15 @@ public class OotdController {
 
     @GetMapping("/list")
     public String getOotdListPage(@CookieValue(value = "Authorization", required = false) String authorization,
+                                  @RequestParam(value = "selectedOotdId", required = false) Long selectedOotdId,
                                   Model model) {
         List<OotdResponseDTO> ootdList = ootdIntegrationService.getOotdListWithDetails(authorization);
         model.addAttribute("ootdList", ootdList);
+
+        if (selectedOotdId != null) {
+            model.addAttribute("selectedOotdId", selectedOotdId);
+        }
+
         return "ootd_list";
     }
 

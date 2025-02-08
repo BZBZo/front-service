@@ -31,27 +31,20 @@ public class UserController {
 
     @GetMapping("/loginSuccess")
     public String home(Model model) {
-        // 전체 상품 가져오기
-        Page<ProdReadResponseDTO> products = sellerService.findAll(0, 10);
-
         // 공구 가능 상품 필터링
-        List<ProdReadResponseDTO> congproducts = products.getContent().stream()
-                .filter(ProdReadResponseDTO::isCong)
-                .collect(Collectors.toList());
+        List<ProdReadResponseDTO> congproducts = sellerService.getCongDongProducts();
 
         // 진행 중인 공구 상품 가져오기
         List<CongDongIngDTO> activeProducts = sellerService.getCongDongActiveProducts();
 
-        List<OotdResponseDTO> ootdList = ootdService.getOotdList(); // OOTD 리스트 가져오기
+        List<OotdResponseDTO> ootdList = ootdService.getRecentOotds(5); // 최근 5개 가져오기
         model.addAttribute("ootdList", ootdList); // 모델에 데이터 추가
 
         // 로그 확인
-        System.out.println("✅ 총 상품 개수: " + products.getTotalElements());
         System.out.println("✅ 공구 가능 상품 개수: " + congproducts.size());
         System.out.println("✅ 진행 중인 공구 개수: " + activeProducts.size());
 
         // 모델에 데이터 추가
-        model.addAttribute("products", products);
         model.addAttribute("congproducts", congproducts);
         model.addAttribute("activeProducts", activeProducts); // ✅ 추가된 부분
 
