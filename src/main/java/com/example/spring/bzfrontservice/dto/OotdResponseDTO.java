@@ -14,6 +14,7 @@ import java.util.List;
 public class OotdResponseDTO {
     private Long id;
     private Long memberNo;
+    private Long writerNo;
     private String profilePic;
     private String nickname;
     private String imgUrls;
@@ -21,4 +22,5 @@ public class OotdResponseDTO {
     private Integer heartNum;
     private String relProd; // 상품 ID 리스트
     private List<ProductDTO> products; // ProductDTO 리스트로 정의
+    private boolean isLiked;
 }

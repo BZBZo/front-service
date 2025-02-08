@@ -1,7 +1,9 @@
 package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
+import com.example.spring.bzfrontservice.dto.OotdResponseDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
+import com.example.spring.bzfrontservice.service.OotdIntegrationService;
 import com.example.spring.bzfrontservice.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final SellerService sellerService;
+    private final OotdIntegrationService ootdService;
 
     @GetMapping("/signin")
     public String login() {
@@ -38,6 +41,9 @@ public class UserController {
 
         // 진행 중인 공구 상품 가져오기
         List<CongDongIngDTO> activeProducts = sellerService.getCongDongActiveProducts();
+
+        List<OotdResponseDTO> ootdList = ootdService.getOotdList(); // OOTD 리스트 가져오기
+        model.addAttribute("ootdList", ootdList); // 모델에 데이터 추가
 
         // 로그 확인
         System.out.println("✅ 총 상품 개수: " + products.getTotalElements());

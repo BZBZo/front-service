@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -43,5 +45,25 @@ public class OotdApiController {
         return allProducts.getContent().stream()
                 .filter(product -> product.getName().toLowerCase().contains(keyword.toLowerCase()))
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping("/like/{ootdId}/{memberNo}")
+    public ResponseEntity<Map<String, Object>> toggleLike(
+            @PathVariable Long ootdId,
+            @PathVariable Long memberNo) {
+
+        // 🔹 좋아요 상태 토글 (true = 좋아요 추가, false = 좋아요 취소)
+        boolean isLiked = ootdIntegrationService.toggleLike(memberNo, ootdId);
+
+        // 🔹 현재 좋아요 개수 가져오기
+        int heartNum = ootdIntegrationService.getHeartNum(ootdId);
+
+        // 🔹 응답 데이터 생성
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("isLiked", isLiked);
+        response.put("heartNum", heartNum);
+
+        return ResponseEntity.ok(response);
     }
 }

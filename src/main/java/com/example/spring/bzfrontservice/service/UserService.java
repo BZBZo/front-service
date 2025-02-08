@@ -12,9 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -124,28 +123,39 @@ public class UserService {
 //        return authClient.findByEmailAndProvider(email, provider);
 //    }
 
-    public Map<String, String> fetchUserInfo(String authorization) {
+    public Map<String, Serializable> fetchUserInfo(String authorization) {
         if (authorization == null || authorization.isBlank()) {
             log.warn("Authorization 헤더가 비어 있습니다.");
-            return Map.of("nickname", "Guest", "profilePic", "default-profile.png");
+            return Map.of("nickname", "Guest", "profilePic", "default-profile.png", "memberNo", 0L);
         }
 
         try {
-            ResponseEntity<?> response = authClient.loadUserInfo(authorization);
-            if (response.getBody() instanceof Map<?, ?> body) {
-                Map<String, Object> userInfoMap = (Map<String, Object>) body;
-                log.info("AuthClient에서 받은 응답: {}", userInfoMap);
+            ResponseEntity<SecurityUserDTO> response = authClient.loadUserInfo(authorization);
+            SecurityUserDTO userInfo = response.getBody(); // ✅ `getBody()`를 호출해서 DTO로 변환
 
-                String nickname = userInfoMap.getOrDefault("nickname", "Guest").toString();
-                String profilePic = userInfoMap.getOrDefault("profilePic", "default-profile.png").toString();
-                String memberNo = userInfoMap.getOrDefault("memberNo", "").toString();
-
-                return Map.of("nickname", nickname, "profilePic", profilePic, "memberNo", memberNo);
+            if (userInfo == null) {
+                log.warn("User info is null, returning default values.");
+                return Map.of("nickname", "Guest", "profilePic", "default-profile.png", "memberNo", 0L);
             }
+
+            log.info("AuthClient에서 받은 응답: {}", userInfo);
+
+            String nickname = Optional.ofNullable(userInfo.getNickname()).orElse("Guest");
+            String profilePic = Optional.ofNullable(userInfo.getProfilePic()).orElse("default-profile.png");
+            Long memberNo = Optional.ofNullable(userInfo.getMemberNo()).orElse(0L);
+
+            return Map.of(
+                    "nickname", nickname,
+                    "profilePic", profilePic,
+                    "memberNo", String.valueOf(memberNo) // 🔥 Long -> String 변환
+            );
         } catch (Exception e) {
             log.error("Error fetching user info", e);
         }
-        return Map.of("nickname", "Guest", "profilePic", "default-profile.png");
+        return Map.of("nickname", "Guest", "profilePic", "default-profile.png", "memberNo", "0");
     }
 
+    public List<SecurityUserDTO> fetchWritersByMemberNos(Set<Long> memberNos) {
+        return authClient.fetchWritersByMemberNos(memberNos);
+    }
 }

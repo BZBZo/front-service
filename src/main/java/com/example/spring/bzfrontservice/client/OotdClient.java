@@ -23,4 +23,12 @@ public interface OotdClient {
                                       @RequestPart("image") MultipartFile image,
                                       @RequestHeader(value = "Authorization", required = false) String authorization);
 
+    @GetMapping("/like/history")
+    boolean isUserLikedOotd(@RequestParam Long memberNo, @RequestParam Long id);
+
+    @GetMapping("/heart/num")
+    int getHeartNum(@RequestParam Long ootdId);
+
+    @PostMapping("/heart")
+    boolean toggleLike(@RequestParam Long memberNo, @RequestParam Long ootdId);
 }
