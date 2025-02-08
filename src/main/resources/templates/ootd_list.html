@@ -29,13 +29,20 @@
     <div class="feed-container">
         <div th:each="ootd : ${ootdList}" class="ootd-container">
             <div class="ootd-header">
-                <input type="hidden" id="memberNo" th:value="${ootd.memberNo}">
+                <input type="hidden" id="writerNo" th:value="${ootd.writerNo}">
                 <!-- 프로필 이미지 -->
                 <img id="userProfilePic"
-                     th:src="${ootd.profilePic != 'default-profile.png' ? ootd.profilePic : '/images/default-profile.png'}"
+                     th:src="${ootd.profilePic != null ? ootd.profilePic : '/images/default-profile.png'}"
                      alt="프로필 이미지" class="ootd-profile-img">
                 <!-- 닉네임 -->
                 <span id="userNickname" th:text="${ootd.nickname != null ? ootd.nickname : 'Guest'}">사용자</span>
+                <!-- 좋아요 하트 & 개수 -->
+                <div class="ootd-like-section">
+                    <span class="ootd-heart" th:classappend="${ootd.isLiked} ? 'liked' : ''"
+                          th:data-id="${ootd.id}" onclick="toggleLike(this)">&#10084;</span>
+                    <span class="ootd-like-count" th:text="${ootd.heartNum}">0</span>
+                </div>
+
             </div>
             <div class="ootd-image-section">
                 <!-- OOTD 이미지 -->

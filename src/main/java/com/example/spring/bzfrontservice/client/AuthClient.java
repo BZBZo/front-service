@@ -2,6 +2,7 @@ package com.example.spring.bzfrontservice.client;
 
 import com.example.spring.bzfrontservice.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @FeignClient(name="authClient", url="${bzbzo.bz-edge-service-url}/auths")
 public interface AuthClient {
@@ -32,7 +34,7 @@ public interface AuthClient {
     ResponseEntity<?> checkCustomerPhone(@RequestHeader("Authorization") String authorizationHeader, @RequestParam String customerPhone);
 
     @GetMapping("/user/info")
-    ResponseEntity<?> loadUserInfo(@RequestHeader("Authorization") String authorizationHeader);
+    ResponseEntity<SecurityUserDTO> loadUserInfo(@RequestHeader("Authorization") String authorizationHeader);
 
     // 새로운 메서드 추가 (String 반환)
     @GetMapping(value = "/user/info", produces = "application/json")
@@ -75,6 +77,11 @@ public interface AuthClient {
 
     @GetMapping("/member/detail")
     SecurityUserDTO loadMemberDetail(@RequestParam Long memberNo);
+
+    @PostMapping(value = "/writers/detail",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    List<SecurityUserDTO> fetchWritersByMemberNos(@RequestBody Set<Long> memberNos);
 
 //    @GetMapping("/user/find")
 //    MemberResponseDTO findByEmailAndProvider(String email, String provider);

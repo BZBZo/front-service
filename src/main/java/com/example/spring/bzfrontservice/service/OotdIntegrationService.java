@@ -3,10 +3,7 @@ package com.example.spring.bzfrontservice.service;
 import com.example.spring.bzfrontservice.client.AuthClient;
 import com.example.spring.bzfrontservice.client.OotdClient;
 import com.example.spring.bzfrontservice.client.SellerClient;
-import com.example.spring.bzfrontservice.dto.OotdRequestDTO;
-import com.example.spring.bzfrontservice.dto.OotdResponseDTO;
-import com.example.spring.bzfrontservice.dto.ProductDTO;
-import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
+import com.example.spring.bzfrontservice.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,17 +22,7 @@ public class OotdIntegrationService {
 
     private final OotdClient ootdClient;
     private final SellerClient sellerClient;
-    private final AuthClient authClient;
     private final UserService userService;
-
-    @Value("${bzbzo.bz-edge-service-url}/product")
-    private String sellerServiceBaseUrl; // Seller 서비스 URL
-
-    @Value("${bzbzo.bz-edge-service-url}/ootd")
-    private String ootdServiceBaseUrl; // OOTD 서비스 URL
-
-    @Value("${bzbzo.bz-edge-service-url}/auths")
-    private String authServiceBaseUrl; // Auth 서비스 URL
 
     public List<OotdResponseDTO> getOotdListWithDetails(String authorization) {
         // OOTD 리스트 가져오기
@@ -44,17 +30,28 @@ public class OotdIntegrationService {
         log.info("Fetched OOTD List: {}", ootdList);
 
         // 사용자 정보 가져오기
-        Map<String, String> userInfo = userService.fetchUserInfo(authorization);
+        Map<String, Serializable> userInfo = userService.fetchUserInfo(authorization);
         log.info("Fetched user info: {}", userInfo);
+
+        Long memberNo = userInfo.containsKey("memberNo") ? Long.valueOf((String) userInfo.get("memberNo")) : null;
+
+        // 🔥 작성자 정보 가져오기 (memberNo 기반)
+        Map<Long, SecurityUserDTO> userMap = fetchUserInfoForOotds(ootdList);
 
         // 각 OOTD 항목에 사용자 및 상품 정보 추가
         return ootdList.stream().map(ootd -> {
-            // 사용자 정보 추가
-            ootd.setNickname(userInfo.getOrDefault("nickname", "Guest"));
-            String profilePic = userInfo.getOrDefault("profilePic", "default-profile.png");
-            //ootd.setProfilePic(profilePic.startsWith("http") ? profilePic : authServiceBaseUrl + "/uploads/" + profilePic);
-            ootd.setProfilePic(profilePic);
-            ootd.setMemberNo(Long.valueOf(userInfo.getOrDefault("memberNo","0")));
+            // 🔹 작성자 정보 설정
+            SecurityUserDTO user = userMap.get(ootd.getMemberNo());
+            if (user != null) {
+                ootd.setNickname(user.getNickname());
+                ootd.setProfilePic(user.getProfilePic());
+                ootd.setWriterNo(user.getMemberNo());
+                log.info(ootd.toString());
+            } else {
+                ootd.setNickname("Guest");
+                ootd.setProfilePic("/images/default-profile.png");
+                ootd.setWriterNo(Long.valueOf("0"));
+            }
 
             // OOTD 이미지 URL 처리
             String image = ootd.getImgUrls();
@@ -66,8 +63,45 @@ public class OotdIntegrationService {
             List<ProductDTO> productList = processProductList(ootd.getRelProd());
             ootd.setProducts(productList);
 
+            // 🔥 사용자가 좋아요를 눌렀는지 확인
+            if (memberNo != null && memberNo > 0) {
+                boolean isLiked = isUserLikedOotd(memberNo, ootd.getId());
+                ootd.setLiked(isLiked);
+            } else {
+                ootd.setLiked(false);
+            }
+
             return ootd;
         }).collect(Collectors.toList());
+
+            
+    }
+
+    /**
+     * 🔥 OOTD 작성자의 정보를 한 번에 가져오는 메서드
+     * - OOTD 작성자의 memberNo 목록을 수집
+     * - 여러 사용자 정보를 한 번의 API 요청으로 가져옴
+     */
+    private Map<Long, SecurityUserDTO> fetchUserInfoForOotds(List<OotdResponseDTO> ootdList) {
+        // 작성자의 memberNo 목록을 중복 없이 수집
+        Set<Long> memberNos = ootdList.stream()
+                .map(OotdResponseDTO::getMemberNo)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
+
+        // 작성자 정보 요청
+        List<SecurityUserDTO> users = userService.fetchWritersByMemberNos(memberNos);
+
+        // memberNo를 키로 하는 Map으로 변환
+        return users.stream()
+                .collect(Collectors.toMap(SecurityUserDTO::getMemberNo, user -> user));
+    }
+
+    private boolean isUserLikedOotd(Long memberNo, Long id) {
+        if (memberNo == null || id == null) {
+            return false;
+        }
+        return ootdClient.isUserLikedOotd(memberNo, id);
     }
 
     private List<ProductDTO> processProductList(String relProd) {
@@ -98,6 +132,18 @@ public class OotdIntegrationService {
 
     public ResponseEntity<String> createOotd(Long memberNo, String tags, String relProd, MultipartFile image, String authorization) {
         return ootdClient.createOotd(memberNo,tags,relProd,image,authorization);
+    }
+
+    public int getHeartNum(Long ootdId) {
+        return ootdClient.getHeartNum(ootdId);
+    }
+
+    public boolean toggleLike(Long memberNo, Long ootdId) {
+        return ootdClient.toggleLike(memberNo, ootdId);
+    }
+
+    public List<OotdResponseDTO> getOotdList() {
+        return ootdClient.getOotdList();
     }
 }
 
