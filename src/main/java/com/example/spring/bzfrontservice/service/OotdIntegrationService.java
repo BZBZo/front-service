@@ -142,8 +142,8 @@ public class OotdIntegrationService {
         return ootdClient.toggleLike(memberNo, ootdId);
     }
 
-    public List<OotdResponseDTO> getOotdList() {
-        return ootdClient.getOotdList();
+    public List<OotdResponseDTO> getRecentOotds(int i) {
+        return ootdClient.getRecentOotds(i);
     }
 }
 

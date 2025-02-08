@@ -9,6 +9,10 @@ $(document).ready(function () {
     const modalContent = $("#modalOotdContent");
     const closeModalBtn = $(".close-btn");
 
+    // ✅ URL에서 selectedOotdId 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedOotdId = urlParams.get("selectedOotdId");
+
     // 사용자 정보 로드
     loadUserInfo().then(({userInfo, memberNo}) => {  // 구조 분해 할당 사용
         if (!memberNo) {
@@ -21,20 +25,17 @@ $(document).ready(function () {
     // 모달 숨기기 (초기 상태)
     modal.hide();
 
+    // ✅ URL에서 받은 selectedOotdId가 있다면, 해당 OOTD 자동으로 모달 띄우기
+    if (selectedOotdId) {
+        let targetOotd = $(`.ootd-container .ootd-like-section .ootd-heart[data-id="${selectedOotdId}"]`).closest(".ootd-container");
+        if (targetOotd.length) {
+            openOotdModal(targetOotd);
+        }
+    }
+
     // OOTD 컨테이너 클릭 시 모달 띄우기 (동적 이벤트 바인딩)
     $(document).on("click", ".ootd-container", function () {
-        let cloneOotd = $(this).clone(); // 클릭한 OOTD 컨테이너 복제
-        cloneOotd.removeAttr("id"); // 중복 ID 방지
-        cloneOotd.find(".ootd-main-img").css("width", "100%"); // 이미지 크기 조절
-
-        // hover 효과 제거
-        cloneOotd.removeClass("ootd-container").addClass("modal-ootd-container");
-
-        // 모달 내부에서 이벤트 적용 (이전 이벤트 제거 후 새로 바인딩)
-        modalContent.html(cloneOotd);
-        bindModalEvents();
-
-        modal.fadeIn();
+        openOotdModal($(this));
     });
 
     // 닫기 버튼 클릭 시 모달 닫기
@@ -48,6 +49,22 @@ $(document).ready(function () {
             modal.fadeOut();
         }
     });
+
+    // 🔹 OOTD 모달 띄우는 함수
+    function openOotdModal(targetOotd) {
+        let cloneOotd = targetOotd.clone(); // 클릭한 OOTD 컨테이너 복제
+        cloneOotd.removeAttr("id"); // 중복 ID 방지
+        cloneOotd.find(".ootd-main-img").css("width", "100%"); // 이미지 크기 조절
+
+        // hover 효과 제거
+        cloneOotd.removeClass("ootd-container").addClass("modal-ootd-container");
+
+        // 모달 내부에서 이벤트 적용 (이전 이벤트 제거 후 새로 바인딩)
+        modalContent.html(cloneOotd);
+        bindModalEvents();
+
+        modal.fadeIn();
+    }
 
     // 🔹 모달 내부 이벤트 바인딩 (동적으로 생성된 요소에 이벤트 추가)
     function bindModalEvents() {
@@ -67,9 +84,9 @@ $(document).ready(function () {
             }
         });
     }
-
 });
 
+// ✅ OOTD 좋아요 토글 기능
 function toggleLike(element) {
     let ootdId = element.getAttribute("data-id");
     let token = localStorage.getItem('accessToken');
