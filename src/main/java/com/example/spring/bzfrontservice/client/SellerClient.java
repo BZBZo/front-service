@@ -22,6 +22,9 @@ public interface SellerClient {
             @RequestHeader("Accept") String acceptHeader // Accept 헤더 추가
     );
 
+    @GetMapping("/list/search")
+    List<ProdReadResponseDTO> getAllProducts();
+
     // 상품 등록 (POST)
     @PostMapping( consumes = "multipart/form-data")
     ResponseEntity<ProdUploadResponseDTO> addProduct(

@@ -293,4 +293,8 @@ public class SellerService {
         String extension = StringUtils.getFilenameExtension(originalName);
         return baseName + "_" + System.currentTimeMillis() + "." + extension;
     }
+
+    public List<ProdReadResponseDTO> getAllProducts() {
+        return sellerClient.getAllProducts();
+    }
 }

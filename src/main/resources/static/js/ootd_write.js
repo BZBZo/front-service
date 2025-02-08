@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     addProductBtn.addEventListener('click', async () => {
         productModal.style.display = 'block';
         try {
-            const response = await fetch('/api/seller/products'); // SellerClient API URL
+            const response = await fetch('/product/list/search'); // SellerClient API URL
             if (response.ok) {
                 const products = await response.json();
                 renderProducts(products); // 상품 리스트 렌더링
@@ -126,14 +126,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const productItem = document.createElement('div');
         productItem.classList.add('ootd-product-item');
+        productItem.setAttribute('data-id', product.id); // 상품 ID 저장 추가 ✅
         productItem.innerHTML = `
             <img src="${product.mainPicturePath}" alt="상품 이미지" class="ootd-product-img">
             <div class="ootd-product-info">
                 <h3>${product.name}</h3>
                 <span>${product.price.toLocaleString()}원</span>
             </div>
-            <button class="delete-btn">&times;</button>
+            <button class="delete-btn" data-id="${product.id}">&times;</button>
         `;
+
 
         // 삭제 버튼 클릭 이벤트
         productItem.querySelector('.delete-btn').addEventListener('click', () => {
@@ -160,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        loadUserInfo().then(({ userInfo, memberNo }) => {  // 구조 분해 할당 사용
+        loadUserInfo().then(({userInfo, memberNo}) => {  // 구조 분해 할당 사용
             if (!memberNo) {
                 alert('사용자 정보를 불러오고 있습니다. 잠시 후 다시 시도해주세요.');
                 return;
@@ -177,10 +179,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // 선택된 상품 정보 수집
         let selectedProducts = [];
         document.querySelectorAll('.ootd-product-item').forEach(product => {
-            let productId = product.querySelector('.delete-btn').dataset.id;
+            let productId = product.dataset.id;
+            console.log("Product ID:", productId);
             if (productId) selectedProducts.push(productId);
         });
         let relProd = selectedProducts.join(',');
+        console.log(relProd, ",로 join한 뒤");
 
         // 이미지 파일 가져오기
         let imageFile = imageUpload.files[0];
@@ -195,6 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append("tags", tags);
         formData.append("relProd", relProd);
         formData.append("image", imageFile);
+        console.log("formData :: ", formData);
 
         // 서버로 전송
         try {

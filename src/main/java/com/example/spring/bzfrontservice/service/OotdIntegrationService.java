@@ -52,7 +52,9 @@ public class OotdIntegrationService {
             // 사용자 정보 추가
             ootd.setNickname(userInfo.getOrDefault("nickname", "Guest"));
             String profilePic = userInfo.getOrDefault("profilePic", "default-profile.png");
-            ootd.setProfilePic(profilePic.startsWith("http") ? profilePic : authServiceBaseUrl + "/uploads/" + profilePic);
+            //ootd.setProfilePic(profilePic.startsWith("http") ? profilePic : authServiceBaseUrl + "/uploads/" + profilePic);
+            ootd.setProfilePic(profilePic);
+            ootd.setMemberNo(Long.valueOf(userInfo.getOrDefault("memberNo","0")));
 
             // OOTD 이미지 URL 처리
             String image = ootd.getImgUrls();
@@ -77,6 +79,7 @@ public class OotdIntegrationService {
                         Long id = Long.parseLong(productId.trim());
                         ProdReadResponseDTO productDetail = sellerClient.loadProductDetails(id);
                         return ProductDTO.builder()
+                                .id(productDetail.getId())
                                 .name(productDetail.getName())
                                 .price(productDetail.getPrice())
                                 .isCong(productDetail.isCong())

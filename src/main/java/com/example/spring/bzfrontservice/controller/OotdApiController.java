@@ -29,6 +29,7 @@ public class OotdApiController {
                                       @RequestParam("relProd") String relProd,
                                       @RequestPart("image") MultipartFile image,
                                       @RequestHeader(value = "Authorization", required = false) String authorization){
+        System.out.println("여기에는 도착? memberNo: " + memberNo + "tags: " + tags + "relProd: " + relProd);
         return ootdIntegrationService.createOotd(memberNo ,tags,relProd,image,authorization);
     }
 
