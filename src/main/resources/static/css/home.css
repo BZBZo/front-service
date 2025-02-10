@@ -203,6 +203,10 @@
     padding: 10px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 400px; /* 적절한 높이 설정 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 내부 요소 균등 배치 */
 }
 
 .related-products__image {

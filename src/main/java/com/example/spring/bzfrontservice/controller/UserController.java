@@ -31,8 +31,12 @@ public class UserController {
 
     @GetMapping("/loginSuccess")
     public String home(Model model) {
+        // 전체 상품 가져오기
+        Page<ProdReadResponseDTO> products = sellerService.findAll(0, 10);
         // 공구 가능 상품 필터링
-        List<ProdReadResponseDTO> congproducts = sellerService.getCongDongProducts();
+        List<ProdReadResponseDTO> congproducts = products.getContent().stream()
+                .filter(ProdReadResponseDTO::isCong)
+                .collect(Collectors.toList());
 
         // 진행 중인 공구 상품 가져오기
         List<CongDongIngDTO> activeProducts = sellerService.getCongDongActiveProducts();
@@ -45,8 +49,9 @@ public class UserController {
         System.out.println("✅ 진행 중인 공구 개수: " + activeProducts.size());
 
         // 모델에 데이터 추가
+        model.addAttribute("products", products);
         model.addAttribute("congproducts", congproducts);
-        model.addAttribute("activeProducts", activeProducts); // ✅ 추가된 부분
+        model.addAttribute("activeProducts", activeProducts);
 
         return "home";
     }
