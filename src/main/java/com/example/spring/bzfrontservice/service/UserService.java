@@ -80,18 +80,21 @@ public class UserService {
         }
     }
 
-//    이미지 업로드 (미완)
-//    public boolean updateImage(String authorizationHeader, String field, MultipartFile file) {
-//        try {
-//            ResponseEntity<?> response = authClient.updateUserImage(authorizationHeader, field, file);
-//            return response.getStatusCode().is2xxSuccessful();
-//        } catch (Exception e) {
-//            logger.error("Error updating user image: {}", e.getMessage());
-//            return false;
-//        }
-//    }
+    // 이미지 업로드 기능 활성화
+    public boolean updateImage(String authorizationHeader, String field, MultipartFile file) {
+        try {
+            ResponseEntity<?> response = authClient.updateUserImage(authorizationHeader, field, file);
+            return response.getStatusCode().is2xxSuccessful();
+        } catch (Exception e) {
+            logger.error("Error updating user image: {}", e.getMessage());
+            return false;
+        }
+    }
 
-
+    // profileImage 메서드가 updateImage()를 활용하도록 변경
+    public ResponseEntity<?> profileImage(String token, String field, MultipartFile file) {
+        return updateImage(token, field, file) ? ResponseEntity.ok().build() : ResponseEntity.status(500).build();
+    }
 
     public boolean deleteUser(String authorizationHeader) {
         try {
@@ -107,9 +110,6 @@ public class UserService {
         return authClient.logout(accessToken);
     }
 
-    public ResponseEntity<?> profileImage(String token, String field, MultipartFile file) {
-        return authClient.updateUserImage(token, field, file);
-    }
 
     public List<Map<String, Object>> allMembers() {
         return authClient.allMembers();

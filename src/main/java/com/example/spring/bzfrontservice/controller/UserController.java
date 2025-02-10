@@ -54,6 +54,7 @@ public class UserController {
 
     @GetMapping("/join")
     public String join(@RequestParam String email, @RequestParam String provider, @RequestParam String role, Model model){
+        System.out.println("role" + role);
         model.addAttribute("email", email);
         model.addAttribute("provider", provider);
         model.addAttribute("role", role);

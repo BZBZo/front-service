@@ -2,13 +2,33 @@ $(document).ready(() => {
     console.log('document.ready 실행됨'); // 디버깅 로그
     getToken()
         .then(() => {
-            console.log('getToken 성공');
+            console.log('✅ getToken 성공');
             setupAjax();
             return checkToken();
         })
+        .then(() => {
+            console.log('✅ checkToken 성공');
+            return loadUserInfo();  // 기존 회원 정보 불러오는 함수 사용
+        })
+        .then(({ userInfo, memberNo }) => {
+            console.log('✅ 로드된 사용자 정보:', userInfo);
+            console.log('✅ 로드된 사용자 정보:', memberNo);
+
+            // 기본 프로필 이미지 URL 설정
+            const defaultProfileImage = "https://bz-img-bucket.s3.ap-northeast-2.amazonaws.com/static/bz-user/bz-default-profile.png";
+            const profilePic = userInfo.profilePic ? userInfo.profilePic : defaultProfileImage;
+
+            console.log('✅ 적용할 프로필 이미지:', profilePic);
+            console.log('✅ 적용할 닉네임:', userInfo.nickname);
+
+            // 이미지 & 닉네임 업데이트
+            $('#profileImage').attr('src', profilePic);
+            $('#nickname').text(userInfo.nickname);
+        })
         .catch(error => {
-            console.error('토큰을 가져오는 데 실패했습니다:', error);
+            console.error('❌ 사용자 정보를 불러오는 데 실패했습니다:', error);
         });
+
 
     // 게시판 데이터 초기화 및 페이지네이션 처리
     function getBoards() {

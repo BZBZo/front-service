@@ -173,11 +173,12 @@ $(document).ready(function () {
         }
 
         const [people, discount] = selectedCondition.replace(/{|}/g, '').split(':');
+        const maxParticipants = parseInt(people, 10); // 최대 참여 인원 수
 
         // 현재 선택한 조건에 맞는 참여 인원 수 가져오기
         let currentParticipants = getParticipantCountForCondition(people);
 
-        console.log('✔ [공동구매 조건 선택] 조건:', selectedCondition, '현재 참여 인원:', currentParticipants);
+        console.log('✔ [공동구매 조건 선택] 조건:', selectedCondition, '현재 참여 인원:', currentParticipants, '최대 인원:', maxParticipants);
 
         $('#selectedConditionDisplay').html(`
         인원: <strong>${people}</strong>명 - 할인율: <strong>${discount}%</strong>
@@ -186,10 +187,10 @@ $(document).ready(function () {
     `);
         $('#selectedCondition').val(selectedCondition);
 
-        // 공동구매 진행 여부 확인 후 버튼 변경
-        let rawCongdongIngList = $('#congdongIngList').val();
+        let actionBtn = $('#congdongActionBtn'); // 버튼 ID 변경 반영
         let isOngoing = false;
 
+        let rawCongdongIngList = $('#congdongIngList').val();
         if (rawCongdongIngList && rawCongdongIngList.trim() !== "") {
             let congdongIngArray = rawCongdongIngList.split('|');
 
@@ -200,7 +201,15 @@ $(document).ready(function () {
             });
         }
 
-        let actionBtn = $('#congdongActionBtn'); // 버튼 ID 변경 반영
+        // 🚀 **인원이 최대치에 도달하면 버튼 숨기기**
+        if (currentParticipants >= maxParticipants) {
+            console.log(`🛑 [공동구매 마감] 조건(${people}명) → 참여 불가`);
+            actionBtn.hide(); // 버튼 숨김
+            $('#cancelCongdong').show();
+            return;
+        }
+
+        // 🎯 **공동구매 진행 여부에 따라 버튼 설정**
         if (isOngoing) {
             console.log(`🎯 [공동구매 진행 중] 조건(${people}명) → "참여하기" 버튼 표시`);
             actionBtn.text("참여하기").data("action", "join").show();
@@ -254,7 +263,7 @@ $(document).ready(function () {
                 url: "/product/congdong",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`, // 토큰만 보냄
+                    Authorization: `Bearer ${token}`,
                 },
                 data: JSON.stringify({
                     productId: productId,
@@ -262,7 +271,20 @@ $(document).ready(function () {
                 }),
                 success: function (response) {
                     alert("공동구매 참여 완료!");
-                    console.log("Response:", response);
+                    console.log("Response before parsing:", response);
+
+                    // 🔥 congs가 문자열이면 JSON.parse로 강제 변환
+                    if (typeof response.congs === "string") {
+                        try {
+                            response.congs = JSON.parse(response.congs);
+                        } catch (error) {
+                            console.error("❌ JSON 파싱 실패, 원본 유지:", error);
+                        }
+                    }
+
+                    console.log("Parsed congs:", response.congs);
+                    console.log("Final Response:", response);
+
                     $("#congdongModal").hide();
                 },
                 error: function (xhr, status, error) {

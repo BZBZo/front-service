@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -51,8 +52,8 @@ public class PurchaseService {
         }
     }
 
-    public List<PurchaseDTO> getPurchaseListByMemberNo(Long memberNo) {
-        return customerClient.getPurchaseListByMemberNo(memberNo);
+    public Page<PurchaseDTO> getPurchaseListByMemberNo(Long memberNo, int page, int size) {
+        return customerClient.getPurchaseListByMemberNo(memberNo, page, size);
     }
 
     public void enrichPurchasesWithProducts(List<PurchaseDTO> purchases) {
