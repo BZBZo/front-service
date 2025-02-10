@@ -46,7 +46,7 @@
     <!-- ✅ 진행 중인 공구 리스트 -->
     <div class="product-list active-products-container" style="display: none;">
         <div class="active-products" th:each="active : ${activeProducts}" th:data-condition="${active.condition}"
-             th:data-congs="${active.congs}" th:data-startAt="${active.startAt}">
+             th:data-congs="${active.congs}" th:data-startAt="${active.startAt}" th:data-product-id="${active.productId}">
             <a th:href="@{/product/detail/{id}(id=${active.productId})}">
                 <img th:src="@{${active.mainPicturePath}}" th:alt="${active.name}">
             </a>
@@ -73,7 +73,7 @@
         </div>
     </div>
 
-    <button class="more-button" id="loadMore">더보기</button>
+        <button class="more-button" id="loadMore">더보기</button>
 
 </main>
 <div th:replace="~{fragments/footer :: footer}"></div>
