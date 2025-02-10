@@ -1,8 +1,10 @@
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.PurchaseDTO;
 import com.example.spring.bzfrontservice.dto.ReviewDTO;
 import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
+import com.example.spring.bzfrontservice.service.CongdongService;
 import com.example.spring.bzfrontservice.service.CustomerService;
 import com.example.spring.bzfrontservice.service.PurchaseService;
 import com.example.spring.bzfrontservice.service.UserService;
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +21,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/customer")
@@ -28,6 +33,7 @@ public class CustomerController {
     private final UserService userService;
     private final CustomerService customerService;
     private final PurchaseService purchaseService;
+    private final CongdongService congdongService;
 
     @GetMapping("/cart/list")
     public String cart(){
@@ -154,4 +160,32 @@ public class CustomerController {
         return "review_detail";
     }
 
+    @GetMapping("/congdong/history")
+    public String getMyCongdongHistory(
+            @RequestHeader("Authorization") String token,  // ✅ 토큰 받기
+            Model model) {
+
+        log.info("📢 [Front Controller] 공동구매 참여 목록 조회 요청 - Authorization 헤더 포함");
+
+        // ✅ 토큰 로그 확인
+        System.out.println("Token received in Front Controller: " + token);
+
+        if (token == null || token.isEmpty()) {
+            throw new IllegalStateException("Authorization token is missing");
+        }
+
+        // ✅ 컨트롤러에서 `memberNo` 추출
+        Long memberNo = userService.getMemberNo(token);
+        log.info("📢 [Front Controller] memberNo 조회 결과: {}", memberNo);
+
+        // ✅ `memberNo`를 직접 `FeignClient`로 넘김
+        List<CongDongIngDTO> youcong = congdongService.getMyCongdong(token, memberNo);
+        log.info("📢 [Front Controller] 조회된 공동구매: {}", youcong);
+
+        log.info("📢 [Front Controller] 조회된 공동구매 개수: {}", youcong.size());
+
+
+        model.addAttribute("youcong", youcong);
+        return "congdongpick"; // ✅ 공동구매 내역 페이지
+    }
 }

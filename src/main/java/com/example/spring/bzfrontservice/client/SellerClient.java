@@ -95,4 +95,10 @@ public interface SellerClient {
     @GetMapping("/{productId}/congdongIng")
     ResponseEntity<List<CongDongIngDTO>> getCongDongIngByProductId(@PathVariable("productId") Long productId);
 
+    // ✅ 내가 참여한 공동구매 목록 조회 (seller-service의 API 호출)
+    @GetMapping("/congdong/heestory")
+    List<CongDongIngDTO> getMyCongdong(
+            @RequestHeader("Authorization") String authorization, // ✅ 토큰 전달
+            @RequestParam("memberNo") Long memberNo);  // ✅ memberNo 직접 전달
+
 }

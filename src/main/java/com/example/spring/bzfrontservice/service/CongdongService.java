@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.service;
 import com.example.spring.bzfrontservice.client.SellerClient;
 import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
+import com.example.spring.bzfrontservice.dto.ProductDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,6 +21,7 @@ import java.util.Map;
 public class CongdongService {
 
     private final SellerClient sellerClient;
+    private final SellerService sellerService;
 
     public List<ProdReadResponseDTO> getCongDongProducts() {
         log.info("[Front Service] FeignClient 호출 시작");
@@ -94,5 +97,34 @@ public class CongdongService {
 
         return congdongIngList;
     }
+
+    public List<CongDongIngDTO> getMyCongdong(String token, Long memberNo) {
+        log.info("📢 [Front Service] FeignClient 요청 - 내가 참여한 공동구매 조회");
+
+        // FeignClient를 통해 `seller-service`로 `token`과 `memberNo` 전송
+        List<CongDongIngDTO> groupPurchases = sellerClient.getMyCongdong(token, memberNo);
+
+        log.info("📢 [Front Service] FeignClient 응답 - 조회된 공동구매 개수: {}", groupPurchases.size());
+
+        // 각 공동구매에 대해 상품 정보 추가
+        for (CongDongIngDTO congDong : groupPurchases) {
+            log.info("📢 [Front Service] 상품 정보 조회 요청 - Product ID: {}", congDong.getProductId());
+
+            ProdReadResponseDTO product = sellerService.getProductDetails(congDong.getProductId());
+
+            log.info("📢 [Front Service] 상품 정보 조회 완료 - Product Name: {}, Price: {}, Image: {}",
+                    product.getName(), product.getPrice(), product.getMainPicturePath());
+
+            congDong.setName(product.getName());
+            congDong.setPrice(product.getPrice());
+            congDong.setMainPicturePath(product.getMainPicturePath());
+        }
+
+        log.info("📢 [Front Service] 최종 조회된 공동구매 목록: {}", groupPurchases);
+
+        return groupPurchases;
+    }
+
+
 
 }
