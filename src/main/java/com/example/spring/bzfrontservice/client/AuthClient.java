@@ -48,8 +48,7 @@ public interface AuthClient {
                                       @PathVariable String field,
                                       @RequestBody Map<String, String> value);
 
-//    이미지 업로드 (미완)
-    @PostMapping("/user/update/{field}")
+    @PostMapping(value = "/user/update/{field}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<?> updateUserImage(@RequestHeader("Authorization") String authorizationHeader,
                                       @PathVariable String field,
                                       @RequestPart("file") MultipartFile file);

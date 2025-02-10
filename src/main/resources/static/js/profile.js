@@ -25,6 +25,9 @@ $(document).ready(function () {
         const input = $(`#${field}`);
         const value = input.val();
 
+        console.log("field:", field); // 🔍 디버깅 로그 추가
+        console.log("input element:", input); // 🔍 디버깅 로그 추가
+
         if (input.attr('type') === 'file') {
             // 파일 업로드 처리
             const file = input[0].files[0]; // 파일이 실제로 선택되었는지 확인
@@ -46,6 +49,9 @@ $(document).ready(function () {
 
     // 사용자 정보 업데이트
     function updateField(field, value, action) {
+        console.log("field", field);
+        console.log("value", value);
+        console.log("action", action);
         if (!value && action === '등록') {
             alert('값을 입력해주세요.');
             return;
@@ -79,8 +85,12 @@ $(document).ready(function () {
 
     // 파일 업로드 처리 함수
     function handleFileUpload(file, field) {
+        console.log("Uploading file for field:", field); // 🔍 디버깅 로그 추가
+        console.log("File selected:", file.name); // 🔍 디버깅 로그 추가
+
         const formData = new FormData();
         formData.append('file', file);
+        console.log("FormData contents:", formData);
 
         $.ajax({
             url: `/webs/user/update/${field}`,
@@ -117,11 +127,14 @@ $(document).ready(function () {
         }
     });
 
-    // 이미지 및 버튼 초기화 함수
+    // 이미지 미리보기 초기화 함수
     function resetImagePreview() {
-        previewImage.src = '';
-        previewImage.style.display = 'none';
+        previewImage.src = defaultProfileImage;
+        previewImage.style.display = 'block';
     }
+
+    // 기본 프로필 이미지 설정 (필요시 수정)
+    const defaultProfileImage = "https://s3.example.com/bz-user/default-profile.png";
 
     // 사용자 정보 로드 함수
     function loadProfileInfo() {
@@ -133,6 +146,14 @@ $(document).ready(function () {
                 alert('사용자 정보를 불러오지 못했습니다.');
                 return Promise.reject("사용자 정보 없음");
             }
+
+            // 프로필 이미지 설정 (DB에서 가져온 profilePic 사용)
+            if (userInfo.profilePic) {
+                previewImage.src = userInfo.profilePic;
+            } else {
+                previewImage.src = defaultProfileImage;
+            }
+            previewImage.style.display = 'block';
 
             if (userInfo.role === 'ROLE_SELLER') {
                 $('.customer-section').hide();

@@ -30,7 +30,11 @@ public interface CustomerClient {
     ResponseEntity<String> savePurchaseHistory(@RequestBody PurchaseDTO dto);
 
     @GetMapping("/history")
-    List<PurchaseDTO> getPurchaseListByMemberNo(@RequestParam Long memberNo);
+    Page<PurchaseDTO> getPurchaseListByMemberNo(
+            @RequestParam Long memberNo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    );
 
     @GetMapping("/history/review")
     List<ReviewDTO> findReviewsByPurchaseId(@RequestParam Long purchaseId);

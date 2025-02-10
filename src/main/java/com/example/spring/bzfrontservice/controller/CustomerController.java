@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -106,15 +107,25 @@ public class CustomerController {
     }
 
     @GetMapping("/history")
-    public String history(@RequestParam Long memberNo, Model model){
-        List<PurchaseDTO> purchases = purchaseService.getPurchaseListByMemberNo(memberNo);
-        System.out.println(Arrays.toString(purchases.toArray())+"  "+purchases.getFirst().getPurchaseId());
-        purchaseService.enrichPurchasesWithProducts(purchases);
+    public String history(
+            @RequestParam Long memberNo,
+            @RequestParam(defaultValue = "1") int page, // 기본값을 1로 설정
+            @RequestParam(defaultValue = "5") int size,
+            Model model) {
 
-        model.addAttribute("purchases", purchases);
+        Page<PurchaseDTO> purchasePage = purchaseService.getPurchaseListByMemberNo(memberNo, page, size);
+
+        List<PurchaseDTO> purchases = purchasePage.getContent(); // 현재 페이지의 데이터만 가져옴
+        purchaseService.enrichPurchasesWithProducts(purchases); // ✅ 상품 정보 추가
+
+        model.addAttribute("purchases", purchases); // ✅ 상품 정보가 포함된 purchases 추가
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", purchasePage.getTotalPages());
+        model.addAttribute("memberNo", memberNo);
 
         return "purchase_list";
     }
+
 
     @GetMapping("/history/review/{productId}/{purchaseId}")
     public String writeReview(@PathVariable Long productId,

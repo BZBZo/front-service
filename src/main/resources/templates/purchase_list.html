@@ -58,6 +58,30 @@
       </tbody>
     </table>
   </div>
+
+  <!-- 페이지네이션 -->
+  <div class="pagination">
+    <ul>
+      <!-- 이전 버튼 -->
+      <li th:if="${currentPage > 1}">
+        <a th:href="@{/customer/history(memberNo=${memberNo}, page=${currentPage - 1}, size=5)}">이전</a>
+      </li>
+
+      <!-- 페이지 번호 -->
+      <li th:each="i : ${#numbers.sequence(1, totalPages)}">
+        <a th:href="@{/customer/history(memberNo=${memberNo}, page=${i}, size=5)}"
+           th:text="${i}"
+           th:class="${i == currentPage} ? 'active' : ''"></a>
+      </li>
+
+      <!-- 다음 버튼 -->
+      <li th:if="${currentPage < totalPages}">
+        <a th:href="@{/customer/history(memberNo=${memberNo}, page=${currentPage + 1}, size=5)}">다음</a>
+      </li>
+    </ul>
+  </div>
+
+
 </main>
 <footer>
   <div th:replace="~{fragments/footer :: footer}"></div>
