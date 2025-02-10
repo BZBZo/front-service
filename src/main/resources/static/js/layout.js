@@ -179,4 +179,46 @@ $(document).ready(function () {
                 });
         }
     });
+
+    // 공동구매내역 클릭 이벤트
+    document.querySelector('body').addEventListener('click', function (event) {
+        if (event.target.matches('.congdong-history-link')) {
+            event.preventDefault(); // 기본 동작 막기
+
+            const token = localStorage.getItem('accessToken'); // 토큰 가져오기
+            console.log("Token before fetch:", token);
+
+            if (!token) {
+                alert("로그인이 필요한 서비스입니다.");
+                window.location.href = '/webs/signin';
+                return;
+            }
+
+            // 공동구매 내역 요청
+            fetch('/customer/congdong/history', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // 토큰 헤더에 포함
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch 공동구매 내역 data');
+                    }
+                    return response.text(); // HTML 응답 처리
+                })
+                .then((html) => {
+                    history.pushState(null, '', '/customer/congdong/history'); // URL 업데이트
+                    document.open();
+                    document.write(html); // HTML 렌더링
+                    document.close();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('공동구매 내역 데이터를 가져오는 중 문제가 발생했습니다.');
+                });
+        }
+    });
+
 });
