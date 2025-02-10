@@ -23,9 +23,8 @@
         <span id="showActiveProducts" class="tab">진행중인 공구</span>
     </header>
 
-    <!-- ✅ product-list가 모든 리스트를 감싸도록 변경 -->
-    <div class="product-list">
-        <!-- 공구 리스트 -->
+    <!-- ✅ 전체 공구 리스트 -->
+    <div class="product-list all-products-container">
         <div class="all-products" th:each="product : ${products}" th:data-condition="${product.condition}">
             <a th:href="@{/product/detail/{id}(id=${product.id})}">
                 <img th:src="@{${product.mainPicturePath}}" th:alt="${product.name}">
@@ -42,10 +41,12 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- 진행 중인 공구 리스트 -->
+    <!-- ✅ 진행 중인 공구 리스트 -->
+    <div class="product-list active-products-container" style="display: none;">
         <div class="active-products" th:each="active : ${activeProducts}" th:data-condition="${active.condition}"
-             th:data-congs="${active.congs}" th:data-startAt="${active.startAt}" style="display: none;">
+             th:data-congs="${active.congs}" th:data-startAt="${active.startAt}">
             <a th:href="@{/product/detail/{id}(id=${active.productId})}">
                 <img th:src="@{${active.mainPicturePath}}" th:alt="${active.name}">
             </a>
