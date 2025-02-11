@@ -297,4 +297,8 @@ public class SellerService {
     public List<ProdReadResponseDTO> getAllProducts() {
         return sellerClient.getAllProducts();
     }
+
+    public void saveSellerHistory(PurchaseDTO dto) {
+        sellerClient.saveSellerHistory(dto);
+    }
 }

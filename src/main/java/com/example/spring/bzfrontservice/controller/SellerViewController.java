@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
+import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
 import com.example.spring.bzfrontservice.service.CustomerService;
 import com.example.spring.bzfrontservice.service.CongdongService;
 import com.example.spring.bzfrontservice.service.SellerService;
@@ -137,19 +138,18 @@ public class SellerViewController {
     public String productDetail(@PathVariable("id") Long productId, Model model) {
         // 서비스 계층을 통해 상품 상세 정보 가져오기
         ProdReadResponseDTO product = sellerService.getProductDetails(productId);
-        log.info("what is this?: {} ", product);
         Integer count = customerService.countReview(productId);
         log.info("상품 상세 정보: {}", product);
+        SecurityUserDTO sellerInfo= userService.loadMemberDetail(product.getSellerId());
 
         // **공동구매 진행 정보 가져오기**
         List<CongDongIngDTO> congdongIngList = congdongService.getCongDongIngByProductId(productId);
         log.info("공동구매 진행 목록: {}", congdongIngList);
 
-            // 모델에 데이터 추가
-            model.addAttribute("product", product);
-            model.addAttribute("reviewCount", count);
         // 모델에 데이터 추가
+        model.addAttribute("reviewCount", count);
         model.addAttribute("product", product);
+        model.addAttribute("sellerInfo", sellerInfo);
         model.addAttribute("congdongIngList", congdongIngList); // congsList → congdongIngList 변경
 
         return "product_detail_all";
@@ -207,5 +207,19 @@ public class SellerViewController {
         model.addAttribute("showNext", endPage < totalPages - 1);
 
         return "mymarket";
+    }
+
+    @GetMapping("/sale/history")
+    public String history(@CookieValue(value = "Authorization", required = false) String token, Model model) {
+        if (token == null || token.isEmpty()) {
+            throw new IllegalStateException("Authorization token is missing");
+        }
+
+        // 현재 사용자 memberNo 가져오기
+        Long userId = userService.getMemberNo(token);
+        log.info("How MBN???: {}", userId);
+
+
+        return "sale_history";
     }
 }

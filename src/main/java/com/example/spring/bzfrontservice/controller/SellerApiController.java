@@ -212,7 +212,7 @@ public class SellerApiController {
     }
 
     @PutMapping("/congdong")
-    public ResponseEntity<CongDongIngDTO> joinCongdong(
+    public ResponseEntity<Map<String, Object>> joinCongdong(
             @RequestBody Map<String, Object> requestBody,
             @RequestHeader("Authorization") String token
     ) {
@@ -244,17 +244,17 @@ public class SellerApiController {
                 .orElseThrow(() -> new IllegalArgumentException("❌ 해당 조건의 공동구매가 존재하지 않습니다."));
         log.info("✅ 찾은 공동구매 정보: {}", existingCongdong);
 
-        // 🚀 기존 참여자 목록 가져오기 (DTO에서 JSON 변환) - Optional 활용 + 로그 추가
+        // 🚀 기존 참여자 목록 가져오기 (DTO에서 JSON 변환)
         List<Long> congs = Optional.ofNullable(existingCongdong.getCongs())
                 .map(json -> {
-                    log.info("🔍 기존 congs(JSON): {}", json); // 기존 JSON 로그 찍기
+                    log.info("🔍 기존 congs(JSON): {}", json);
                     try {
                         List<Long> parsedCongs = new ObjectMapper().readValue(json, new TypeReference<List<Long>>() {});
                         log.info("✅ JSON 변환 성공! 변환된 congs 리스트: {}", parsedCongs);
                         return parsedCongs;
                     } catch (JsonProcessingException e) {
                         log.error("❌ JSON 파싱 실패, 빈 리스트 반환", e);
-                        return new ArrayList<Long>(); // JSON 변환 실패 시 빈 리스트 반환
+                        return new ArrayList<Long>();
                     }
                 })
                 .orElseGet(() -> {
@@ -262,8 +262,10 @@ public class SellerApiController {
                     return new ArrayList<>();
                 });
 
-        // 🔥 현재 참여자가 이미 있는지 확인 후 추가
-        if (!congs.contains(memberNo)) {
+        // 🔥 현재 참여자가 이미 있는지 확인
+        boolean alreadyJoined = congs.contains(memberNo);
+
+        if (!alreadyJoined) {
             congs.add(memberNo);
             log.info("✔ 공동구매 참여자 추가 완료! 현재 congs 목록: {}", congs);
         } else {
@@ -274,7 +276,12 @@ public class SellerApiController {
         CongDongIngDTO congdong = congdongService.joinCongdong(token, productId, condition, congs);
         log.info("🚀 공동구매 참여 완료! 최종 응답 데이터: {}", congdong);
 
-        return ResponseEntity.ok(congdong);
+        // ✅ 응답 데이터에 `alreadyJoined` 추가
+        Map<String, Object> response = new HashMap<>();
+        response.put("congdong", congdong);
+        response.put("alreadyJoined", alreadyJoined);
+
+        return ResponseEntity.ok(response);
     }
 
 }

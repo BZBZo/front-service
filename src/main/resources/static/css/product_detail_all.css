@@ -44,7 +44,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 15px; /* 내부 항목 간 간격 추가 */
+    gap: 1px; /* 내부 항목 간 간격 추가 */
 }
 
 .product-col-md-8 span {
@@ -52,6 +52,17 @@ body {
     font-weight: bold;
     display: block;
     margin-bottom: 10px;
+}
+
+/* 기본 상태: 언더라인 없음 */
+.seller-link {
+    text-decoration: none;
+    color: #c8782f;
+}
+
+/* 마우스를 올렸을 때만 언더라인 표시 */
+.seller-link:hover {
+    text-decoration: underline;
 }
 
 .price-container {
