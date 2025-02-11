@@ -1,8 +1,6 @@
 $(document).ready(() => {
     console.log('공동구매 페이지 로드됨.');
 
-    const $allProductsContainer = $('.all-products-container');
-    const $activeProductsContainer = $('.active-products-container');
     const $loadMoreButton = $('#loadMore'); // ✅ 더보기 버튼 캐싱
     const itemsPerPage = 9;
     let currentIndex = 0;
@@ -10,10 +8,19 @@ $(document).ready(() => {
     function switchTab(tab) {
         $('.tab').removeClass('selected');
         tab.addClass('selected');
+
+        // ✅ currentIndex 초기화 (더보기 버튼 관련)
+        currentIndex = 0;
+
+        console.log('🔄 탭 변경됨. 기존 데이터 숨김 처리 완료.');
     }
 
+
+
     function updateLoadMoreButton($products) {
-        if ($products.length > itemsPerPage) {
+        // ✅ 현재 표시된 상품 개수를 기준으로 버튼 표시 여부 결정
+        const visibleProducts = $products.filter(':visible'); // 현재 보여지는 상품만 필터링
+        if (visibleProducts.length < $products.length && visibleProducts.length >= itemsPerPage) {
             $loadMoreButton.show();
         } else {
             $loadMoreButton.hide();
@@ -130,34 +137,38 @@ $(document).ready(() => {
     // "공구리스트" 클릭 시
     $('#showAllProducts').on('click', function () {
         console.log('공구리스트 클릭됨');
-        switchTab($(this));
-        $('.product-list').css('display', 'flex'); // ✅ 부모 요소 다시 표시
+        switchTab($(this)); // ✅ 기존 데이터 숨기기 처리
+
+        // ✅ 진행중인 공구 데이터 숨김
+        $('.active-products-container').hide();
         $('.active-products').hide();
+
+        // ✅ "공구리스트" 탭에서는 all-products만 다시 표시
+        $('.all-products-container').show();
         $('.all-products').show();
-        currentIndex = 0;
-        showMoreProducts($('.all-products'));
-        loadProducts();
+
+        // ✅ "더보기" 버튼 상태 업데이트
+        updateLoadMoreButton($('.all-products'));
     });
 
-    // "진행중인 공구" 클릭 시
+
+// "진행중인 공구" 클릭 시
     $('#showActiveProducts').on('click', function () {
         console.log('진행중인 공구 클릭됨');
-        switchTab($(this));
-        $allProductsContainer.hide();
-        $activeProductsContainer.show();
+        switchTab($(this)); // ✅ 기존 데이터 숨기기 처리
 
-        // ✅ currentIndex 초기화
-        currentIndex = 0;
+        // ✅ 공구리스트 데이터 숨김
+        $('.all-products-container').hide();
+        $('.all-products').hide();
 
-        // ✅ active-products의 개수를 정확하게 9개로 설정
-        $('.active-products').hide();
-        showMoreProducts($('.active-products').slice(0, itemsPerPage));
+        // ✅ 진행중인 공구 데이터 표시
+        $('.active-products-container').show();
+        $('.active-products').show();
 
-        // ✅ "더보기" 버튼 다시 체크
+        // ✅ "더보기" 버튼 상태 업데이트
         updateLoadMoreButton($('.active-products'));
-
-        loadProducts();
     });
+
 
     $('#loadMore').on('click', () => {
         const visibleProducts = $('.all-products-container:visible .all-products, .active-products-container:visible .active-products');
