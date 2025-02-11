@@ -72,7 +72,7 @@ $(document).ready(function () {
         $(".modal-ootd-container").on("click", "#userProfilePic, #userNickname", function () {
             let writerNo = $(this).closest(".modal-ootd-container").find("#writerNo").val();
             if (writerNo) {
-                window.location.href = `/mystyle/${writerNo}`;
+                window.location.href = `/ootd/${writerNo}`;
             }
         });
 

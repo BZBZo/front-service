@@ -34,4 +34,7 @@ public interface OotdClient {
 
     @GetMapping("/recent")
     List<OotdResponseDTO> getRecentOotds(@RequestParam int i);
+
+    @GetMapping("/user/{userId}")
+    List<OotdResponseDTO> getOotdsByUserId(@PathVariable Long userId);
 }

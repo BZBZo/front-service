@@ -145,6 +145,57 @@ public class OotdIntegrationService {
     public List<OotdResponseDTO> getRecentOotds(int i) {
         return ootdClient.getRecentOotds(i);
     }
+
+    public List<OotdResponseDTO> getOotdsByUserId(Long userId, String authorization) {
+        // 특정 사용자의 OOTD 리스트 가져오기
+        List<OotdResponseDTO> ootdList = ootdClient.getOotdsByUserId(userId);
+        log.info("Fetched OOTD List for User {}: {}", userId, ootdList);
+
+        // 사용자 정보 가져오기
+        Map<String, Serializable> userInfo = userService.fetchUserInfo(authorization);
+        log.info("Fetched user info: {}", userInfo);
+
+        Long memberNo = userInfo.containsKey("memberNo") ? Long.valueOf((String) userInfo.get("memberNo")) : null;
+
+        // 🔥 작성자 정보 가져오기
+        Map<Long, SecurityUserDTO> userMap = fetchUserInfoForOotds(ootdList);
+
+        // OOTD 항목에 사용자 및 상품 정보 추가
+        return ootdList.stream().map(ootd -> {
+            // 🔹 작성자 정보 설정
+            SecurityUserDTO user = userMap.get(ootd.getMemberNo());
+            if (user != null) {
+                ootd.setNickname(user.getNickname());
+                ootd.setProfilePic(user.getProfilePic());
+                ootd.setWriterNo(user.getMemberNo());
+            } else {
+                ootd.setNickname("Guest");
+                ootd.setProfilePic("/images/default-profile.png");
+                ootd.setWriterNo(0L);
+            }
+
+            // OOTD 이미지 URL 처리
+            String image = ootd.getImgUrls();
+            if (image != null && !image.startsWith("http")) {
+                ootd.setImgUrls(image);
+            }
+
+            // 상품 정보 처리
+            List<ProductDTO> productList = processProductList(ootd.getRelProd());
+            ootd.setProducts(productList);
+
+            // 🔥 사용자가 좋아요를 눌렀는지 확인
+            if (memberNo != null && memberNo > 0) {
+                boolean isLiked = isUserLikedOotd(memberNo, ootd.getId());
+                ootd.setLiked(isLiked);
+            } else {
+                ootd.setLiked(false);
+            }
+
+            return ootd;
+        }).collect(Collectors.toList());
+    }
+
 }
 
 

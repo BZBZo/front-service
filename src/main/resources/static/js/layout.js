@@ -221,4 +221,57 @@ $(document).ready(function () {
         }
     });
 
+
+    // "MY STYLE" 클릭 이벤트
+    document.querySelector('body').addEventListener('click', function (event) {
+        // 클릭된 요소가 "MY STYLE" 링크인지 확인
+        if (event.target.matches('.my-style-link')) {
+            event.preventDefault(); // 기본 동작 방지
+            const token = localStorage.getItem('accessToken'); // 토큰 가져오기
+            const userId = memberNo;
+
+            console.log("Token before fetch:", token);
+            console.log("UserId before fetch:", userId);
+
+            if (!token) {
+                alert("로그인이 필요한 서비스입니다.");
+                window.location.href = '/webs/signin';
+                return;
+            }
+
+            if (!userId) {
+                alert("사용자 ID가 필요합니다.");
+                window.location.href = '/webs/signin';  // 혹은 로그인 페이지로 리디렉션
+                return;
+            }
+
+            // fetch로 서버에 요청 (MY STYLE 페이지 데이터)
+            fetch(`/ootd/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`, // 토큰 헤더에 포함
+                },
+            })
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch MY STYLE data');
+                    }
+                    return response.text(); // HTML 응답 처리
+                })
+                .then((html) => {
+                    // 주소 업데이트
+                    history.pushState(null, '', `/ootd/${userId}`);
+
+                    // HTML 응답을 body에 삽입
+                    document.querySelector('body').innerHTML = html;
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('MY STYLE 데이터를 가져오는 중 문제가 발생했습니다.');
+                });
+        }
+    });
+
+
 });

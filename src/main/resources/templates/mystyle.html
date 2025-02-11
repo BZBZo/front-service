@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta th:if="${selectedOotdId != null}" name="selectedOotdId" th:content="${selectedOotdId}">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/my_style.js}"></script>
+    <script th:src="@{/js/layout.js}"></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
+    <link th:href="@{/css/ootd_list.css}" rel="stylesheet">
+
+    <title>My Style 페이지</title>
+</head>
+<body>
+<header>
+    <div th:replace="~{fragments/header :: header}"></div>
+</header>
+
+<div class="ootd-grid-container">
+    <div class="ootd-header-section" >
+        <h2 th:text="${ootds != null && !ootds.isEmpty() ? ootds[0].nickname : 'Guest'} + ' 님의 OOTD 스타일 페이지 입니다.'">내 스타일</h2>
+        <a href="/ootd/write" class="ootd-write-btn">작성하기</a>
+    </div>
+
+    <div th:if="${ootds == null || ootds.isEmpty()}">
+        <p class="nullInfo">등록된 스타일이 없습니다. 새로운 스타일을 공유해 보세요!</p>
+    </div>
+
+    <div class="feed-container">
+        <div th:each="ootd : ${ootds}" class="ootd-container">
+            <div class="ootd-header">
+                <input type="hidden" id="writerNo" th:value="${ootd.writerNo}">
+                <!-- 프로필 이미지 -->
+                <img id="userProfilePic"
+                     th:src="${ootd.profilePic != null ? ootd.profilePic : '/images/default-profile.png'}"
+                     alt="프로필 이미지" class="ootd-profile-img">
+                <!-- 닉네임 -->
+                <span id="userNickname" th:text="${ootd.nickname != null ? ootd.nickname : 'Guest'}">사용자</span>
+                <!-- 좋아요 하트 & 개수 -->
+                <div class="ootd-like-section">
+                    <span class="ootd-heart" th:classappend="${ootd.isLiked} ? 'liked' : ''"
+                          th:data-id="${ootd.id}" onclick="toggleLike(this)">&#10084;</span>
+                    <span class="ootd-like-count" th:text="${ootd.heartNum}">0</span>
+                </div>
+            </div>
+            <div class="ootd-image-section">
+                <!-- OOTD 이미지 -->
+                <img th:src="@{${ootd.imgUrls}}" alt="OOTD 이미지" class="ootd-main-img">
+            </div>
+            <div class="ootd-title-section">
+                <!-- OOTD 태그 -->
+                <span th:text="${ootd.tags}">태그</span>
+            </div>
+
+            <div th:each="product : ${ootd.products}" class="ootd-product-item">
+                <!-- 상품 이미지 -->
+                <img th:src="@{${product.mainPicturePath}}" class="ootd-product-item-img" alt="Product Image"/>
+
+                <div>
+                    <input type="hidden" id="productId" th:value="${product.id}">
+                    <!-- 상품 이름 -->
+                    <span th:text="${product.name}" class="product-name">상품명</span>
+                    <div class="group-ing-icon-price">
+                        <div class="group-ing-icon">
+                            <img th:if="${product.isCong()}" th:src="@{/images/group_ing.png}" alt="공동구매 중 아이콘"/>
+                            <img th:if="${not product.isCong()}" th:src="@{/images/group_yes.png}" alt="공동구매 종료 아이콘"/>
+                        </div>
+                        <!-- 상품 가격 -->
+                        <span id="price-text" th:text="${product.price} + '원'">가격</span>
+                    </div>
+                    <!-- 상품 설명 -->
+                    <span th:text="${product.description}">설명</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 모달 창 -->
+<div id="ootdModal" class="modal">
+    <div class="modal-box">
+        <span class="close-btn">&times;</span>
+        <div class="modal-content">
+            <div id="modalOotdContent" class="modal-ootd-container"></div>
+        </div>
+    </div>
+</div>
+
+<div class="foot" th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>

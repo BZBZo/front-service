@@ -48,6 +48,29 @@ public class OotdController {
         return "ootd_write";
     }
 
+    @GetMapping("/{id}")
+    public String myStylePage(@PathVariable Long id,
+                              @CookieValue(value = "Authorization", required = false) String authorization,
+                              @RequestParam(value = "selectedOotdId", required = false) Long selectedOotdId,
+                              Model model) {
+        // 사용자 정보 가져오기
+        Map<String, Serializable> userInfo = userService.fetchUserInfo(authorization);
+
+            // 특정 사용자의 OOTD 리스트 가져오기
+            List<OotdResponseDTO> userOotds = ootdIntegrationService.getOotdsByUserId(id, authorization);
+            log.info("Fetched OOTDs: {}", userOotds);  // OOTD 리스트 로그 추가
+
+            model.addAttribute("userId", id);
+            model.addAttribute("ootds", userOotds);
+            model.addAttribute("user", userInfo);
+            if (selectedOotdId != null) {
+                model.addAttribute("selectedOotdId", selectedOotdId);
+            }
+
+        return "mystyle";
+    }
+
+
 }
 
 
