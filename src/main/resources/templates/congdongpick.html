@@ -30,6 +30,7 @@
             <th>공동구매 시작일</th>
             <th>이미지</th>
             <th>조건</th>
+            <th>상태</th>
         </tr>
         </thead>
         <tbody>
@@ -40,10 +41,11 @@
             <td th:text="${#temporals.format(cong.startAt, 'yyyy-MM-dd HH:mm')}"></td>
             <td><img th:src="${cong.mainPicturePath}" alt="상품 이미지" width="100"></td>
             <td>
-                <span> 인원 : 할인율 </span>
+                <span> 최대 모집 인원 : 할인율 </span>
                 <br>
                 <span th:text="${cong.condition}"></span>
             </td>
+            <td th:text="${cong.congs}"></td>
         </tr>
         </tbody>
     </table>
