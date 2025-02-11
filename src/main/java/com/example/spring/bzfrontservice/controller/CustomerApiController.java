@@ -2,10 +2,7 @@ package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.client.CustomerClient;
 import com.example.spring.bzfrontservice.dto.*;
-import com.example.spring.bzfrontservice.service.CartService;
-import com.example.spring.bzfrontservice.service.CustomerService;
-import com.example.spring.bzfrontservice.service.PurchaseService;
-import com.example.spring.bzfrontservice.service.UserService;
+import com.example.spring.bzfrontservice.service.*;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +36,7 @@ public class CustomerApiController {
     private final UserService userService;
     private final PurchaseService purchaseService;
     private final CartService cartService;
+    private final SellerService sellerService;
 
     @PostMapping("/cart/add")
     public ResponseEntity<String> addToCart(
@@ -73,7 +71,7 @@ public class CustomerApiController {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        ;
+
         JSONObject obj = new JSONObject();
         obj.put("orderId", orderId);
         obj.put("amount", amount);
@@ -122,6 +120,7 @@ public class CustomerApiController {
 
             // 이걸 js에서 해도 될듯
             savePaymentDetails(orderId, paymentKey, totalAmount, approvedAt, method, memberNo, productList);
+            saveSellerHistory(orderId, approvedAt, memberNo, productList);
 
             jsonObject.put("memberNo", memberNo);
 
@@ -145,16 +144,18 @@ public class CustomerApiController {
         }
     }
 
+    private void saveSellerHistory(String orderId, String approvedAt, Long memberNo, String productList) {
+        PurchaseDTO dto = PurchaseDTO.builder()
+                .orderId(orderId)
+                .approvedAt(approvedAt)
+                .memberNo(memberNo)
+                .productList(productList)
+                .build();
+        sellerService.saveSellerHistory(dto);
+    }
+
     // 결제 정보를 저장하는 메서드 예제
     private void savePaymentDetails(String orderId, String paymentKey, Double totalAmount, String approvedAt, String method, Long memberNo, String productList) {
-        // 예: DB에 결제 정보 저장
-        System.out.println("Saving payment details...");
-        System.out.println("Order ID: " + orderId);
-        System.out.println("Payment Key: " + paymentKey);
-        System.out.println("Total Amount: " + totalAmount);
-        System.out.println("Approved At: " + approvedAt);
-        System.out.println("Payment Method: " + method);
-        System.out.println("Member No: " + memberNo);
 
         PurchaseDTO dto = PurchaseDTO.builder()
                 .orderId(orderId)

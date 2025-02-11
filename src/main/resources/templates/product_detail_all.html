@@ -35,6 +35,13 @@
             </div>
 
             <div class="product-col-md-8">
+                <p class="product-detail">
+                    판매자:
+                    <a id="productSeller" th:href="@{/myshop(memberNo=${sellerInfo.memberNo})}"
+                       th:text="${sellerInfo.nickname}" class="seller-link">
+                    </a>
+                </p>
+
                 <!-- 카테고리 -->
                 <p class="product-detail">
                     카테고리: <span id="productCategory" th:text="${product.category}"></span>

@@ -101,4 +101,6 @@ public interface SellerClient {
             @RequestHeader("Authorization") String authorization, // ✅ 토큰 전달
             @RequestParam("memberNo") Long memberNo);  // ✅ memberNo 직접 전달
 
+    @PostMapping("/sale/history")
+    void saveSellerHistory(@RequestBody PurchaseDTO dto);
 }

@@ -60,7 +60,6 @@ public class PurchaseService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         for (PurchaseDTO purchase : purchases) {
-            System.out.println("여기서 문제인가? "+purchase.toString()+"  "+purchase.getPurchaseId()+"  "+purchase.getProductList());
             try {
                 // JSON 배열을 DTO 리스트로 변환
                 List<ProductQuantityDTO> productList = objectMapper.readValue(
