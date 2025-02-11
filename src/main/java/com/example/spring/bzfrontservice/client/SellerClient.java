@@ -103,4 +103,7 @@ public interface SellerClient {
 
     @PostMapping("/sale/history")
     void saveSellerHistory(@RequestBody PurchaseDTO dto);
+
+    @GetMapping("/sale/history")
+    List<SaleHistoryDTO> getSaleHistoryBySellerID(@RequestParam Long userId);
 }

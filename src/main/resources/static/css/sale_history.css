@@ -1,0 +1,127 @@
+/* 전체 레이아웃 스타일 */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 40px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* 제목과 총 판매액을 정렬 */
+.header-container {
+    position: relative; /* ✅ 총 판매액을 오른쪽 끝으로 배치하기 위해 relative 설정 */
+    display: flex;
+    justify-content: center; /* ✅ 제목을 중앙 정렬 */
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative; /* 총 판매액을 오른쪽에 두기 위해 필요 */
+}
+
+/* 총 판매액을 우측 정렬 */
+.total-sales {
+    position: absolute;
+    right: 0; /* ✅ 우측 끝으로 정렬 */
+    font-size: 18px;
+    font-weight: bold;
+    color: #d37c24;
+    background: #fff3cd;
+    padding: 8px 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* 테이블을 감싸는 컨테이너 */
+.table-container {
+    width: 100%;
+    overflow-x: auto; /* 가로 스크롤 방지 */
+}
+
+/* 테이블 스타일 */
+.sale-history-table {
+    width: 100%;
+    min-width: 900px; /* 테이블 최소 크기 */
+    border-collapse: collapse;
+    background: white;
+}
+
+/* 테이블 헤더 스타일 */
+.sale-history-table th {
+    background: #d37c24;
+    color: white;
+    font-weight: bold;
+    padding: 15px 20px;
+    letter-spacing: 1px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 셀 스타일 */
+.sale-history-table td {
+    padding: 12px 18px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* 컬럼별 최소 너비 설정 */
+.sale-history-table th:nth-child(1) { width: 6%; }  /* 상품 ID */
+.sale-history-table th:nth-child(2) { width: 18%; } /* 상품 이름 */
+.sale-history-table th:nth-child(3) { width: 12%; } /* 상품 이미지 */
+.sale-history-table th:nth-child(4) { width: 7%; }  /* 수량 */
+.sale-history-table th:nth-child(5) { width: 10%; } /* 금액 */
+.sale-history-table th:nth-child(6) { width: 10%; } /* 구매자 ID */
+.sale-history-table th:nth-child(7) { width: 20%; } /* 주문 번호 */
+.sale-history-table th:nth-child(8) { width: 17%; } /* 승인 날짜 */
+
+
+/* 짝수 행 배경색 변경 */
+.sale-history-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* 상품 이미지 스타일 */
+.product-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* 반응형 디자인 */
+@media (max-width: 800px) {
+    .container {
+        padding: 15px;
+    }
+
+    .sale-history-table {
+        font-size: 12px;
+    }
+
+    .sale-history-table th, .sale-history-table td {
+        padding: 8px;
+    }
+}
+
+/* 판매 내역이 없을 때 */
+.no-history {
+    text-align: center;
+    font-size: 18px;
+    color: gray;
+    margin-top: 20px;
+}
