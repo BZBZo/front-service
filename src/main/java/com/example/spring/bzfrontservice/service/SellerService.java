@@ -301,4 +301,8 @@ public class SellerService {
     public void saveSellerHistory(PurchaseDTO dto) {
         sellerClient.saveSellerHistory(dto);
     }
+
+    public List<SaleHistoryDTO> getSaleHistoryBySellerID(Long userId) {
+        return sellerClient.getSaleHistoryBySellerID(userId);
+    }
 }

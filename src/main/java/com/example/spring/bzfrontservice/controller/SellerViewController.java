@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
+import com.example.spring.bzfrontservice.dto.SaleHistoryDTO;
 import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
 import com.example.spring.bzfrontservice.service.CustomerService;
 import com.example.spring.bzfrontservice.service.CongdongService;
@@ -219,6 +220,14 @@ public class SellerViewController {
         Long userId = userService.getMemberNo(token);
         log.info("How MBN???: {}", userId);
 
+        List<SaleHistoryDTO> saleHistoryList = sellerService.getSaleHistoryBySellerID(userId);
+
+        int totalSalesAmount = saleHistoryList.stream()
+                .mapToInt(SaleHistoryDTO::getPrice)
+                .sum();
+
+        model.addAttribute("saleHistoryList", saleHistoryList);
+        model.addAttribute("totalSalesAmount", totalSalesAmount);
 
         return "sale_history";
     }

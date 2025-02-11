@@ -24,6 +24,7 @@ $(document).ready(() => {
             // 이미지 & 닉네임 업데이트
             $('#profileImage').attr('src', profilePic);
             $('#nickname').text(userInfo.nickname);
+            $('#introduce').text(userInfo.introduce);
         })
         .catch(error => {
             console.error('❌ 사용자 정보를 불러오는 데 실패했습니다:', error);

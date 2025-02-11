@@ -132,7 +132,7 @@ function loadCartItems() {
             calculateTotalPrice();
         },
         error: function () {
-            alert('장바구니 데이터를 불러오는데 실패했습니다.');
+            alert('장바구니가 비어있습니다.');
         }
     });
 }
