@@ -96,7 +96,7 @@ public interface SellerClient {
     ResponseEntity<List<CongDongIngDTO>> getCongDongIngByProductId(@PathVariable("productId") Long productId);
 
     // ✅ 내가 참여한 공동구매 목록 조회 (seller-service의 API 호출)
-    @GetMapping("/congdong/heestory")
+    @GetMapping("/congdong/history")
     List<CongDongIngDTO> getMyCongdong(
             @RequestHeader("Authorization") String authorization, // ✅ 토큰 전달
             @RequestParam("memberNo") Long memberNo);  // ✅ memberNo 직접 전달
@@ -106,4 +106,10 @@ public interface SellerClient {
 
     @GetMapping("/sale/history")
     List<SaleHistoryDTO> getSaleHistoryBySellerID(@RequestParam Long userId);
+
+    @PutMapping("/congdong/state")
+    void completeCongdong(@RequestParam Long id, @RequestBody List<Long> congs);
+
+    @PutMapping("/congdong/pay")
+    void updateCongPayState(@RequestParam Long congId, @RequestParam Long memberNo);
 }

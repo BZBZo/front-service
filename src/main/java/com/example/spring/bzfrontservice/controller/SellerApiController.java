@@ -218,7 +218,6 @@ public class SellerApiController {
     ) {
         log.info("✔ 공동구매 참여 요청 수신 (Front Controller)");
         log.info("✔ 요청 바디: {}", requestBody);
-        log.info("✔ Token received in Front Controller: {}", token);
 
         if (token == null || token.isEmpty()) {
             throw new IllegalStateException("❌ Authorization token is missing");
@@ -233,7 +232,7 @@ public class SellerApiController {
         String condition = requestBody.get("condition").toString();
         log.info("🔎 추출된 productId: {}, condition: {}", productId, condition);
 
-        // 🚀 기존 공동구매 참여자 리스트 불러오기 (DTO에서 가져옴)
+        // 🚀 기존 공동구매 참여자 리스트 불러오기
         List<CongDongIngDTO> congdongList = congdongService.getCongDongIngByProductId(productId);
         log.info("📌 해당 상품 ID({})의 공동구매 목록 조회 완료: {}", productId, congdongList);
 
@@ -242,25 +241,19 @@ public class SellerApiController {
                 .filter(congdong -> congdong.getCondition().equals(condition))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("❌ 해당 조건의 공동구매가 존재하지 않습니다."));
-        log.info("✅ 찾은 공동구매 정보: {}", existingCongdong);
 
         // 🚀 기존 참여자 목록 가져오기 (DTO에서 JSON 변환)
         List<Long> congs = Optional.ofNullable(existingCongdong.getCongs())
                 .map(json -> {
                     log.info("🔍 기존 congs(JSON): {}", json);
                     try {
-                        List<Long> parsedCongs = new ObjectMapper().readValue(json, new TypeReference<List<Long>>() {});
-                        log.info("✅ JSON 변환 성공! 변환된 congs 리스트: {}", parsedCongs);
-                        return parsedCongs;
+                        return new ObjectMapper().readValue(json, new TypeReference<List<Long>>() {});
                     } catch (JsonProcessingException e) {
                         log.error("❌ JSON 파싱 실패, 빈 리스트 반환", e);
                         return new ArrayList<Long>();
                     }
                 })
-                .orElseGet(() -> {
-                    log.warn("⚠ 기존 congs가 null, 빈 리스트 반환");
-                    return new ArrayList<>();
-                });
+                .orElse(new ArrayList<>());
 
         // 🔥 현재 참여자가 이미 있는지 확인
         boolean alreadyJoined = congs.contains(memberNo);
@@ -276,12 +269,45 @@ public class SellerApiController {
         CongDongIngDTO congdong = congdongService.joinCongdong(token, productId, condition, congs);
         log.info("🚀 공동구매 참여 완료! 최종 응답 데이터: {}", congdong);
 
-        // ✅ 응답 데이터에 `alreadyJoined` 추가
+        log.info("✅ 현재 congs 리스트: {}", congs);
+
+        // 🔎 congs 리스트 크기 가져오기
+        int congsSize = congs.size();
+        log.info("✅ 참가자 수 (congs size): {}", congsSize);
+
+        // 🔎 condition의 key 값 가져오기
+        int conditionKey = getConditionKey(condition);
+        log.info("✅ 모집 인원 (condition key): {}", conditionKey);
+
+        // 🔥 모집 인원이 꽉 찼는지 확인
+        boolean isFull = congsSize >= conditionKey;
+
+        if (isFull) {
+            log.info("✅ 모집 완료!!");
+            sellerService.completeCongdong(existingCongdong.getId(),congs);
+        }
+
+        // ✅ 응답 데이터에 `alreadyJoined` 및 `isFull` 추가
         Map<String, Object> response = new HashMap<>();
         response.put("congdong", congdong);
         response.put("alreadyJoined", alreadyJoined);
 
         return ResponseEntity.ok(response);
     }
+
+    /**
+     * condition의 key 값 추출 (예: "{5:6}" → 5)
+     */
+    private int getConditionKey(String condition) {
+        try {
+            condition = condition.replaceAll("[{}]", ""); // 중괄호 제거
+            String[] parts = condition.split(":");
+            return Integer.parseInt(parts[0].trim());
+        } catch (Exception e) {
+            log.error("❌ condition key 추출 실패: {}", e.getMessage());
+            return -1; // 실패 시 -1 반환
+        }
+    }
+
 
 }

@@ -20,10 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Controller
@@ -46,6 +43,7 @@ public class CustomerController {
                                   @RequestParam("price") Double price,
                                   @RequestParam("memberNo") Long memberNo,
                                   @RequestParam("quantity") Integer quantity,
+                                  @RequestParam("congId") Long congId,
                                   Model model) {
         SecurityUserDTO dto = userService.loadMemberDetail(memberNo);
 
@@ -55,6 +53,7 @@ public class CustomerController {
         model.addAttribute("quantity", quantity);
         model.addAttribute("totalPrice", quantity * price);
         model.addAttribute("member", dto);
+        model.addAttribute("congId", congId);
 
         return "payment";
     }
@@ -102,6 +101,8 @@ public class CustomerController {
                                  @RequestParam String orderId,
                                  @RequestParam String amount,
                                  @RequestParam String paymentType){
+
+
         return "pay_success";
     }
 
@@ -183,9 +184,54 @@ public class CustomerController {
         log.info("📢 [Front Controller] 조회된 공동구매: {}", youcong);
 
         log.info("📢 [Front Controller] 조회된 공동구매 개수: {}", youcong.size());
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        for (CongDongIngDTO cong : youcong) {
+            try {
+                if (cong.getCondition() != null) {
+                    // `{10:40}` -> `{"10":40}` 형식으로 변환 후 JSON 파싱
+                    String fixedJson = cong.getCondition().replaceAll("(\\d+):", "\"$1\":");
+                    Map<String, Integer> conditionMap = objectMapper.readValue(fixedJson, new TypeReference<>() {});
+
+                    // 할인율 값 가져오기 (예: 40)
+                    int discountRate = conditionMap.values().iterator().next();
+
+                    // 할인율 적용한 최종 가격 계산 (예: 10000원 → 6000원)
+                    int discountedPrice = cong.getPrice() - (cong.getPrice() * discountRate / 100);
+
+                    // DTO에 할인가 저장
+                    cong.setDiscountedPrice(discountedPrice);
+
+                    log.info("✅ 상품 ID: {}, 원가: {}, 할인율: {}%, 할인가: {}",
+                            cong.getProductId(), cong.getPrice(), discountRate, discountedPrice);
+                }
+            } catch (Exception e) {
+                log.error("❌ JSON 파싱 오류: {}", cong.getCondition(), e);
+            }
+        }
+
+        for (CongDongIngDTO cong : youcong) {
+            try {
+                // ✅ `congs`가 String이면 JSON 파싱하여 List<Integer>로 변환 후 새로운 필드에 저장
+                if (cong.getCongs() != null) {
+                    List<Integer> parsedCongs = objectMapper.readValue(cong.getCongs(), new TypeReference<List<Integer>>() {});
+                    cong.setCongsList(parsedCongs); // 변환된 값 저장
+                }
+
+                // ✅ `isPaid`도 String이면 JSON 파싱하여 List<Integer>로 변환 후 새로운 필드에 저장
+                if (cong.getIsPaid() != null) {
+                    List<Integer> parsedIsPaid = objectMapper.readValue(cong.getIsPaid(), new TypeReference<List<Integer>>() {});
+                    cong.setIsPaidList(parsedIsPaid);
+                }
+            } catch (Exception e) {
+                log.error("❌ isPaid 처리 오류 (ID={}): {}", cong.getId(), e.getMessage());
+            }
+        }
+
 
 
         model.addAttribute("youcong", youcong);
-        return "congdongpick"; // ✅ 공동구매 내역 페이지
+        model.addAttribute("memberNo", memberNo);
+        return "congdongpick";
     }
 }
