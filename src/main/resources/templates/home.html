@@ -42,7 +42,10 @@
         <div class="related-products__track-container">
             <ul class="active-products__track">
                 <li class="related-products__slide" th:each="active : ${activeProducts}">
-                    <div class="related-products__card">
+                    <div class="related-products__card"
+                         th:data-product-id="${active.productId}"
+                         th:data-condition="${active.condition}"
+                         th:data-congs="${active.congs}">
                         <div class="related-products__image">
                             <a th:href="@{/product/detail/{id}(id=${active.productId})}">
                                 <img th:src="@{${active.mainPicturePath}}" alt="공구 상품 이미지">
