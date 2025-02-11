@@ -99,8 +99,14 @@ $(document).ready(() => {
                 console.log(`✅ 참가자 수: ${participantCount}, 총 모집 인원: ${totalParticipants}`);
                 $(this).find('.participants').text(`(${participantCount}/${totalParticipants}명)`);
 
+                // ✅ 모집 인원 다 찼다면 버튼 텍스트 변경
+                const $joinButton = $(this).find('.join-button');
+                if (participantCount >= totalParticipants) {
+                    $joinButton.text('[마감]').prop('disabled', true).addClass('closed');
+                }
+
                 // ✅ 시작일과 종료일 처리 (startAt 값이 존재하는 경우에만 처리)
-                console.log("📌 startAt 값 확인:", startAt);  // startAt 값 출력
+                console.log("📌 startAt 값 확인:", startAt);
 
                 if (startAt) {
                     console.log("📌 startAt 원본 데이터:", startAt);
@@ -130,9 +136,8 @@ $(document).ready(() => {
                 console.error('❌ 공구 데이터 처리 중 오류 발생:', error);
             }
         });
-
-
     }
+
 
     // "공구리스트" 클릭 시
     $('#showAllProducts').on('click', function () {

@@ -47,7 +47,7 @@ $(document).ready(function () {
         console.log('Redirecting to purchase page with productId:', productId, 'and price:', productPrice);
 
         // memberNo를 포함하여 GET 요청 URL 생성
-        const purchaseUrl = `/customer/purchase/direct?productId=${productId}&price=${productPrice}&memberNo=${memberNo}&quantity=${quantity}`;
+        const purchaseUrl = `/customer/purchase/direct?productId=${productId}&price=${productPrice}&memberNo=${memberNo}&quantity=${quantity}&congId=${0}`;
         window.location.href = purchaseUrl;
     });
 

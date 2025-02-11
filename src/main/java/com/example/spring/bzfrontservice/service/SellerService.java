@@ -305,4 +305,12 @@ public class SellerService {
     public List<SaleHistoryDTO> getSaleHistoryBySellerID(Long userId) {
         return sellerClient.getSaleHistoryBySellerID(userId);
     }
+
+    public void completeCongdong(Long id, List<Long> congs) {
+        sellerClient.completeCongdong(id, congs);
+    }
+
+    public void updateCongPayState(Long congId, Long memberNo) {
+        sellerClient.updateCongPayState(congId, memberNo);
+    }
 }

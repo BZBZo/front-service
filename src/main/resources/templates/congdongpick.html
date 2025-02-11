@@ -6,13 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/common.js}"></script>
-    <script th:src="@{/js/layout.js}"></script>
-    <link th:href="@{/css/layout.css}" rel="stylesheet">
     <script th:src="@{/js/congdongpick.js}"></script>
     <link th:href="@{/css/congdongpick.css}" rel="stylesheet">
+    <script th:src="@{/js/layout.js}"></script>
+    <link th:href="@{/css/layout.css}" rel="stylesheet">
 
-
-    <title>공구 시작</title>
+    <title>참여 공구 목록</title>
 </head>
 <body>
 <header>
@@ -30,25 +29,58 @@
             <th>공동구매 시작일</th>
             <th>이미지</th>
             <th>조건</th>
+            <th>인원</th>
             <th>상태</th>
+            <th>지불</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="cong, iterStat : ${youcong}">
+            <input type="hidden" id="congdong-id" th:value="${cong.id}"> <!-- ✅ ID 값 추가 -->
+
             <td th:text="${iterStat.index + 1}"></td> <!-- 1부터 시작하는 번호 -->
             <td th:text="${cong.name}"></td>
-            <td th:text="${#numbers.formatInteger(cong.price, 3, 'COMMA')} + '원'"></td>
+            <td th:text="${#numbers.formatInteger(cong.discountedPrice, 3, 'COMMA')} + '원'"></td>
             <td th:text="${#temporals.format(cong.startAt, 'yyyy-MM-dd HH:mm')}"></td>
             <td><img th:src="${cong.mainPicturePath}" alt="상품 이미지" width="100"></td>
             <td>
-                <span> 최대 모집 인원 : 할인율 </span>
+                <span> 모집 인원 : 할인율 </span>
                 <br>
                 <span th:text="${cong.condition}"></span>
             </td>
-            <td th:text="${cong.congs}"></td>
+            <td th:data-congs="${cong.congs}" th:text="${cong.congs}"></td>
+            <td th:if="${cong.state == 'ing'}" th:text="'모집중'"></td>
+            <td th:if="${cong.state == 'finish'}" th:text="'모집완료'"></td>
+            <td th:if="${cong.state == 'ing'}" th:text="'&nbsp;'"></td> <!-- 공백 처리 -->
+            <td th:if="${cong.state == 'finish'}">
+                <span th:with="congsList=${cong.congsList}, isPaidList=${cong.isPaidList}">
+        <span th:each="congMember, iterStat : ${congsList}">
+            <span th:if="${congMember == memberNo}"> <!-- ✅ 현재 사용자의 위치 찾기 -->
+
+                <!-- ✅ 현재 사용자의 결제 상태 확인 -->
+                <span th:if="${isPaidList != null and isPaidList.size() > iterStat.index and isPaidList[iterStat.index] == 1}" class="paid-label">
+                    지불완료
+                </span>
+
+                <button th:if="${isPaidList != null and isPaidList.size() > iterStat.index and isPaidList[iterStat.index] == 0}"
+                        class="action-button black-button order-now"
+                        type="button"
+                        th:data-product-id="${cong.productId}"
+                        th:data-product-price="${cong.discountedPrice}"
+                        th:data-cong-id="${cong.id}">
+                    지불하기
+                </button>
+
+            </span>
+        </span>
+    </span>
+            </td>
+
         </tr>
+
         </tbody>
     </table>
+
 </main>
 <div th:replace="~{fragments/footer :: footer}"></div>
 </body>

@@ -115,12 +115,18 @@ public class CustomerApiController {
             JSONObject metadata = (JSONObject) jsonObject.get("metadata");
             Long memberNo = metadata != null ? Long.parseLong(metadata.get("memberNo").toString()) : null;
             String productList = metadata != null ? (String) metadata.get("productList") : null;
+            String congId = metadata != null ? (String) metadata.get("congId") : null;
 
             System.out.println(productList + " 구매 상품");
 
             // 이걸 js에서 해도 될듯
             savePaymentDetails(orderId, paymentKey, totalAmount, approvedAt, method, memberNo, productList);
             saveSellerHistory(orderId, approvedAt, memberNo, productList);
+
+            if(!congId.equals("0")){
+                Long congdongId = Long.parseLong(congId);
+                updateCongPayState(congdongId, memberNo);
+            }
 
             jsonObject.put("memberNo", memberNo);
 
@@ -142,6 +148,10 @@ public class CustomerApiController {
             // 클라이언트로 실패 응답 반환
             return ResponseEntity.status(code).body(jsonObject);
         }
+    }
+
+    private void updateCongPayState(Long congId, Long memberNo) {
+        sellerService.updateCongPayState(congId, memberNo);
     }
 
     private void saveSellerHistory(String orderId, String approvedAt, Long memberNo, String productList) {

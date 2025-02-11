@@ -39,7 +39,11 @@ public class UserController {
                 .collect(Collectors.toList());
 
         // 진행 중인 공구 상품 가져오기
-        List<CongDongIngDTO> activeProducts = sellerService.getCongDongActiveProducts();
+        List<CongDongIngDTO> ingProducts = sellerService.getCongDongActiveProducts();
+
+        List<CongDongIngDTO> activeProducts = ingProducts.stream()
+                .filter(product -> "ing".equals(product.getState()))
+                .collect(Collectors.toList());
 
         List<OotdResponseDTO> ootdList = ootdService.getRecentOotds(5); // 최근 5개 가져오기
         model.addAttribute("ootdList", ootdList); // 모델에 데이터 추가
