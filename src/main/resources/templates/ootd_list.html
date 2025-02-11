@@ -65,7 +65,7 @@
                     <div class="group-ing-icon-price">
                         <div class="group-ing-icon">
                             <img th:if="${product.isCong()}" th:src="@{/images/group_ing.png}" alt="공동구매 중 아이콘"/>
-                            <img th:if="${not product.isCong()}" th:src="@{/images/group_yes.png}" alt="공동구매 종료 아이콘"/>
+                            <img th:if="${not product.isCong()}" th:src="@{/images/group_no.png}" alt="공동구매 종료 아이콘"/>
                         </div>
                         <!-- 상품 가격 -->
                         <span id="price-text" th:text="${product.price} + '원'">가격</span>

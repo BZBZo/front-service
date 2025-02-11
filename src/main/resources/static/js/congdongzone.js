@@ -174,44 +174,50 @@ $(document).ready(() => {
     loadProducts();
 
 // '공동구매 참여하기' 버튼을 클릭할 때
-    $(document).on('click', '.join-button', function () {
-        const $product = $(this).closest('.active-products');  // 'active-products' 클래스에서 부모 요소 찾기
-        const productId = $product.data('product-id');  // data-product-id에서 ID 추출
-        const conditionData = $product.data('condition');  // 조건 데이터 추출
+    $(document).ready(() => {
+        console.log('공동구매 페이지 로드됨.');
 
-        const token = localStorage.getItem('accessToken');  // 액세스 토큰
+        // ✅ 중복 방지: 기존 이벤트 핸들러를 제거하고 다시 등록
+        $(document).off('click', '.join-button').on('click', '.join-button', function () {
+            const $product = $(this).closest('.active-products');
+            const productId = $product.data('product-id');
+            const conditionData = $product.data('condition');
+            const token = localStorage.getItem('accessToken');
 
-        // 확인 로그 추가
-        console.log('공동구매 참여 - 상품 ID:', productId, '조건:', conditionData);
+            console.log('공동구매 참여 - 상품 ID:', productId, '조건:', conditionData);
 
-        if (!productId || !conditionData) {
-            alert('상품 ID 또는 조건이 올바르지 않습니다. 다시 시도해주세요.');
-            return; // ID나 조건이 없으면 요청을 보내지 않음
-        }
-
-        // 공동구매 참여 요청
-        $.ajax({
-            type: "PUT",
-            url: "/product/congdong",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-            },
-            data: JSON.stringify({
-                productId: productId,
-                condition: conditionData  // 조건을 그대로 전달
-            }),
-            success: function (response) {
-                alert("공동구매 참여 완료!");
-                console.log("Response:", response);
-            },
-            error: function (xhr, status, error) {
-                console.error("XHR 상태 코드:", xhr.status);
-                console.error("에러 메시지:", error);
-                alert("공동구매 참여에 실패했습니다. 다시 시도해주세요.");
+            if (!productId || !conditionData) {
+                alert('상품 ID 또는 조건이 올바르지 않습니다. 다시 시도해주세요.');
+                return;
             }
+
+            // 공동구매 참여 요청 (중복 이벤트 등록 방지)
+            $.ajax({
+                type: "PUT",
+                url: "/product/congdong",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                data: JSON.stringify({
+                    productId: productId,
+                    condition: conditionData
+                }),
+                success: function (response) {
+                    console.log("Response:", response);
+                    if (response.alreadyJoined) {
+                        alert("이미 참여중인 공동구매입니다!");
+                    } else {
+                        alert("공동구매 참여 완료!");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("XHR 상태 코드:", xhr.status);
+                    console.error("에러 메시지:", error);
+                    alert("공동구매 참여에 실패했습니다. 다시 시도해주세요.");
+                }
+            });
         });
     });
-
 
 });
