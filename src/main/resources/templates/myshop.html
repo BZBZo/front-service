@@ -10,16 +10,26 @@
     <script th:src="@{/js/layout.js}"></script>
     <link th:href="@{/css/layout.css}" rel="stylesheet">
 
-    <title>상품 목록 페이지</title>
+    <title>welcome to myShop</title>
 </head>
 <body>
 <header>
     <div th:replace="~{fragments/header :: header}"></div>
 </header>
 <main>
+    <div class="seller-info">
+        <img id="profileImage"
+             th:src="${sellerInfo.profilePic != null ? sellerInfo.profilePic : '/images/default-profile.png'}"
+             alt="프로필 이미지" class="seller-profile-img">
+        <span id="nickname" th:text="${sellerInfo.nickname}"></span>
+        <span>"</span>
+        <span id="introduce" th:text="${sellerInfo.introduce}">소개</span>
+        <span>"</span>
+    </div>
+    <div class="seller-divider"></div>
+
     <div class="container">
-        <h2>전체 상품 목록</h2>
-        <h4>"콩들에게 파는 나의 물건"</h4>
+
         <div id="productGrid" class="product-grid">
             <!-- 상품 목록 -->
             <div id="productuu" class="product-uu">

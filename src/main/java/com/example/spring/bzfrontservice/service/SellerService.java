@@ -313,4 +313,8 @@ public class SellerService {
     public void updateCongPayState(Long congId, Long memberNo) {
         sellerClient.updateCongPayState(congId, memberNo);
     }
+
+    public Page<ProdReadResponseDTO> findAllBySellerId(int adjustedPage, int pageSize, Long sellerId) {
+        return sellerClient.findAllBySellerId(adjustedPage, pageSize, sellerId);
+    }
 }
