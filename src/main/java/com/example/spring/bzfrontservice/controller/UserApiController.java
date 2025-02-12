@@ -1,5 +1,6 @@
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.dto.GetResolvesTimesRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
 //import com.example.spring.bzfrontservice.service.FileStorageService;
@@ -131,9 +132,9 @@ public class UserApiController {
 
         String token = authHeader.substring(7); // 'Bearer ' 이후의 토큰 값
 
-        System.out.println(token +" : logout controller token 받았음");
+        System.out.println(token + " : logout controller token 받았음");
 
-        try{
+        try {
             return userService.logout(token);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("logout 에러 발생");

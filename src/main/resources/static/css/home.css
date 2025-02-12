@@ -331,3 +331,12 @@ a {
     text-decoration: none; /* 밑줄 제거 */
     color: inherit; /* 링크의 기본 색상 제거하고 부모의 색상 적용 */
 }
+
+.mid_ad_image {
+    height: 110px;
+}
+
+.top-ad-image {
+    width: 700px;
+    height: 371.5px;
+}

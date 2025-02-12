@@ -42,10 +42,10 @@ const sendAdStatusUpdate = (adId, status) => {
 
     const userRole = getUserRoleFromToken(token);
 
-    if (userRole !== 'ROLE_ADMIN') {
-        alert('이 작업을 수행할 권한이 없습니다.');
-        return;
-    }
+    // if (userRole !== 'ROLE_ADMIN') {
+    //     alert('이 작업을 수행할 권한이 없습니다.');
+    //     return;
+    // }
 
     fetch(`/api/ad/updateStatus/${adId}`, {
         method: 'POST',

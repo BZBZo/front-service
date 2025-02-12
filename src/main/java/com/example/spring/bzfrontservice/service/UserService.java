@@ -1,6 +1,7 @@
 package com.example.spring.bzfrontservice.service;
 
 import com.example.spring.bzfrontservice.client.AuthClient;
+import com.example.spring.bzfrontservice.dto.GetResolvesTimesRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinRequestDTO;
 import com.example.spring.bzfrontservice.dto.JoinResponseDTO;
 import com.example.spring.bzfrontservice.dto.SecurityUserDTO;

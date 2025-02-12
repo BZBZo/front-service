@@ -1,6 +1,8 @@
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.dto.AdDTO;
 import com.example.spring.bzfrontservice.dto.AdEditRequestDTO;
+import com.example.spring.bzfrontservice.dto.GetResolvesTimesRequestDTO;
 import com.example.spring.bzfrontservice.service.AdService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +22,20 @@ public class AdApiController {
     @PostMapping(value = "/write", consumes = "multipart/form-data")
     public ResponseEntity<?> saveAd(@RequestParam("adArea") String adPosition,
                                     @RequestParam("startDate") String adStart,
+                                    @RequestParam("memberNo") Long seller_id,
                                     @RequestParam("endDate") String adEnd,
                                     @RequestParam("adName") String adTitle,
                                     @RequestParam("adLink") String adUrl,
                                     @RequestParam("adImage") MultipartFile adImage) {
+        System.out.println("adPosition :: " + adPosition);
+        System.out.println("adStart :: " + adStart);
+        System.out.println("seller_id :: " + seller_id);
+        System.out.println("adEnd :: " + adEnd);
+        System.out.println("adTitle :: " + adTitle);
+        System.out.println("adUrl :: " + adUrl);
+        System.out.println("adImage :: " + adImage);
 
-        return adService.writeAd(adPosition, adStart, adEnd, adTitle, adUrl, adImage);
+        return adService.writeAd(adPosition, adStart,seller_id, adEnd, adTitle, adUrl, adImage);
     }
 
     @PostMapping("/edit/{id}")
@@ -59,5 +69,22 @@ public class AdApiController {
         }
 
         return adService.updateStatus(id, newStatus);
+    }
+
+    @GetMapping("/reserved-times")
+    public ResponseEntity<List<GetResolvesTimesRequestDTO>> getReservedTimes(
+            @RequestParam String nowArea
+    ) {
+        System.out.println("nowArea :: " + nowArea);
+        // 서비스에서 DTO 리스트를 가져옵니다.
+        List<GetResolvesTimesRequestDTO> getResolvesTimesRequestDTOS = adService.getReservedTimes(nowArea);
+        return ResponseEntity.ok(getResolvesTimesRequestDTOS);
+    }
+
+    @GetMapping("/getAd")
+    public List<AdDTO> getAd(){
+        List<AdDTO> ads = adService.getAds();
+        System.out.println("get Ads : " + ads);
+        return ads;
     }
 }

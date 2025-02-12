@@ -5,13 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
     <script th:src="@{/js/ad_write.js}" defer></script>
+    <script th:src="@{/js/common.js}" defer></script>
     <link th:href="@{/css/ad_write.css}" rel="stylesheet">
+    <!-- Flatpickr CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <title>광고 신청</title>
 </head>
 <body>
 <div class="container">
     <h1 class="title">광고 신청 페이지</h1>
     <form class="ad-form" action="/api/ad/write" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="memberNo" name="memberNo">
         <!-- 광고 영역 선택 -->
         <div class="form-section">
             <div class="form-header">
@@ -66,8 +72,10 @@
             </div>
             <div class="form-content">
                 <div class="date-inputs">
-                    <input type="datetime-local" name="startDate" value="2024-11-26T11:00">
-                    <input type="datetime-local" name="endDate" value="2024-12-05T15:00">
+                    <input class="dateArea" id="startDatePicker" type="text" name="startDate" placeholder="광고 시작일">
+
+                    <!-- 광고 종료일 -->
+                    <input class="dateArea" id="endDatePicker" type="text" name="endDate" placeholder="광고 종료일">
                 </div>
             </div>
         </div>

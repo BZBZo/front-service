@@ -3,6 +3,7 @@ package com.example.spring.bzfrontservice.service;
 import com.example.spring.bzfrontservice.client.AdClient;
 import com.example.spring.bzfrontservice.dto.AdDTO;
 import com.example.spring.bzfrontservice.dto.AdEditRequestDTO;
+import com.example.spring.bzfrontservice.dto.GetResolvesTimesRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,9 @@ import java.util.Map;
 public class AdService {
     private final AdClient adClient;
 
-    public ResponseEntity<?> writeAd(String adPosition, String adStart, String adEnd,
+    public ResponseEntity<?> writeAd(String adPosition, String adStart, Long seller_id,String adEnd,
                                      String adTitle, String adUrl, MultipartFile adImage) {
-        return adClient.writeAd(adPosition, adStart, adEnd, adTitle, adUrl, adImage);
+        return adClient.writeAd(adPosition, adStart,seller_id, adEnd, adTitle, adUrl, adImage);
     }
 
     public AdDTO getAdDetail(Long id) {
@@ -42,5 +43,13 @@ public class AdService {
 
     public ResponseEntity<Map<String, String>> updateStatus(Long id, String newStatus) {
         return adClient.updateStatus(id, newStatus);
+    }
+
+    public List<GetResolvesTimesRequestDTO> getReservedTimes(String nowArea) {
+        return adClient.getReservedTimes(nowArea);
+    }
+
+    public List<AdDTO> getAds(){
+        return adClient.getAds();
     }
 }
