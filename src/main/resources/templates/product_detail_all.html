@@ -37,7 +37,7 @@
             <div class="product-col-md-8">
                 <p class="product-detail">
                     판매자:
-                    <a id="productSeller" th:href="@{/myshop(memberNo=${sellerInfo.memberNo})}"
+                    <a id="productSeller" th:href="@{/product/myShop/{memberNo}(memberNo=${sellerInfo.memberNo})}"
                        th:text="${sellerInfo.nickname}" class="seller-link">
                     </a>
                 </p>

@@ -166,6 +166,99 @@ public class SellerViewController {
         return "product_edit";
     }
 
+    @GetMapping("/myShop/{memberNo}")
+    public String loadMyShop(@PathVariable Long memberNo,
+                             @CookieValue(value = "Authorization", required = false) String token,
+                             Model model) {
+        if (token == null || token.isEmpty()) {
+            throw new IllegalStateException("Authorization token is missing");
+        }
+
+        // 현재 사용자 memberNo 가져오기
+        Long userId = userService.getMemberNo(token);
+        log.info("How MBN???: {}", userId);
+
+
+        int page = 1;
+
+        if(memberNo.equals(userId)){
+            int pageSize = 5;
+
+            // 페이지 1부터 시작하도록 조정
+            int adjustedPage = page - 1;
+            if (adjustedPage < 0) {
+                adjustedPage = 0; // 최소값 0
+            }
+
+            Page<ProdReadResponseDTO> productPage = sellerService.getProductsForSeller(adjustedPage, pageSize, token);
+            List<ProdReadResponseDTO> products = productPage.getContent();
+
+            int totalPages = productPage.getTotalPages();
+            int pageBlock = 10; // 페이지 블록 크기
+            int startPage = (adjustedPage / pageBlock) * pageBlock;
+            int endPage = Math.min(startPage + pageBlock - 1, totalPages - 1);
+
+            model.addAttribute("products", products);
+            model.addAttribute("userId", userId);
+            model.addAttribute("productPage", productPage);
+            model.addAttribute("startPage", startPage + 1); // 1부터 시작
+            model.addAttribute("endPage", endPage + 1); // 1부터 시작
+            model.addAttribute("showPrevious", startPage > 0);
+            model.addAttribute("showNext", endPage < totalPages - 1);
+
+            // 판매자 본인
+            return "mymarket";
+        } else{
+            int pageSize = 8;
+
+            log.info("Requested Page: {}", page);
+            log.info("Page Size: {}", pageSize);
+
+            int adjustedPage = page - 1; // 0 기반으로 변환
+            if (adjustedPage < 0) {
+                adjustedPage = 0; // 최소값 0 보장
+            }
+
+            log.info("Adjusted Page (0-based): {}", adjustedPage);
+
+            SecurityUserDTO sellerInfo = userService.loadMemberDetail(memberNo);
+
+            Page<ProdReadResponseDTO> productPage = sellerService.findAllBySellerId(adjustedPage, pageSize, memberNo);
+            log.info("Total Elements: {}", productPage.getTotalElements());
+            log.info("Total Pages: {}", productPage.getTotalPages());
+            log.info("Current Page: {}", productPage.getNumber() + 1); // 1 기반으로 출력
+            log.info("Number of Elements in Current Page: {}", productPage.getNumberOfElements());
+
+            List<ProdReadResponseDTO> products = productPage.getContent();
+            log.info("Products on Current Page: {}", products);
+
+            int totalPages = productPage.getTotalPages();
+            int pageBlock = 5; // 한 번에 표시할 페이지 번호 수
+            int startPage = ((page - 1) / pageBlock) * pageBlock + 1;
+            int endPage = Math.min(startPage + pageBlock - 1, totalPages);
+
+            log.info("Start Page: {}", startPage);
+            log.info("End Page: {}", endPage);
+
+            model.addAttribute("products", products);
+            model.addAttribute("currentPage", page); // 1 기반 현재 페이지
+            model.addAttribute("totalPages", totalPages); // 총 페이지 수
+            model.addAttribute("startPage", startPage); // 표시할 시작 페이지
+            model.addAttribute("endPage", endPage); // 표시할 끝 페이지
+            model.addAttribute("hasNext", productPage.hasNext());
+            model.addAttribute("hasPrevious", productPage.hasPrevious());
+
+            model.addAttribute("sellerInfo", sellerInfo);
+
+            log.info("Has Next Page: {}", productPage.hasNext());
+            log.info("Has Previous Page: {}", productPage.hasPrevious());
+
+
+            // 구매자가 접근할 때
+            return "myshop";
+        }
+    }
+
     // 상품 목록 조회 (HTML 반환)
     @GetMapping("/myMarket")
     public String loadmyProduct(

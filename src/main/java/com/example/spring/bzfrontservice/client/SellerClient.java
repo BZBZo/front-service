@@ -112,4 +112,10 @@ public interface SellerClient {
 
     @PutMapping("/congdong/pay")
     void updateCongPayState(@RequestParam Long congId, @RequestParam Long memberNo);
+
+    @GetMapping("/myShop")
+    Page<ProdReadResponseDTO> findAllBySellerId(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam Long sellerId);
 }
