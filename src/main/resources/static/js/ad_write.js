@@ -1,4 +1,3 @@
-let memberNo = null;
 let token=localStorage.getItem("accessToken");
 let nowArea = 'side';
 
@@ -33,7 +32,6 @@ $(document).ready(() => {
     console.log('document.ready 실행됨'); // 디버깅 로그
     getToken()
         .then(() => {
-            console.log('getToken 성공');
             setupAjax();
             return checkToken();
         })
@@ -41,8 +39,14 @@ $(document).ready(() => {
             console.error('토큰을 가져오는 데 실패했습니다:', error);
         });
 
-    loadUserInfo();
-    document.getElementById('memberNo').value = memberNo;
+    loadUserInfo().then(({ userInfo, memberNo }) => {  // 구조 분해 할당 사용
+        if (!memberNo) {
+            alert('사용자 정보를 불러오고 있습니다. 잠시 후 다시 시도해주세요.');
+            return;
+        }
+        window.memberNo = memberNo; // 전역 변수로 저장
+    }).catch(error => console.error('Error loading user info:', error));
+
 });
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -104,7 +108,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const formData = new FormData(adForm);
 
-        console.log('formData :: ', formData);
+        // memberNo 값이 올바르게 들어가는지 확인
+        console.log("Before Append, memberNo:", memberNo);
+
+        formData.append("memberNo", String(memberNo).trim());
+
+        console.log('formData Entries:');
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ' :: ' + pair[1]); // 모든 formData 키-값 출력
+        }
 
         fetch('/api/ad/write', {
             method: 'POST',

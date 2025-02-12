@@ -22,21 +22,22 @@ public class AdApiController {
     @PostMapping(value = "/write", consumes = "multipart/form-data")
     public ResponseEntity<?> saveAd(@RequestParam("adArea") String adPosition,
                                     @RequestParam("startDate") String adStart,
-                                    @RequestParam("memberNo") Long seller_id,
+                                    @RequestParam("memberNo") String seller_id,
                                     @RequestParam("endDate") String adEnd,
                                     @RequestParam("adName") String adTitle,
                                     @RequestParam("adLink") String adUrl,
                                     @RequestParam("adImage") MultipartFile adImage) {
-        System.out.println("adPosition :: " + adPosition);
-        System.out.println("adStart :: " + adStart);
-        System.out.println("seller_id :: " + seller_id);
-        System.out.println("adEnd :: " + adEnd);
-        System.out.println("adTitle :: " + adTitle);
-        System.out.println("adUrl :: " + adUrl);
-        System.out.println("adImage :: " + adImage);
+        // seller_id 값 확인 (디버깅 로그)
+        System.out.println("Raw seller_id :: " + seller_id);
 
-        return adService.writeAd(adPosition, adStart,seller_id, adEnd, adTitle, adUrl, adImage);
+        // seller_id 값 전처리: 쉼표(`,`) 제거 후 변환
+        seller_id = seller_id.replaceAll(",", "").trim();
+
+        System.out.println("Processed seller_id :: " + seller_id);
+
+        return adService.writeAd(adPosition, adStart, Long.valueOf(seller_id), adEnd, adTitle, adUrl, adImage);
     }
+
 
     @PostMapping("/edit/{id}")
     public ResponseEntity<?> editAd(

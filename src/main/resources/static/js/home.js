@@ -1,99 +1,6 @@
-$(document).ready(() => {
-    getToken()
-        .then(() => {
-            setupAjax();
-            return checkToken();
-        })
-        .catch(error => {
-            console.error('토큰을 가져오는 데 실패했습니다:', error);
-        });
-
-    // 회원 정보 수정 버튼을 클릭 시 /webs/profile 로 이동
-    $('#profileEdit').click(() => {
-        window.location.href = '/webs/profile';
-    });
-
-    // 서버에서 상품 목록을 가져와서 동적으로 슬라이드 생성
-    $(document).ready(() => {
-        $.ajax({
-            url: '/loginSuccess', // 상품 데이터를 받아올 URL
-            method: 'GET',
-            success: function (response) {
-                // response에서 제품 목록을 가져오기
-                const products = response.products; // 전체 상품 목록
-                const congproducts = response.congproducts; // 공구 가능 상품 목록
-
-                // 관련 상품 슬라이드에 상품 추가
-                const relatedTrack = document.querySelector(".related-products__track");
-
-                // 기존 슬라이드 삭제
-                relatedTrack.innerHTML = '';
-
-                // 전체 상품 목록을 슬라이드로 추가
-                products.forEach(product => {
-                    const productSlide = document.createElement('li');
-                    productSlide.classList.add('related-products__slide');
-
-                    productSlide.innerHTML = `
-                    <div class="related-products__card">
-                        <div class="related-products__image">
-                            ${product.mainPicturePath ?
-                        `<img src="${product.mainPicturePath}" alt="상품 이미지">` :
-                        `<p>상품 이미지 없음</p>`}
-                        </div>
-                        <span class="related-products__badge" ${product.isCong ? '' : 'style="display:none;"'}>
-                            <img src="/images/group_yes.png" alt="공구 가능 아이콘">
-                        </span>
-                        <p class="related-products__name">${product.name}</p>
-                        <p class="related-products__price">${product.price} 원</p>
-                    </div>
-                `;
-                    relatedTrack.appendChild(productSlide);
-                });
-
-                // 공구 가능 상품 슬라이드 추가
-                const congTrack = document.querySelector(".cong-products__track");  // 별도로 공구 가능 상품을 위한 트랙
-
-                // 기존 슬라이드 삭제
-                congTrack.innerHTML = '';
-
-                // 공구 가능 상품 목록을 슬라이드로 추가
-                congproducts.forEach(product => {
-                    const productSlide = document.createElement('li');
-                    productSlide.classList.add('related-products__slide');
-
-                    productSlide.innerHTML = `
-                    <div class="related-products__card">
-                        <div class="related-products__image">
-                            ${product.mainPicturePath ?
-                        `<img src="${product.mainPicturePath}" alt="상품 이미지">` :
-                        `<p>상품 이미지 없음</p>`}
-                        </div>
-                        <span class="related-products__badge" ${product.isCong ? '' : 'style="display:none;"'}>
-                            <img src="/images/group_yes.png" alt="공구 가능 아이콘">
-                        </span>
-                        <p class="related-products__name">${product.name}</p>
-                        <p class="related-products__price">${product.price} 원</p>
-                    </div>
-                `;
-                    congTrack.appendChild(productSlide);
-                });
-
-                // 슬라이드 갱신 후 슬라이더 초기화 (기존 슬라이더 복제 로직)
-                replicateRelatedSlides();
-            },
-            error: function (error) {
-                console.error("상품 목록을 가져오는 데 실패했습니다:", error);
-            }
-        });
-    });
-
-    getAd();
-
-});
-
 document.addEventListener("DOMContentLoaded", () => {
     console.log("🚀 [DEBUG] DOMContentLoaded 실행됨!");
+    getAd();
 
     // ************ 메인 3열 배너 슬라이드 ************
     const sliderTrack = document.querySelector(".slider-track");
@@ -227,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ✅ OOTD 슬라이드 적용
     setupSlider("ootd-slider-track", 343, 10, 3);
+    setupSlider("active-products__track", 185, 15, 5);
     setupSlider("cong-products__track", 185, 15, 5);
     setupSlider("related-products__track", 185, 15, 5);
 
@@ -325,7 +233,7 @@ function getAd() {
             });
 
             // 슬라이드 애니메이션 적용을 위한 초기화
-            resetSliderAnimation();
+            // resetSliderAnimation();
         },
         error: function (error) {
             console.error('광고를 가져오는데 실패했습니다 : ', error);
@@ -333,10 +241,10 @@ function getAd() {
     });
 }
 
-function resetSliderAnimation() {
-    const sliderTrack = $('.slider-track');
-    sliderTrack.css('transition', 'none');  // 애니메이션을 잠시 비활성화
-    setTimeout(function() {
-        sliderTrack.css('transition', 'transform 0.5s ease-in-out');  // 애니메이션을 다시 활성화
-    }, 50);  // 잠시 후 애니메이션 복원
-}
+// function resetSliderAnimation() {
+//     const sliderTrack = $('.slider-track');
+//     sliderTrack.css('transition', 'none');  // 애니메이션을 잠시 비활성화
+//     setTimeout(function() {
+//         sliderTrack.css('transition', 'transform 0.5s ease-in-out');  // 애니메이션을 다시 활성화
+//     }, 50);  // 잠시 후 애니메이션 복원
+// }

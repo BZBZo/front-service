@@ -33,8 +33,11 @@ public class UserController {
     public String home(Model model) {
         // 전체 상품 가져오기
         Page<ProdReadResponseDTO> products = sellerService.findAll(0, 10);
+
+        List<ProdReadResponseDTO> allProducts = sellerService.getAllProducts();
+
         // 공구 가능 상품 필터링
-        List<ProdReadResponseDTO> congproducts = products.getContent().stream()
+        List<ProdReadResponseDTO> congproducts = allProducts.stream()
                 .filter(ProdReadResponseDTO::isCong)
                 .collect(Collectors.toList());
 
