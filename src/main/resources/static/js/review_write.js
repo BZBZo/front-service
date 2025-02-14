@@ -73,7 +73,7 @@ function renderImagePreviews() {
         imgElement.style.objectFit = "cover";
         imgElement.style.borderRadius = "10px";
 
-        deleteButton.classList.add("delete-button");
+        deleteButton.classList.add("cancel-button");
         deleteButton.textContent = "×";
         deleteButton.onclick = function () {
             removeImage(index);
