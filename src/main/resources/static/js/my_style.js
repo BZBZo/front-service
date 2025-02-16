@@ -1,15 +1,5 @@
 $(document).ready(function () {
-    let token = localStorage.getItem('accessToken') || "";
-    if (token && !token.startsWith('Bearer ')) {
-        token = `Bearer ${token}`;
-    }
 
-    const modal = $("#ootdModal");
-    const modalContent = $("#modalOotdContent");
-    const closeModalBtn = $(".close-btn");
-
-    console.log("모달 초기 상태 확인:", modal);
-    modal.hide();  // 모달 숨기기
 
     // 사용자 정보 로드
     loadUserInfo().then(({ userInfo, memberNo }) => {
@@ -22,6 +12,14 @@ $(document).ready(function () {
         console.error('Error loading user info:', error);
         alert('사용자 정보를 불러오는 데 실패했습니다. 잠시 후 다시 시도해 주세요.');
     });
+
+    const modal = $("#ootdModal");
+    const modalContent = $("#modalOotdContent");
+    const closeModalBtn = $(".close-btn");
+
+    console.log("모달 초기 상태 확인:", modal);
+    modal.hide();  // 모달 숨기기
+
 
     // OOTD 컨테이너 클릭 시 모달 띄우기
     $(document).on("click", ".ootd-container", function () {
