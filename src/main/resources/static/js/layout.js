@@ -275,3 +275,16 @@ $(document).ready(function () {
 
 
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const alarmButton = document.getElementById('alarm-btn');
+
+    console.log('alarm button:', alarmButton); // 버튼이 정상적으로 선택되었는지 확인
+
+    if (alarmButton) {
+        alarmButton.addEventListener('click', function () {
+                window.location.href = '/customer/alarm';
+
+        });
+    }
+});
