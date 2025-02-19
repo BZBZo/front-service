@@ -88,14 +88,6 @@ public class CustomerController {
         return "payment2";
     }
 
-    // 주문 데이터 저장 로직 (샘플 메서드)
-    private void saveOrderToDatabase(PurchaseDTO dto) {
-        // 예제: 데이터베이스에 저장
-        // 실제로는 서비스 클래스에서 처리하는 것이 더 적합
-        System.out.println("Saving order to database...");
-        System.out.println("Order Details: " + dto);
-    }
-
     @GetMapping("/purchase/success")
     public String successPayment(@RequestParam String paymentKey,
                                  @RequestParam String orderId,
@@ -233,5 +225,11 @@ public class CustomerController {
         model.addAttribute("youcong", youcong);
         model.addAttribute("memberNo", memberNo);
         return "congdongpick";
+    }
+
+    @GetMapping("/alarm")
+    public String congAlarm(){
+
+        return "congAl";
     }
 }
