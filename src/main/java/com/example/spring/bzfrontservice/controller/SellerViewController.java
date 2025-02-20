@@ -134,28 +134,6 @@ public class SellerViewController {
         return "product_detail"; // product_detail.html 반환
     }
 
-    // 상품 상세 페이지
-    @GetMapping("/detail/{id}")
-    public String productDetail(@PathVariable("id") Long productId, Model model) {
-        // 서비스 계층을 통해 상품 상세 정보 가져오기
-        ProdReadResponseDTO product = sellerService.getProductDetails(productId);
-        Integer count = customerService.countReview(productId);
-        log.info("상품 상세 정보: {}", product);
-        SecurityUserDTO sellerInfo= userService.loadMemberDetail(product.getSellerId());
-
-        // **공동구매 진행 정보 가져오기**
-        List<CongDongIngDTO> congdongIngList = congdongService.getCongDongIngByProductId(productId);
-        log.info("공동구매 진행 목록: {}", congdongIngList);
-
-        // 모델에 데이터 추가
-        model.addAttribute("reviewCount", count);
-        model.addAttribute("product", product);
-        model.addAttribute("sellerInfo", sellerInfo);
-        model.addAttribute("congdongIngList", congdongIngList); // congsList → congdongIngList 변경
-
-        return "product_detail_all";
-    }
-
     // 상품 수정 페이지
     @GetMapping("/edit/{id}")
     public String editProduct(@PathVariable Long id, Model model) {
