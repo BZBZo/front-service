@@ -24,7 +24,7 @@
             <!-- 상품 목록 -->
             <div id="productuu" class="product-uu">
                 <div th:each="product : ${products}">
-                    <a th:href="@{/product/detail/{id}(id=${product.id})}">
+                    <a th:href="@{/customer/product/detail/{id}(id=${product.id})}">
                         <img th:src="@{${product.mainPicturePath}}" th:alt="${product.name}" />
                     </a>
                     <span th:text="${product.name}"></span>

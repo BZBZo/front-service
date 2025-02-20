@@ -1,13 +1,7 @@
 package com.example.spring.bzfrontservice.controller;
 
-import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
-import com.example.spring.bzfrontservice.dto.PurchaseDTO;
-import com.example.spring.bzfrontservice.dto.ReviewDTO;
-import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
-import com.example.spring.bzfrontservice.service.CongdongService;
-import com.example.spring.bzfrontservice.service.CustomerService;
-import com.example.spring.bzfrontservice.service.PurchaseService;
-import com.example.spring.bzfrontservice.service.UserService;
+import com.example.spring.bzfrontservice.dto.*;
+import com.example.spring.bzfrontservice.service.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,9 +22,32 @@ import java.util.*;
 @RequestMapping("/customer")
 public class CustomerController {
     private final UserService userService;
+    private final SellerService sellerService;
     private final CustomerService customerService;
     private final PurchaseService purchaseService;
     private final CongdongService congdongService;
+
+    // 상품 상세 페이지
+    @GetMapping("/product/detail/{id}")
+    public String productDetail(@PathVariable("id") Long productId, Model model) {
+        // 서비스 계층을 통해 상품 상세 정보 가져오기
+        ProdReadResponseDTO product = sellerService.getProductDetails(productId);
+        Integer count = customerService.countReview(productId);
+        log.info("상품 상세 정보: {}", product);
+        SecurityUserDTO sellerInfo= userService.loadMemberDetail(product.getSellerId());
+
+        // **공동구매 진행 정보 가져오기**
+        List<CongDongIngDTO> congdongIngList = congdongService.getCongDongIngByProductId(productId);
+        log.info("공동구매 진행 목록: {}", congdongIngList);
+
+        // 모델에 데이터 추가
+        model.addAttribute("reviewCount", count);
+        model.addAttribute("product", product);
+        model.addAttribute("sellerInfo", sellerInfo);
+        model.addAttribute("congdongIngList", congdongIngList); // congsList → congdongIngList 변경
+
+        return "product_detail_all";
+    }
 
     @GetMapping("/cart/list")
     public String cart(){

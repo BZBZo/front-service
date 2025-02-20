@@ -26,7 +26,7 @@
     <!-- ✅ 전체 공구 리스트 -->
     <div class="product-list all-products-container">
         <div class="all-products" th:each="product : ${products}" th:data-condition="${product.condition}">
-            <a th:href="@{/product/detail/{id}(id=${product.id})}">
+            <a th:href="@{/customer/product/detail/{id}(id=${product.id})}">
                 <img th:src="@{${product.mainPicturePath}}" th:alt="${product.name}">
             </a>
             <div class="product-details">
@@ -47,7 +47,7 @@
     <div class="product-list active-products-container" style="display: none;">
         <div class="active-products" th:each="active : ${activeProducts}" th:data-condition="${active.condition}"
              th:data-congs="${active.congs}" th:data-startAt="${active.startAt}" th:data-product-id="${active.productId}">
-            <a th:href="@{/product/detail/{id}(id=${active.productId})}">
+            <a th:href="@{/customer/product/detail/{id}(id=${active.productId})}">
                 <img th:src="@{${active.mainPicturePath}}" th:alt="${active.name}">
             </a>
             <div class="product-details">
