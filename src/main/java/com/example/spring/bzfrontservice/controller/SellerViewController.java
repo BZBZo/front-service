@@ -28,7 +28,6 @@ public class SellerViewController {
     private final SellerService sellerService;
     private final CongdongService congdongService;
     private final UserService userService;
-    private final CustomerService customerService;
 
     @GetMapping("/list")
     public String productTotalList(@RequestParam(defaultValue = "1") int page, Model model) {
