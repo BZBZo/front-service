@@ -24,8 +24,6 @@ import java.util.Map;
 public class UserApiController {
     private final UserService userService;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserApiController.class);
-
     @GetMapping("/members")
     public List<Map<String, Object>> allMembers() {
         return userService.allMembers();
