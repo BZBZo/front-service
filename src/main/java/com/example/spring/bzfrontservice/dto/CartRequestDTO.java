@@ -10,17 +10,7 @@ import lombok.Setter;
 public class CartRequestDTO {
     private Long productId;
     private Long memberNo;
-    private Integer quantity; // 추가된 필드
-
-    // 기본 생성자
-    public CartRequestDTO() {
-    }
-
-    public CartRequestDTO(Long productId, Long memberNo, Integer quantity) {
-        this.productId = productId;
-        this.memberNo = memberNo;
-        this.quantity = quantity;
-    }
+    private Integer quantity;
 }
 
 
