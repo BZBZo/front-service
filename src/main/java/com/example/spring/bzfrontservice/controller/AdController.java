@@ -3,8 +3,6 @@ package com.example.spring.bzfrontservice.controller;
 import com.example.spring.bzfrontservice.dto.AdDTO;
 import com.example.spring.bzfrontservice.service.AdService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
