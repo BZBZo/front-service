@@ -1,7 +1,6 @@
 package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.client.SellerClient;
-import com.example.spring.bzfrontservice.dto.OotdRequestDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
 import com.example.spring.bzfrontservice.service.OotdIntegrationService;
 import lombok.RequiredArgsConstructor;

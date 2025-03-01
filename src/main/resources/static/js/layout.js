@@ -195,7 +195,7 @@ $(document).ready(function () {
             }
 
             // 공동구매 내역 요청
-            fetch('/customer/congdong/history', {
+            fetch('/product/customer/congdong/history', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ $(document).ready(function () {
                     return response.text(); // HTML 응답 처리
                 })
                 .then((html) => {
-                    history.pushState(null, '', '/customer/congdong/history'); // URL 업데이트
+                    history.pushState(null, '', '/product/customer/congdong/history'); // URL 업데이트
                     document.open();
                     document.write(html); // HTML 렌더링
                     document.close();
