@@ -61,7 +61,7 @@ $(document).ready(function () {
         modalContent.on("click", ".ootd-product-item", function () {
             let productId = $(this).find("#productId").val();
             if (productId) {
-                window.location.href = `/customer/product/detail/${productId}`;
+                window.location.href = `/webs/customer/product/detail/${productId}`;
             }
         });
     }

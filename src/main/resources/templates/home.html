@@ -50,7 +50,7 @@
                          th:data-condition="${active.condition}"
                          th:data-congs="${active.congs}">
                         <div class="related-products__image">
-                            <a th:href="@{/customer/product/detail/{id}(id=${active.productId})}">
+                            <a th:href="@{/webs/customer/product/detail/{id}(id=${active.productId})}">
                                 <img th:src="@{${active.mainPicturePath}}" alt="공구 상품 이미지">
                             </a>
                         </div>
@@ -87,7 +87,7 @@
                 <li class="related-products__slide" th:each="product : ${congproducts}">
                     <div class="related-products__card">
                         <div class="related-products__image">
-                            <a th:href="@{/customer/product/detail/{id}(id=${product.id})}">
+                            <a th:href="@{/webs/customer/product/detail/{id}(id=${product.id})}">
                                 <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
                             </a>
                         </div>
@@ -141,7 +141,7 @@
                 <li class="related-products__slide" th:each="product : ${products}">
                     <div class="related-products__card">
                         <div class="related-products__image">
-                            <a th:href="@{/customer/product/detail/{id}(id=${product.id})}">
+                            <a th:href="@{/webs/customer/product/detail/{id}(id=${product.id})}">
                                 <img th:src="@{${product.mainPicturePath}}" alt="상품 이미지">
                             </a>
                         </div>
