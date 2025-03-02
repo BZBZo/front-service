@@ -53,7 +53,7 @@ function deleteProduct(productId) {
 
     $.ajax({
         type: 'DELETE',
-        url: '/customer/product/detail/' + productId,
+        url: '/product/detail/' + productId,
         headers: {
             'Authorization': `Bearer ${token}`
         },

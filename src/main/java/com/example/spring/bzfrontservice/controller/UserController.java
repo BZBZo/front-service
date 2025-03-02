@@ -3,25 +3,30 @@ package com.example.spring.bzfrontservice.controller;
 import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.OotdResponseDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
-import com.example.spring.bzfrontservice.service.OotdIntegrationService;
-import com.example.spring.bzfrontservice.service.SellerService;
+import com.example.spring.bzfrontservice.dto.SecurityUserDTO;
+import com.example.spring.bzfrontservice.service.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/webs")
 public class UserController {
-
+    private final UserService userService;
     private final SellerService sellerService;
+    private final CustomerService customerService;
+    private final CongdongService congdongService;
     private final OotdIntegrationService ootdService;
 
     @GetMapping("/signin")
@@ -78,5 +83,27 @@ public class UserController {
     public String profile(){
 
         return "profile";
+    }
+
+    // 상품 상세 페이지
+    @GetMapping("/customer/product/detail/{id}")
+    public String productDetail(@PathVariable("id") Long productId, Model model) {
+        // 서비스 계층을 통해 상품 상세 정보 가져오기
+        ProdReadResponseDTO product = sellerService.getProductDetails(productId);
+        Integer count = customerService.countReview(productId);
+        log.info("상품 상세 정보: {}", product);
+        SecurityUserDTO sellerInfo= userService.loadMemberDetail(product.getSellerId());
+
+        // **공동구매 진행 정보 가져오기**
+        List<CongDongIngDTO> congdongIngList = congdongService.getCongDongIngByProductId(productId);
+        log.info("공동구매 진행 목록: {}", congdongIngList);
+
+        // 모델에 데이터 추가
+        model.addAttribute("reviewCount", count);
+        model.addAttribute("product", product);
+        model.addAttribute("sellerInfo", sellerInfo);
+        model.addAttribute("congdongIngList", congdongIngList); // congsList → congdongIngList 변경
+
+        return "product_detail_all";
     }
 }
