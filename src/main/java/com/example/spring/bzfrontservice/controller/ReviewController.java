@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/customer")
-public class CustomerController {
+public class ReviewController {
     private final CustomerService customerService;
 
     @GetMapping("/history/review/{productId}/{purchaseId}")
