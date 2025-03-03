@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/customer")
 @RequiredArgsConstructor
-public class CustomerApiController {
+public class ReviewApiController {
 
     private final CustomerService customerService;
 
