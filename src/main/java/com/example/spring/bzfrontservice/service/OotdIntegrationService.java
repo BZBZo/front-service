@@ -1,12 +1,10 @@
 package com.example.spring.bzfrontservice.service;
 
-import com.example.spring.bzfrontservice.client.AuthClient;
 import com.example.spring.bzfrontservice.client.OotdClient;
 import com.example.spring.bzfrontservice.client.SellerClient;
 import com.example.spring.bzfrontservice.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
