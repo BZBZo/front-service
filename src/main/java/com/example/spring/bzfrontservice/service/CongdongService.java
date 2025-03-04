@@ -3,17 +3,14 @@ package com.example.spring.bzfrontservice.service;
 import com.example.spring.bzfrontservice.client.SellerClient;
 import com.example.spring.bzfrontservice.dto.CongDongIngDTO;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
-import com.example.spring.bzfrontservice.dto.ProductDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

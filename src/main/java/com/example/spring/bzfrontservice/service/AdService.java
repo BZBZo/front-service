@@ -2,7 +2,6 @@ package com.example.spring.bzfrontservice.service;
 
 import com.example.spring.bzfrontservice.client.AdClient;
 import com.example.spring.bzfrontservice.dto.AdDTO;
-import com.example.spring.bzfrontservice.dto.AdEditRequestDTO;
 import com.example.spring.bzfrontservice.dto.GetResolvesTimesRequestDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
