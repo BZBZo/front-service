@@ -23,7 +23,7 @@ public class CartApiController {
     public ResponseEntity<String> addToCart(
             @RequestBody CartRequestDTO cartRequest,
             @RequestHeader("Authorization") String token) {
-        customerService.addToCart(cartRequest, token);
+        cartService.addToCart(cartRequest, token);
         return ResponseEntity.ok("장바구니에 추가되었습니다.");
     }
 
