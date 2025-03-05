@@ -1,7 +1,6 @@
 package com.example.spring.bzfrontservice.service;
 
 import com.example.spring.bzfrontservice.client.CustomerClient;
-import com.example.spring.bzfrontservice.dto.CartRequestDTO;
 import com.example.spring.bzfrontservice.dto.ReviewDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,10 +15,6 @@ import java.util.Map;
 public class CustomerService {
 
     private final CustomerClient customerClient;
-
-    public void addToCart(CartRequestDTO cartRequest, String token) {
-        customerClient.addToCart(cartRequest, token);
-    }
 
     public ResponseEntity<Map<String, String>> writeReview(Long memberNo, Long productId, Long purchaseId, String content, MultipartFile[] images) {
         return customerClient.writeReview(memberNo, productId, purchaseId, content, images);
