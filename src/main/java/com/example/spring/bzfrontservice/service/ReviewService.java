@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class CustomerService {
+public class ReviewService {
 
     private final CustomerClient customerClient;
 

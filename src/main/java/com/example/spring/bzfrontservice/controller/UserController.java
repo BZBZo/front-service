@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class UserController {
     private final UserService userService;
     private final SellerService sellerService;
-    private final CustomerService customerService;
+    private final ReviewService reviewService;
     private final CongdongService congdongService;
     private final OotdIntegrationService ootdService;
 
@@ -90,7 +90,7 @@ public class UserController {
     public String productDetail(@PathVariable("id") Long productId, Model model) {
         // 서비스 계층을 통해 상품 상세 정보 가져오기
         ProdReadResponseDTO product = sellerService.getProductDetails(productId);
-        Integer count = customerService.countReview(productId);
+        Integer count = reviewService.countReview(productId);
         log.info("상품 상세 정보: {}", product);
         SecurityUserDTO sellerInfo= userService.loadMemberDetail(product.getSellerId());
 
