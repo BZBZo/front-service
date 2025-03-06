@@ -3,7 +3,7 @@ package com.example.spring.bzfrontservice.controller;
 import com.example.spring.bzfrontservice.dto.CartRequestDTO;
 import com.example.spring.bzfrontservice.dto.CartResponseDTO;
 import com.example.spring.bzfrontservice.service.CartService;
-import com.example.spring.bzfrontservice.service.CustomerService;
+import com.example.spring.bzfrontservice.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/customer")
 @RequiredArgsConstructor
 public class CartApiController {
-    private final CustomerService customerService;
+    private final ReviewService reviewService;
     private final CartService cartService;
 
     @PostMapping("/cart/add")

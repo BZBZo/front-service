@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/customer")
 public class ReviewController {
-    private final CustomerService customerService;
+    private final ReviewService reviewService;
 
     @GetMapping("/history/review/{productId}/{purchaseId}")
     public String writeReview(@PathVariable Long productId,
@@ -36,7 +36,7 @@ public class ReviewController {
         model.addAttribute("purchaseId", purchaseId);
         model.addAttribute("memberNo", memberNo);
 
-        ReviewDTO review = customerService.findReviewByIds(purchaseId, productId, memberNo);
+        ReviewDTO review = reviewService.findReviewByIds(purchaseId, productId, memberNo);
         model.addAttribute("review", review);
 
         return "review_detail";

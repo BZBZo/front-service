@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReviewApiController {
 
-    private final CustomerService customerService;
+    private final ReviewService reviewService;
 
     @PostMapping(value = "/history/review/{productId}/{purchaseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, String>> uploadReview(
@@ -51,7 +51,7 @@ public class ReviewApiController {
             log.info("📌 업로드된 이미지 개수: {}", validImages.size());
 
             // 서비스 호출 - FeignClient 연결 (필요에 따라 배열이나 리스트 중 한 타입을 사용)
-            ResponseEntity<Map<String, String>> serverResponse = customerService.writeReview(
+            ResponseEntity<Map<String, String>> serverResponse = reviewService.writeReview(
                     memberNo, productId, purchaseId, content, validImages.toArray(new MultipartFile[0]));
 
             // 서버 응답이 OK일 경우 처리
@@ -84,7 +84,7 @@ public class ReviewApiController {
 
         long startTime = System.currentTimeMillis(); // 시작 시간 기록
 
-        Page<ReviewDTO> reviewPage = customerService.findReviewsByProductId(productId, page, size);
+        Page<ReviewDTO> reviewPage = reviewService.findReviewsByProductId(productId, page, size);
         List<ReviewDTO> reviews = reviewPage.getContent();
 
         int totalPages = reviewPage.getTotalPages();
