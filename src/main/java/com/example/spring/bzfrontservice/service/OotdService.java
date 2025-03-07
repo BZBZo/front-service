@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OotdIntegrationService {
+public class OotdService {
 
     private final OotdClient ootdClient;
     private final SellerClient sellerClient;

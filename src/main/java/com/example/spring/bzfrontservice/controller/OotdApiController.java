@@ -2,7 +2,7 @@ package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.client.SellerClient;
 import com.example.spring.bzfrontservice.dto.ProdReadResponseDTO;
-import com.example.spring.bzfrontservice.service.OotdIntegrationService;
+import com.example.spring.bzfrontservice.service.OotdService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/ootd")
 public class OotdApiController {
-    private final OotdIntegrationService ootdIntegrationService;
+    private final OotdService ootdService;
     private final SellerClient sellerClient;
 
     @PostMapping(value = "/write", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -31,7 +31,7 @@ public class OotdApiController {
                                       @RequestPart("image") MultipartFile image,
                                       @RequestHeader(value = "Authorization", required = false) String authorization){
         System.out.println("여기에는 도착? memberNo: " + memberNo + "tags: " + tags + "relProd: " + relProd);
-        return ootdIntegrationService.createOotd(memberNo ,tags,relProd,image,authorization);
+        return ootdService.createOotd(memberNo ,tags,relProd,image,authorization);
     }
 
     @GetMapping("/search/products")
@@ -52,10 +52,10 @@ public class OotdApiController {
             @PathVariable Long memberNo) {
 
         // 🔹 좋아요 상태 토글 (true = 좋아요 추가, false = 좋아요 취소)
-        boolean isLiked = ootdIntegrationService.toggleLike(memberNo, ootdId);
+        boolean isLiked = ootdService.toggleLike(memberNo, ootdId);
 
         // 🔹 현재 좋아요 개수 가져오기
-        int heartNum = ootdIntegrationService.getHeartNum(ootdId);
+        int heartNum = ootdService.getHeartNum(ootdId);
 
         // 🔹 응답 데이터 생성
         Map<String, Object> response = new HashMap<>();

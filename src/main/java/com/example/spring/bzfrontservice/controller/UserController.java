@@ -27,7 +27,7 @@ public class UserController {
     private final SellerService sellerService;
     private final ReviewService reviewService;
     private final CongdongService congdongService;
-    private final OotdIntegrationService ootdService;
+    private final OotdService ootdService;
 
     @GetMapping("/signin")
     public String login() {

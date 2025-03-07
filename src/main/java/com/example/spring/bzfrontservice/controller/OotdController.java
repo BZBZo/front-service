@@ -1,7 +1,7 @@
 package com.example.spring.bzfrontservice.controller;
 
 import com.example.spring.bzfrontservice.dto.OotdResponseDTO;
-import com.example.spring.bzfrontservice.service.OotdIntegrationService;
+import com.example.spring.bzfrontservice.service.OotdService;
 import com.example.spring.bzfrontservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,14 +19,14 @@ import java.util.Map;
 @RequestMapping("/ootd")
 public class OotdController {
 
-    private final OotdIntegrationService ootdIntegrationService;
+    private final OotdService ootdService;
     private final UserService userService;
 
     @GetMapping("/list")
     public String getOotdListPage(@CookieValue(value = "Authorization", required = false) String authorization,
                                   @RequestParam(value = "selectedOotdId", required = false) Long selectedOotdId,
                                   Model model) {
-        List<OotdResponseDTO> ootdList = ootdIntegrationService.getOotdListWithDetails(authorization);
+        List<OotdResponseDTO> ootdList = ootdService.getOotdListWithDetails(authorization);
         model.addAttribute("ootdList", ootdList);
 
         if (selectedOotdId != null) {
@@ -57,7 +57,7 @@ public class OotdController {
         Map<String, Serializable> userInfo = userService.fetchUserInfo(authorization);
 
             // 특정 사용자의 OOTD 리스트 가져오기
-            List<OotdResponseDTO> userOotds = ootdIntegrationService.getOotdsByUserId(id, authorization);
+            List<OotdResponseDTO> userOotds = ootdService.getOotdsByUserId(id, authorization);
             log.info("Fetched OOTDs: {}", userOotds);  // OOTD 리스트 로그 추가
 
             model.addAttribute("userId", id);
