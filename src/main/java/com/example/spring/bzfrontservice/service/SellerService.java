@@ -125,14 +125,6 @@ public class SellerService {
         deleteCongdong(id);
     }
 
-    // 상품 수정 정보 조회
-    public ProdReadResponseDTO getProductEditInfo(Long id) {
-        log.info("Fetching product edit info for product ID: {}", id);
-
-        // SellerClient를 통해 상품 수정 정보를 가져옵니다.
-        return sellerClient.getProductEdit(id); // 클라이언트 메소드 호출
-    }
-
     // 기냥 상품 상세 조회
     public ProdReadResponseDTO getProductDetails(Long id) {
         try {

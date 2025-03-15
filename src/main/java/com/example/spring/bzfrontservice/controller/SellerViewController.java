@@ -114,7 +114,7 @@ public class SellerViewController {
     @GetMapping("/edit/{id}")
     public String editProduct(@PathVariable Long id, Model model) {
         log.info("Editing product with ID: {}", id);
-        ProdReadResponseDTO product = sellerService.getProductEditInfo(id);
+        ProdReadResponseDTO product = sellerService.getProductDetails(id);
         log.info("Editing product: {}", product);
         model.addAttribute("product", product);
         return "product_edit";
