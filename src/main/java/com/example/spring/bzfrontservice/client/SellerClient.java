@@ -49,10 +49,6 @@ public interface SellerClient {
     @GetMapping("/detail/{id}")
     ProdReadResponseDTO loadProductDetails(@PathVariable Long id);
 
-    // 상품 수정용 클라이언트
-    @GetMapping("/edit/{id}")
-    ProdReadResponseDTO getProductEdit(@PathVariable("id") Long id);
-
     // 판매자 상품 상세 조회 (GET)
     @GetMapping("/detail/po/{id}")
     ProdReadResponseDTO loadProductDetail(
