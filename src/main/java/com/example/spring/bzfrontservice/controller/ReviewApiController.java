@@ -1,5 +1,6 @@
 package com.example.spring.bzfrontservice.controller;
 
+import com.example.spring.bzfrontservice.client.CustomerClient;
 import com.example.spring.bzfrontservice.dto.*;
 import com.example.spring.bzfrontservice.service.*;
 import feign.FeignException;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class ReviewApiController {
 
     private final ReviewService reviewService;
+    private final CustomerClient customerClient;
 
     @PostMapping(value = "/history/review/{productId}/{purchaseId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Map<String, String>> uploadReview(
@@ -106,6 +108,19 @@ public class ReviewApiController {
         System.out.println("Page load time: " + loadTime + " ms"); // 로드 시간 출력
 
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/history/review/detail")
+    void deleteReviewByIds(
+            @RequestParam("purchaseId") Long purchaseId,
+            @RequestParam("productId") Long productId,
+            @RequestParam("memberNo") Long memberNo){
+        try {
+            customerClient.deleteReviewByIds(purchaseId, productId, memberNo);
+        }
+        catch (FeignException.FeignClientException e){
+            System.out.println("리뷰 삭제 실패");
+        }
     }
 
 }
