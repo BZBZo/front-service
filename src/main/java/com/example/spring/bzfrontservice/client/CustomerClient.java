@@ -64,5 +64,11 @@ public interface CustomerClient {
             @RequestParam("purchaseId") Long purchaseId,
             @RequestParam("productId") Long productId,
             @RequestParam("memberNo") Long memberNo);
+
+    @DeleteMapping("/history/review/detail")
+    void deleteReviewByIds(
+            @RequestParam("purchaseId") Long purchaseId,
+            @RequestParam("productId") Long productId,
+            @RequestParam("memberNo") Long memberNo);
 }
 
