@@ -33,7 +33,7 @@
                             <img th:src="${imgUrl}"
                                  alt="리뷰 이미지"
                                  class="review-image"
-                                 th:style="${imgUrl != null} ? 'display: block;' : 'display: none;'" />
+                                 th:style="${imgUrl != null} ? 'display: block;' : 'display: none;'"/>
                         </div>
                     </div>
                 </div>
@@ -47,8 +47,10 @@
         </div>
 
         <div class="review-button-container">
-            <a class="review-button" th:href="@{/review/edit/{prodid}/{purchid}(prodid=${productId}, purchid=${purchaseId})}">수정하기</a>
-            <button class="review-button delete-button" id="deleteButton" type="button">삭제하기</button>
+            <a class="review-button"
+               th:href="@{/review/edit/{prodid}/{purchid}(prodid=${productId}, purchid=${purchaseId})}">수정하기</a>
+            <a class="review-button delete-button" id="deleteButton"
+               th:href="@{/customer/history/review/detail/{purchid}/{prodid}/{memberNo} (purchid=${purchaseId}, prodid=${productId}, memberNo=${memberNo}) }">삭제하기</a>
         </div>
     </form>
 </main>
