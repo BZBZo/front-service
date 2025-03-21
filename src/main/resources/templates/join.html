@@ -14,15 +14,15 @@
 <section class="signup-section">
 <form id="signupForm" class="form-container" style="display:none;">
 
-    <input type="text" id="provider" name="provider" th:value="${provider}" class="hidden" readonly><br>
+    <!-- 파라미터가 없어도 안전하게 처리되도록 수정 -->
+    <input type="text" id="provider" name="provider" th:value="${provider} ?: 'none'" class="hidden" readonly><br>
     <div class="social-buttons">
         <img src="/images/google-icon.png" alt="Google" class="social-icon" id="google-icon">
         <img src="/images/naver-icon.png" alt="Naver" class="social-icon" id="naver-icon">
         <img src="/images/kakao-icon.png" alt="KakaoTalk" class="social-icon" id="kakao-icon">
+        <img src="/images/logo.png" alt="Email Signup" class="social-icon" id="email-signup">
     </div>
     <hr class="divider">
-    <!-- 자체 회원가입 버튼 추가 -->
-    <button type="button" id="email-signup" class="email-signup-button">이메일로 가입하기</button>
 
     <div class="tabs">
         <div class="tab business-tab active role-button" data-role="ROLE_SELLER">
@@ -39,7 +39,8 @@
 
     <input type="hidden" id="role" name="role">
     <div class="input-container">
-        <input type="email" id="email" name="email" th:value="${email}" readonly class="input-field"><br>
+        <!-- 이메일 입력칸 (readonly, 이메일 로그인일 때는 수정되도록 JS에서 unlock할 수도 있음) -->
+        <input type="email" id="email" name="email" th:value="${email} ?: ''" readonly class="input-field"><br>
     </div>
     <div id="sellerContainer">
 

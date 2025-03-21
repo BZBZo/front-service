@@ -31,195 +31,151 @@ $(document).ready(() => {
         $('#customerPhone').val('');
     }
 
-    // 이메일 회원가입 버튼 클릭 시 폼 표시
-    $('#email-signup').click(function() {
+    function initializeSignupFormEvents() {
+        $('#signupForm').on('click', '.role-button', function () {
+            $('.role-button').css('background-color', '');
+            $(this).css('background-color', '#4CAF50');
+
+            let role = $(this).data('role');
+            $('#role').val(role);
+
+            if (role === 'ROLE_SELLER') {
+                $('#sellerContainer').show();
+                $('#customerContainer').hide();
+                resetCustomerInputs();
+                resetValidationStates();
+                validationStates.nicknameValid = true;
+                validationStates.customerPhoneValid = true;
+            } else {
+                $('#sellerContainer').hide();
+                $('#customerContainer').show();
+                resetSellerInputs();
+                resetValidationStates();
+                validationStates.businessNumberValid = true;
+                validationStates.shopNameValid = true;
+                validationStates.sellerPhoneValid = true;
+            }
+            updateSignupButtonState();
+        });
+
+        $('#dupliBusinessNum').click(function () {
+            const businessNumber = $('#businessNumber').val();
+            $.post('/webs/check/businessNumber', { businessNumber }, function (response) {
+                alert(response.message);
+                validationStates.businessNumberValid = response.status === "available";
+                updateSignupButtonState();
+            });
+        });
+
+        $('#dupliShop').click(function () {
+            const shopName = $('#shopName').val();
+            $.post('/webs/check/nickname', { nickname: shopName }, function (response) {
+                alert(response.message);
+                validationStates.shopNameValid = response.status === "available";
+                updateSignupButtonState();
+            });
+        });
+
+        $('#dupliNick').click(function () {
+            const nickname = $('#nickname').val();
+            $.post('/webs/check/nickname', { nickname }, function (response) {
+                alert(response.message);
+                validationStates.nicknameValid = response.status === "available";
+                updateSignupButtonState();
+            });
+        });
+
+        $('#dupliSellerPhone').click(function () {
+            const sellerPhone = $('#sellerPhone').val();
+            $.post('/webs/check/sellerPhone', { sellerPhone }, function (response) {
+                alert(response.message);
+                validationStates.sellerPhoneValid = response.status === "available";
+                updateSignupButtonState();
+            });
+        });
+
+        $('#dupliCustomerPhone').click(function () {
+            const customerPhone = $('#customerPhone').val();
+            $.post('/webs/check/customerPhone', { customerPhone }, function (response) {
+                alert(response.message);
+                validationStates.customerPhoneValid = response.status === "available";
+                updateSignupButtonState();
+            });
+        });
+
+        $('#businessNumber, #shopName, #nickname, #sellerPhone, #customerPhone').on('input', function () {
+            const id = $(this).attr('id');
+            if (id && validationStates.hasOwnProperty(id + 'Valid')) {
+                validationStates[id + 'Valid'] = false;
+            } else {
+                // 개별 매핑
+                switch (id) {
+                    case 'businessNumber': validationStates.businessNumberValid = false; break;
+                    case 'shopName': validationStates.shopNameValid = false; break;
+                    case 'nickname': validationStates.nicknameValid = false; break;
+                    case 'sellerPhone': validationStates.sellerPhoneValid = false; break;
+                    case 'customerPhone': validationStates.customerPhoneValid = false; break;
+                }
+            }
+            updateSignupButtonState();
+        });
+
+        $('#signup').click(() => {
+            const roleValue = $('#role').val();
+            if (!roleValue) {
+                alert("회원 유형을 선택해주세요.");
+                return;
+            }
+
+            const formData = {
+                email: $('#email').val(),
+                provider: $('#provider').val(),
+                userRole: roleValue
+            };
+
+            if (roleValue === 'ROLE_SELLER') {
+                formData.businessNumber = $('#businessNumber').val();
+                formData.nickname = $('#shopName').val();
+                formData.phone = $('#sellerPhone').val();
+            } else if (roleValue === 'ROLE_CUSTOMER') {
+                formData.nickname = $('#nickname').val();
+                formData.phone = $('#customerPhone').val();
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/webs/join',
+                data: JSON.stringify(formData),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (response) {
+                    alert('회원가입이 성공했습니다.\n로그인해주세요.');
+                    window.location.href = response.url;
+                },
+                error: function (error) {
+                    console.error('오류 발생:', error);
+                    alert('회원가입 중 오류가 발생했습니다.');
+                    window.location.href = "/webs/signin";
+                }
+            });
+        });
+    }
+
+
+// provider가 'email'이면 바로 보여주고 종료
+    if (provider === 'none') {
         $('#provider').val('email');  // provider 값을 "email"로 설정
         $('#signupForm').show();
-    });
+        initializeSignupFormEvents(); // 이벤트 바인딩
+        return; // confirm 창 안 뜨도록 여기서 종료
+    }
 
-    // 소셜 로그인 시 회원가입 여부 확인
+    // 소셜 로그인인 경우에만 회원가입 confirm 띄우기
     if (provider !== 'email') {
         let confirmMessage = `${email}로 가입된 회원이 없습니다.\n${provider} 간편 가입을 진행하시겠습니까?`;
         if (confirm(confirmMessage)) {
             $('#signupForm').show();
-
-            $('#signupForm').on('click', '.role-button', function() {
-                $('.role-button').css('background-color', '');
-                $(this).css('background-color', '#4CAF50');
-
-                let role = $(this).data('role');
-                $('#role').val(role);
-
-                if (role === 'ROLE_SELLER') {
-                    $('#sellerContainer').show();
-                    $('#customerContainer').hide();
-                    resetCustomerInputs(); // 초기화 고객 입력
-                    resetValidationStates();
-                    validationStates.nicknameValid = true;
-                    validationStates.customerPhoneValid = true;
-                    updateSignupButtonState();
-                } else {
-                    $('#sellerContainer').hide();
-                    $('#customerContainer').show();
-                    resetSellerInputs(); // 초기화 판매자 입력
-                    resetValidationStates();
-                    validationStates.businessNumberValid = true;
-                    validationStates.shopNameValid = true;
-                    validationStates.sellerPhoneValid = true;
-                    updateSignupButtonState();
-                }
-
-            });
-
-            // 사업자번호 중복 검사
-            $('#dupliBusinessNum').click(function() {
-                var businessNumber = $('#businessNumber').val();
-                console.log(businessNumber);
-                $.ajax({
-                    url: '/webs/check/businessNumber',
-                    type: 'POST',
-                    data: { businessNumber: businessNumber },
-                    success: function(response) {
-                        alert(response.message);
-                        validationStates.businessNumberValid = response.status === "available";
-                        updateSignupButtonState();
-                    }
-                });
-            });
-
-            // 상점명 중복 검사
-            $('#dupliShop').click(function() {
-                var shopName = $('#shopName').val();
-                $.ajax({
-                    url: '/webs/check/nickname',
-                    type: 'POST',
-                    data: { nickname: shopName },
-                    success: function(response) {
-                        alert(response.message);
-                        validationStates.shopNameValid = response.status === "available";
-                        updateSignupButtonState();
-                    }
-                });
-            });
-
-            // 닉네임 중복 검사
-            $('#dupliNick').click(function() {
-                var nickname = $('#nickname').val();
-                $.ajax({
-                    url: '/webs/check/nickname',
-                    type: 'POST',
-                    data: { nickname: nickname },
-                    success: function(response) {
-                        alert(response.message);
-                        validationStates.nicknameValid = response.status === "available";
-                        updateSignupButtonState();
-                    }
-                });
-            });
-
-            // 판매자 전화번호 중복 검사
-            $('#dupliSellerPhone').click(function() {
-                var sellerPhone = $('#sellerPhone').val();
-                $.ajax({
-                    url: '/webs/check/sellerPhone',
-                    type: 'POST',
-                    data: { sellerPhone: sellerPhone },
-                    success: function(response) {
-                        alert(response.message);
-                        validationStates.sellerPhoneValid = response.status === "available";
-                        updateSignupButtonState();
-                    }
-                });
-            });
-
-            // 구매자 전화번호 중복 검사
-            $('#dupliCustomerPhone').click(function() {
-                var customerPhone = $('#customerPhone').val();
-                $.ajax({
-                    url: '/webs/check/customerPhone',
-                    type: 'POST',
-                    data: { customerPhone: customerPhone },
-                    success: function(response) {
-                        alert(response.message);
-                        validationStates.customerPhoneValid = response.status === 'available';
-                        updateSignupButtonState();
-                    }
-                });
-            });
-
-            // 입력 필드 변경 시 해당 검증 상태를 초기화
-            $('#businessNumber').on('input', function() {
-                validationStates.businessNumberValid = false;
-                updateSignupButtonState();
-            });
-
-            $('#shopName').on('input', function() {
-                validationStates.shopNameValid = false;
-                updateSignupButtonState();
-            });
-
-            $('#nickname').on('input', function() {
-                validationStates.nicknameValid = false;
-                updateSignupButtonState();
-            });
-
-            $('#sellerPhone').on('input', function() {
-                validationStates.sellerPhoneValid = false;
-                updateSignupButtonState();
-            });
-
-            $('#customerPhone').on('input', function() {
-                validationStates.customerPhoneValid = false;
-                updateSignupButtonState();
-            });
-
-            $('#signup').click(() => {
-                let roleValue = $('#role').val();
-                console.log("Role value on signup:", roleValue); // signup 클릭 시 role 값 확인
-
-                if (!roleValue) {
-                    alert("회원 유형을 선택해주세요.");
-                    return; // role 값이 없는 경우 요청을 중단
-                }
-
-                let formData = {
-                    email: $('#email').val(),
-                    provider: $('#provider').val(),
-                    userRole: roleValue // role 값 포함
-                };
-
-                console.log("가입 버튼이 클릭되었습니다.");  // 테스트 로그 추가
-                console.log("Role value on signup:", $('#role').val());
-
-                if ($('#role').val() === 'ROLE_SELLER') {
-                    formData.businessNumber = $('#businessNumber').val();
-                    formData.nickname = $('#shopName').val();
-                    formData.phone = $('#sellerPhone').val();
-                }
-
-                if ($('#role').val() === 'ROLE_CUSTOMER') {
-                    formData.nickname = $('#nickname').val();
-                    formData.phone = $('#customerPhone').val();
-                }
-
-                console.log("FormData before sending:", formData);
-                $.ajax({
-                    type: 'POST',
-                    url: '/webs/join',
-                    data: JSON.stringify(formData),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'json',
-                    success: function(response) {
-                        alert('회원가입이 성공했습니다.\n로그인해주세요.');
-                        window.location.href = response.url;
-                    },
-                    error: function(error) {
-                        console.error('오류 발생:', error);
-                        alert('회원가입 중 오류가 발생했습니다.');
-                        window.location.href = "/webs/signin"
-                    }
-                });
-            });
+            initializeSignupFormEvents()
         } else {
             window.location.href = '/webs/signin';
         }
@@ -272,19 +228,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const googleIcon = document.getElementById("google-icon");
     const naverIcon = document.getElementById("naver-icon");
     const kakaoIcon = document.getElementById("kakao-icon");
+    const emailIcon = document.getElementById("email-signup")
 
-    // 모든 아이콘 기본 색상 회색 처리
-    [googleIcon, naverIcon, kakaoIcon].forEach((icon) =>
+// 모든 아이콘 색상 초기화 (회색 처리용 클래스 제거)
+    [googleIcon, naverIcon, kakaoIcon, emailIcon].forEach((icon) =>
         icon.classList.remove("color")
     );
 
-    // provider 값에 따라 해당 아이콘에 색상 복원
+// 소셜 로그인일 경우에만 색상 강조
     if (provider === "google") {
         googleIcon.classList.add("color");
     } else if (provider === "naver") {
         naverIcon.classList.add("color");
     } else if (provider === "kakao") {
         kakaoIcon.classList.add("color");
+    } else if(provider==="email"){
+        emailIcon.classList.add("color");
+    } else {
+        console.log("소셜 로그인 아님 (provider: " + provider + ")");
+        // 색상 강조 없이 패스
     }
 });
 
