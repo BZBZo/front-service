@@ -68,13 +68,16 @@ public class UserController {
         return "home";
     }
 
-
     @GetMapping("/join")
-    public String join(@RequestParam String email, @RequestParam String provider, @RequestParam String role, Model model){
-        System.out.println("role" + role);
-        model.addAttribute("email", email);
-        model.addAttribute("provider", provider);
-        model.addAttribute("role", role);
+    public String join(@RequestParam(required = false) String email,
+                       @RequestParam(required = false) String provider,
+                       @RequestParam(required = false) String role,
+                       Model model) {
+
+        // 파라미터가 없을 경우 기본값 설정
+        model.addAttribute("email", email != null ? email : "");
+        model.addAttribute("provider", provider != null ? provider : "none");
+        model.addAttribute("role", role != null ? role : "ROLE_USER");
 
         return "join";
     }

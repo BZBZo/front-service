@@ -28,7 +28,13 @@
 .social-icon {
     width: 50px;
     height: 50px;
-    cursor: pointer;
+    filter: grayscale(100%); /* 회색으로 처리 */
+    transition: filter 0.3s ease; /* 전환 효과 */
+}
+
+/* 칼라 아이콘 스타일 */
+.social-icon.color {
+    filter: none; /* 색상 복원 */
 }
 
 .divider {
@@ -191,31 +197,4 @@
 
 .hidden {
     display: none;
-}
-
-/* 기본 회색 스타일 */
-.social-icon {
-    filter: grayscale(100%); /* 회색으로 처리 */
-    transition: filter 0.3s ease; /* 전환 효과 */
-}
-
-/* 칼라 아이콘 스타일 */
-.social-icon.color {
-    filter: none; /* 색상 복원 */
-}
-
-.email-signup-button {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.email-signup-button:hover {
-    background-color: #0056b3;
 }
