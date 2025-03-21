@@ -60,7 +60,7 @@ $(document).ready(() => {
 
         $('#dupliBusinessNum').click(function () {
             const businessNumber = $('#businessNumber').val();
-            $.post('/webs/check/businessNumber', { businessNumber }, function (response) {
+            $.post('/webs/check/businessNumber', {businessNumber}, function (response) {
                 alert(response.message);
                 validationStates.businessNumberValid = response.status === "available";
                 updateSignupButtonState();
@@ -69,7 +69,7 @@ $(document).ready(() => {
 
         $('#dupliShop').click(function () {
             const shopName = $('#shopName').val();
-            $.post('/webs/check/nickname', { nickname: shopName }, function (response) {
+            $.post('/webs/check/nickname', {nickname: shopName}, function (response) {
                 alert(response.message);
                 validationStates.shopNameValid = response.status === "available";
                 updateSignupButtonState();
@@ -78,7 +78,7 @@ $(document).ready(() => {
 
         $('#dupliNick').click(function () {
             const nickname = $('#nickname').val();
-            $.post('/webs/check/nickname', { nickname }, function (response) {
+            $.post('/webs/check/nickname', {nickname}, function (response) {
                 alert(response.message);
                 validationStates.nicknameValid = response.status === "available";
                 updateSignupButtonState();
@@ -87,7 +87,7 @@ $(document).ready(() => {
 
         $('#dupliSellerPhone').click(function () {
             const sellerPhone = $('#sellerPhone').val();
-            $.post('/webs/check/sellerPhone', { sellerPhone }, function (response) {
+            $.post('/webs/check/sellerPhone', {sellerPhone}, function (response) {
                 alert(response.message);
                 validationStates.sellerPhoneValid = response.status === "available";
                 updateSignupButtonState();
@@ -96,7 +96,7 @@ $(document).ready(() => {
 
         $('#dupliCustomerPhone').click(function () {
             const customerPhone = $('#customerPhone').val();
-            $.post('/webs/check/customerPhone', { customerPhone }, function (response) {
+            $.post('/webs/check/customerPhone', {customerPhone}, function (response) {
                 alert(response.message);
                 validationStates.customerPhoneValid = response.status === "available";
                 updateSignupButtonState();
@@ -110,11 +110,21 @@ $(document).ready(() => {
             } else {
                 // 개별 매핑
                 switch (id) {
-                    case 'businessNumber': validationStates.businessNumberValid = false; break;
-                    case 'shopName': validationStates.shopNameValid = false; break;
-                    case 'nickname': validationStates.nicknameValid = false; break;
-                    case 'sellerPhone': validationStates.sellerPhoneValid = false; break;
-                    case 'customerPhone': validationStates.customerPhoneValid = false; break;
+                    case 'businessNumber':
+                        validationStates.businessNumberValid = false;
+                        break;
+                    case 'shopName':
+                        validationStates.shopNameValid = false;
+                        break;
+                    case 'nickname':
+                        validationStates.nicknameValid = false;
+                        break;
+                    case 'sellerPhone':
+                        validationStates.sellerPhoneValid = false;
+                        break;
+                    case 'customerPhone':
+                        validationStates.customerPhoneValid = false;
+                        break;
                 }
             }
             updateSignupButtonState();
@@ -161,8 +171,7 @@ $(document).ready(() => {
         });
     }
 
-
-// provider가 'email'이면 바로 보여주고 종료
+    // provider가 'none'이면 바로 보여주고 종료
     if (provider === 'none') {
         $('#provider').val('email');  // provider 값을 "email"로 설정
         $('#signupForm').show();
@@ -187,7 +196,7 @@ $(document).ready(() => {
         $('#signup').prop('disabled', !allValid);
     }
 
-    $('#cancelButton').click(function() {
+    $('#cancelButton').click(function () {
         window.location.href = '/webs/signin';
     });
 });
@@ -197,6 +206,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const sellerContainer = document.getElementById("sellerContainer");
     const customerContainer = document.getElementById("customerContainer");
     const roleInput = document.getElementById("role");
+
+    // 불러온 provider 값에 따라 아이콘 강조
+    const provider = document.getElementById("provider").value;
+    const googleIcon = document.getElementById("google-icon");
+    const naverIcon = document.getElementById("naver-icon");
+    const kakaoIcon = document.getElementById("kakao-icon");
+    const emailIcon = document.getElementById("email-signup");
+
+    // 모든 아이콘 색상 초기화 (회색 처리용 클래스 제거)
+    [googleIcon, naverIcon, kakaoIcon, emailIcon].forEach((icon) => {
+            if (icon) icon.classList.remove("color");
+        }
+    );
+
+    // 로그인 방식에 색상 강조
+    if (provider === "google") {
+        googleIcon.classList.add("color");
+    } else if (provider === "naver") {
+        naverIcon.classList.add("color");
+    } else if (provider === "kakao") {
+        kakaoIcon.classList.add("color");
+    } else if (provider === "none") {
+        emailIcon.classList.add("color");
+    } else {
+        console.log("소셜 로그인 아님 (provider: " + provider + ")");
+    }
 
     // 기본값 설정
     const defaultRole = document.querySelector(".tab.active").dataset.role;
@@ -222,31 +257,5 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     });
-
-    // 불러온 provider 값에 따라 아이콘 강조
-    const provider = document.getElementById("provider").value;
-    const googleIcon = document.getElementById("google-icon");
-    const naverIcon = document.getElementById("naver-icon");
-    const kakaoIcon = document.getElementById("kakao-icon");
-    const emailIcon = document.getElementById("email-signup")
-
-// 모든 아이콘 색상 초기화 (회색 처리용 클래스 제거)
-    [googleIcon, naverIcon, kakaoIcon, emailIcon].forEach((icon) =>
-        icon.classList.remove("color")
-    );
-
-// 소셜 로그인일 경우에만 색상 강조
-    if (provider === "google") {
-        googleIcon.classList.add("color");
-    } else if (provider === "naver") {
-        naverIcon.classList.add("color");
-    } else if (provider === "kakao") {
-        kakaoIcon.classList.add("color");
-    } else if(provider==="email"){
-        emailIcon.classList.add("color");
-    } else {
-        console.log("소셜 로그인 아님 (provider: " + provider + ")");
-        // 색상 강조 없이 패스
-    }
 });
 
